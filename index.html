@@ -304,6 +304,10 @@ body:before{opacity:.14!important;pointer-events:none!important}
 #boardRows .bet-prop{display:block!important}
 #betlabLiveLegs{display:none!important}
 @media(max-width:680px){#boardRows .bet-prop-stack{min-width:145px}#boardRows .bet-prop-label{flex-wrap:wrap}}
+</style><style id="betlab-force-visible-ticket-bars">
+#boardRows .bet-name .bet-prop-stack{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:10px!important;visibility:visible!important;opacity:1!important;min-height:20px!important}
+#boardRows .bet-name .bet-prop{display:block!important;padding:8px!important;border:1px solid #2a6d58!important;background:#071f27!important;border-radius:7px!important}
+#boardRows .bet-name .bet-prop-track{display:block!important;height:8px!important;background:#24404a!important;border-radius:8px!important;overflow:hidden!important}
 </style></head><body>
 <div class="app"><main class="main"><div class="command-topbar" role="banner" aria-label="Bet Lab System command header"><div class="command-topbar__brand"><span class="command-topbar__mark" aria-hidden="true">♛</span><div><div class="command-topbar__title">BET LAB SYSTEM</div><div class="command-topbar__subtitle">SPORTS BETTING COMMAND CENTER</div></div></div><div class="command-topbar__status"><span class="command-topbar__light"></span>SYSTEM READY</div></div><header aria-label="BetLab Pro — Sports Betting Analytics" class="hero"><div class="header-topline"><span class="orbit-dot"></span> BETLAB PRO <span class="header-separator">/</span> GALAXY COMMAND CENTER</div><div class="system-brand" aria-label="Bet Lab System"><span class="system-brand__star">✦</span><span class="system-brand__label">BET LAB <em>SYSTEM</em></span><span class="system-brand__star">✦</span></div><button aria-label="Notifications" class="notify">♢</button><button class="profile-btn" data-open-profile="" type="button">◉ Quis Money ▾</button><div class="profile-panel" id="profilePanel">Quis Money<small>Local dashboard preview</small></div></header><nav class="nav" id="nav"></nav>
 <section class="content-page active" id="dashboard"><div class="kpis">
@@ -403,7 +407,23 @@ function renderBoard(){
   const sub=document.createElement('small');sub.textContent=(b.legs?.length>1?b.selection:b.game)||b.book||'';
   if(sub.textContent.length>110)sub.textContent=sub.textContent.slice(0,107)+'…';
   name.append(headline,sub);
-  const propStack=document.createElement('div');propStack.className='bet-prop-stack';propStack.dataset.betId=b.id;name.append(propStack);
+  const propStack=document.createElement('div');propStack.className='bet-prop-stack';propStack.dataset.betId=b.id;
+  const legLines=Array.isArray(b.legs)&&b.legs.length?b.legs:[b.selection||''];
+  for(const leg of legLines){
+    const line=String(leg),m=line.match(/(\d+)\s*\+?\s*(?:receptions?|catches|receiving yards?|rushing yards?|rush yards?|touchdowns?|anytime td|td\b)/i);
+    if(!m)continue;
+    const target=Number(m[1]),label=line.replace(/\s+/g,' ').trim();
+    const item=document.createElement('div');item.className='bet-prop';
+    const top=document.createElement('div');top.className='bet-prop-label';
+    const desc=document.createElement('span');desc.textContent=label;
+    const value=document.createElement('b');value.textContent='— / '+target;
+    top.append(desc,value);
+    const track=document.createElement('div');track.className='bet-prop-track';
+    const fill=document.createElement('div');fill.className='bet-prop-fill';track.append(fill);
+    const hint=document.createElement('div');hint.className='bet-prop-hint';hint.textContent='Awaiting live player stats';
+    item.append(top,track,hint);propStack.append(item);
+  }
+  name.append(propStack);
   const odds=document.createElement('div');odds.className='odds';odds.textContent=ticketOdds(b);
   const conf=document.createElement('div');conf.className='confidence';conf.textContent='Pending';
   const stake=document.createElement('div');stake.className='amount';stake.textContent=money(b.stake);
@@ -656,7 +676,7 @@ const types={receivingYards:'receiving yards',rushingYards:'rushing yards',recep
 for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
 for(const line of b.legs||[b.selection]){const leg=parse(line);if(!leg)continue;const key=leg.name+leg.type+leg.target;if(unique.has(key))continue;unique.add(key);const p=stats.get(norm(leg.name));const value=p&&(!p.team||p.team===knownTeams[leg.name])?(leg.type==='touchdowns'?p.rushingTD+p.receivingTD:p[leg.type]):null;
 const outer=text('div','','bet-prop'),label=text('div','','bet-prop-label');label.append(text('span',leg.name+' · '+types[leg.type]),text('b',value===null?'— / '+leg.target:value+' / '+leg.target));const track=text('div','','bet-prop-track'),fill=text('div','','bet-prop-fill');fill.style.width=value===null?'0%':Math.min(100,100*value/leg.target)+'%';track.append(fill);outer.append(label,track,text('div',value===null?(hasGames?'Stats pending':'Waiting for kickoff'):value>=leg.target?'✓ Target reached':'Live progress','bet-prop-hint'));box.append(outer)}
-if(!unique.size){box.append(text('div','No supported player-stat legs on this ticket','bet-prop-hint'))}
+if(!unique.size){box.append(text('div','Live data not yet available for these selections','bet-prop-hint'))}
 }}
 function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.replaceChildren();for(const l of legs){const p=stats.get(norm(l.name));const valid=!!p&&(!p.team||p.team===l.team);const value=valid?(l.type==='touchdowns'?(p.rushingTD+p.receivingTD):p[l.type]):null;
 const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
