@@ -287,7 +287,17 @@ body:before{opacity:.14!important;pointer-events:none!important}
 .performance-note{text-align:center;color:#a0c5df;font-size:10px;margin-top:2px;letter-spacing:.04em}
 #boardEmpty{min-height:90px}
 #kpiProfit{overflow-wrap:anywhere}
-</style><style id="saved-links-style">.saved-link-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #ffffff25;flex-wrap:wrap}.saved-link-row span{display:flex;flex-direction:column;gap:3px}.saved-link-row small{color:#b6b3c9}.saved-link-row>div{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.saved-link-row button{border:1px solid #4cf9a7;background:#112b25;color:#8fffc2;border-radius:8px;padding:9px 12px;cursor:pointer}.saved-link-row a{color:#a7cfff}.shared-links-panel p{line-height:1.5}</style></head><body>
+</style><style id="saved-links-style">.saved-link-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #ffffff25;flex-wrap:wrap}.saved-link-row span{display:flex;flex-direction:column;gap:3px}.saved-link-row small{color:#b6b3c9}.saved-link-row>div{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.saved-link-row button{border:1px solid #4cf9a7;background:#112b25;color:#8fffc2;border-radius:8px;padding:9px 12px;cursor:pointer}.saved-link-row a{color:#a7cfff}.shared-links-panel p{line-height:1.5}</style><style id="betlab-inline-props-v2">
+#boardRows .bet-name{min-width:0}
+#boardRows .bet-prop-stack{display:flex;flex-direction:column;gap:7px;margin-top:10px;max-width:100%;width:100%}
+#boardRows .bet-prop{padding:7px 8px;border:1px solid #254d57;background:rgba(5,23,35,.8);border-radius:7px;min-width:0}
+#boardRows .bet-prop-label{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#c8f7df}
+#boardRows .bet-prop-label span:first-child{overflow-wrap:anywhere}
+#boardRows .bet-prop-label b{color:#7dffa2;white-space:nowrap;font-variant-numeric:tabular-nums}
+#boardRows .bet-prop-track{height:7px;margin-top:6px;border-radius:10px;background:#1e3544;overflow:hidden}
+#boardRows .bet-prop-fill{height:100%;width:0;background:linear-gradient(90deg,#1cae7a,#73ff67);border-radius:10px;transition:width .5s}
+#boardRows .bet-prop-hint{font-size:10px;color:#96b6c1;margin-top:3px}
+</style></head><body>
 <div class="app"><main class="main"><div class="command-topbar" role="banner" aria-label="Bet Lab System command header"><div class="command-topbar__brand"><span class="command-topbar__mark" aria-hidden="true">♛</span><div><div class="command-topbar__title">BET LAB SYSTEM</div><div class="command-topbar__subtitle">SPORTS BETTING COMMAND CENTER</div></div></div><div class="command-topbar__status"><span class="command-topbar__light"></span>SYSTEM READY</div></div><header aria-label="BetLab Pro — Sports Betting Analytics" class="hero"><div class="header-topline"><span class="orbit-dot"></span> BETLAB PRO <span class="header-separator">/</span> GALAXY COMMAND CENTER</div><div class="system-brand" aria-label="Bet Lab System"><span class="system-brand__star">✦</span><span class="system-brand__label">BET LAB <em>SYSTEM</em></span><span class="system-brand__star">✦</span></div><button aria-label="Notifications" class="notify">♢</button><button class="profile-btn" data-open-profile="" type="button">◉ Quis Money ▾</button><div class="profile-panel" id="profilePanel">Quis Money<small>Local dashboard preview</small></div></header><nav class="nav" id="nav"></nav>
 <section class="content-page active" id="dashboard"><div class="kpis">
 <div class="kpi"><div class="kpi-icon">◎</div><div><div class="kpi-label">Win Rate</div><div class="kpi-val" id="kpiWinRate">0.0%</div><div class="small" id="kpiWinNote">No settled bets yet</div></div></div>
@@ -386,6 +396,7 @@ function renderBoard(){
   const sub=document.createElement('small');sub.textContent=(b.legs?.length>1?b.selection:b.game)||b.book||'';
   if(sub.textContent.length>110)sub.textContent=sub.textContent.slice(0,107)+'…';
   name.append(headline,sub);
+  const propStack=document.createElement('div');propStack.className='bet-prop-stack';propStack.dataset.betId=b.id;name.append(propStack);
   const odds=document.createElement('div');odds.className='odds';odds.textContent=ticketOdds(b);
   const conf=document.createElement('div');conf.className='confidence';conf.textContent='Pending';
   const stake=document.createElement('div');stake.className='amount';stake.textContent=money(b.stake);
@@ -603,9 +614,21 @@ const values=entry.stats||[];for(let j=0;j<keys.length;j++){const k=String(keys[
 if(/receiving/.test(section.name||'')||/receiving/.test(section.displayName||'')){if(k==='yds'||k==='yards')obj.receivingYards=v;if(k==='rec'||k==='receptions')obj.receptions=v;if(k==='td'||k==='touchdowns')obj.receivingTD=v}
 if(/rushing/.test(section.name||'')||/rushing/.test(section.displayName||'')){if(k==='yds'||k==='yards')obj.rushingYards=v;if(k==='td'||k==='touchdowns')obj.rushingTD=v}
 }}}}return map}
+function updateInlineProps(stats,hasGames){
+const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\\d+)\\s*\\+?\\s*(?:receiving|rec)\\s*yards/i)||s.match(/(\\d+)\\s*\\+?\\s*yards?\\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
+if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:rushing|rush)\\s*yards/i)||s.match(/(\\d+)\\s*\\+?\\s*yards?\\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:receptions|catches|rec\\b)/i);if(m)type='receptions'}
+if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:touchdowns|anytime\\s*td|td\\b)/i);if(m)type='touchdowns'}
+return type?{name,type,target:Number(m[1])}:null};
+const types={receivingYards:'receiving yards',rushingYards:'rushing yards',receptions:'receptions',touchdowns:'touchdowns'};
+for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
+for(const line of b.legs||[b.selection]){const leg=parse(line);if(!leg)continue;const key=leg.name+leg.type+leg.target;if(unique.has(key))continue;unique.add(key);const p=stats.get(norm(leg.name));const value=p&&(!p.team||p.team===knownTeams[leg.name])?(leg.type==='touchdowns'?p.rushingTD+p.receivingTD:p[leg.type]):null;
+const outer=text('div','','bet-prop'),label=text('div','','bet-prop-label');label.append(text('span',leg.name+' · '+types[leg.type]),text('b',value===null?'— / '+leg.target:value+' / '+leg.target));const track=text('div','','bet-prop-track'),fill=text('div','','bet-prop-fill');fill.style.width=value===null?'0%':Math.min(100,100*value/leg.target)+'%';track.append(fill);outer.append(label,track,text('div',value===null?(hasGames?'Stats pending':'Waiting for kickoff'):value>=leg.target?'✓ Target reached':'Live progress','bet-prop-hint'));box.append(outer)}
+if(!unique.size){box.append(text('div','No supported player-stat legs on this ticket','bet-prop-hint'))}
+}}
 function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.replaceChildren();for(const l of legs){const p=stats.get(norm(l.name));const valid=!!p&&(!p.team||p.team===l.team);const value=valid?(l.type==='touchdowns'?(p.rushingTD+p.receivingTD):p[l.type]):null;
 const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
-const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'))}
+const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'))updateInlineProps(stats,hasGames)}
 async function refresh(){if(busy)return;busy=true;const status=el('betlabLiveStatus'),button=el('betlabLiveRefresh');button.disabled=true;status.textContent='Updating scores and player stats…';
 try{const date=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).replace(/-/g,'');
 const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
@@ -615,6 +638,6 @@ const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=event
 showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
 }catch(err){status.textContent='Live feed unavailable. Tap Refresh to retry. Existing bets are unchanged.';showLegs(extractLegs(),new Map(),false)}
 finally{busy=false;button.disabled=false}}
-el('betlabLiveRefresh')?.addEventListener('click',refresh);refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
+el('betlabLiveRefresh')?.addEventListener('click',refresh);updateInlineProps(new Map(),false);refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
 })();
 </script></body></html>
