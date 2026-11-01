@@ -615,10 +615,10 @@ if(/receiving/.test(section.name||'')||/receiving/.test(section.displayName||'')
 if(/rushing/.test(section.name||'')||/rushing/.test(section.displayName||'')){if(k==='yds'||k==='yards')obj.rushingYards=v;if(k==='td'||k==='touchdowns')obj.rushingTD=v}
 }}}}return map}
 function updateInlineProps(stats,hasGames){
-const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\\d+)\\s*\\+?\\s*(?:receiving|rec)\\s*yards/i)||s.match(/(\\d+)\\s*\\+?\\s*yards?\\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
-if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:rushing|rush)\\s*yards/i)||s.match(/(\\d+)\\s*\\+?\\s*yards?\\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
-if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:receptions|catches|rec\\b)/i);if(m)type='receptions'}
-if(!type){m=s.match(/(\\d+)\\s*\\+?\\s*(?:touchdowns|anytime\\s*td|td\\b)/i);if(m)type='touchdowns'}
+const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
 return type?{name,type,target:Number(m[1])}:null};
 const types={receivingYards:'receiving yards',rushingYards:'rushing yards',receptions:'receptions',touchdowns:'touchdowns'};
 for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
