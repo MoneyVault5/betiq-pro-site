@@ -59,7 +59,7 @@ function perfTable(rows, cols) {
   if (!rows.length) return '<p class="muted small">No settled data yet.</p>';
   return `<table><tr>${cols.map((c) => `<th>${c.h}</th>`).join('')}</tr>${rows.map((r) => `<tr>${cols.map((c) => `<td>${c.f(r)}</td>`).join('')}</tr>`).join('')}</table>`;
 }
-const barCell = (v) => `<div class="bar"><i style="width:${Math.max(0, Math.min(100, v * 100))}%"></i></div>`;
+const barCell = (v) => `<div class="bar"><i class="${v < 0.4 ? 'low' : ''}" style="width:${Math.max(0, Math.min(100, v * 100))}%"></i></div>`;
 
 function ticketCard(t, { withControls = false } = {}) {
   const profit = t.status === 'pending' || t.status === 'partial' ? null : profitForTicket(t);

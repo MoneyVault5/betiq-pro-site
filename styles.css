@@ -81,6 +81,7 @@ th, td { text-align: left; padding: 7px 6px; border-bottom: 1px solid #1e2c5e; o
 th { color: var(--muted); font-weight: 600; }
 .bar { height: 7px; background: #1b2a57; border-radius: 4px; overflow: hidden; min-width: 50px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, .55); }
 .bar > i { display: block; height: 100%; background: linear-gradient(90deg, #12c95e, var(--green2) 45%, var(--green)); box-shadow: 0 0 9px rgba(45, 255, 143, .60); border-radius: 4px; }
+.bar > i.low { background: linear-gradient(90deg, #d92c34, #ff5a5a 55%, #ff8080); box-shadow: 0 0 9px rgba(255, 90, 90, .55); }
 .pill { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; border: 1px solid transparent; }
 .pill.won { background: linear-gradient(90deg, rgba(45, 255, 143, .30), rgba(34, 229, 132, .18)); color: #3dff9e; border-color: rgba(45, 255, 143, .60); box-shadow: 0 0 10px rgba(45, 255, 143, .30); }
 .pill.lost { background: linear-gradient(90deg, rgba(255, 45, 85, .28), rgba(255, 84, 112, .16)); color: #ff7285; border-color: rgba(255, 84, 112, .60); box-shadow: 0 0 10px rgba(255, 45, 85, .28); }
