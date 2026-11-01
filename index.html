@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BetIQ Pro — Personal Betting Analytics</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#05070f">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">📈 BetIQ <span>Pro</span></div>
+    <div class="logo-sub">Personal Betting Analytics</div>
+    <button class="nav-item active" data-nav="dashboard">🏠 Dashboard</button>
+    <button class="nav-item" data-nav="tracker">🎟️ Bet Tracker</button>
+    <button class="nav-item" data-nav="upload">⬆️ Upload Slip</button>
+    <button class="nav-item" data-nav="analytics">📊 Analytics</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Performance</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Players</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Parlays</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Markets</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Odds</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Sportsbooks</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Trends &amp; Patterns</button>
+    <button class="nav-item" data-nav="insights">🧠 AI Insights</button>
+    <button class="nav-item" data-nav="bankroll">🏦 Bankroll &amp; Cash Flow</button>
+    <button class="nav-item" data-nav="reports">📄 Reports</button>
+    <button class="nav-item" data-nav="settings">⚙️ Settings</button>
+    <div class="ai-card">
+      <div style="font-size:26px">🧠</div>
+      <h4>AI Betting Analyst</h4>
+      <p>Get personalized insights, find trends, and test strategies — from your real data only.</p>
+      <button class="btn" data-nav="insights" style="width:100%">Ask BetIQ AI ✨</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1>👑 <span id="greeting">Good Evening</span></h1>
+        <div class="sub">Here's your betting performance and key insights — computed from your tracked tickets only.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <select id="filter-range" style="width:auto"><option>All Time</option></select>
+        <select id="filter-book-top" style="width:auto"><option value="">All Sportsbooks</option><option>DraftKings</option><option>Novig</option></select>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="kpis">
+        <div class="kpi"><div class="label">↗ Net Profit</div><div class="value" id="kpi-profit">—</div><div class="foot" id="kpi-roi">ROI: —</div></div>
+        <div class="kpi"><div class="label">🪙 Total Wagered</div><div class="value" id="kpi-wagered">—</div><div class="foot">Settled tickets only</div></div>
+        <div class="kpi"><div class="label">🏆 Win Rate (Tickets)</div><div class="value" id="kpi-winrate">—</div><div class="foot" id="kpi-wl">—</div></div>
+        <div class="kpi"><div class="label">🎯 Total Bets</div><div class="value" id="kpi-total">—</div><div class="foot" id="kpi-settled">—</div></div>
+        <div class="kpi"><div class="label">↗ Bankroll (Tracked)</div><div class="value" id="kpi-bankroll">—</div><div class="foot" id="kpi-bankroll-foot">Start + deposits − withdrawals + P&amp;L</div></div>
+      </div>
+      <div class="grid">
+        <div class="panel span7"><h3>Cash Flow &amp; Profit Trend</h3><canvas class="chart" id="chart-cashflow" width="700" height="220"></canvas><div class="small muted" id="chart-note"></div></div>
+        <div class="panel span5"><h3>🧠 AI Insights</h3><div id="dash-insights"></div></div>
+        <div class="panel span4"><h3>🎟️ Parlay Performance</h3><div id="dash-parlay"></div></div>
+        <div class="panel span4"><h3>🎯 Market Performance</h3><div id="dash-market"></div></div>
+        <div class="panel span4"><h3>👤 Top Player Performance</h3><div id="dash-player"></div></div>
+        <div class="panel span7"><h3>Recent Bets</h3><div id="dash-recent"></div></div>
+        <div class="panel span5">
+          <h3>Win/Loss Breakdown</h3>
+          <canvas class="donut" id="chart-donut" width="200" height="200"></canvas>
+          <div class="small" id="donut-legend" style="text-align:center"></div>
+          <h3 style="margin-top:20px">Sportsbook Performance</h3>
+          <div id="dash-book"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BET TRACKER -->
+    <section class="view" id="view-tracker">
+      <div class="filters">
+        <input id="flt-search" type="search" placeholder="Search player, market, book…">
+        <select id="flt-book"><option value="">All books</option><option>DraftKings</option><option>Novig</option><option>Other</option></select>
+        <select id="flt-status"><option value="">All statuses</option><option>pending</option><option>won</option><option>lost</option><option>void</option><option>cashed_out</option><option>partial</option></select>
+      </div>
+      <div id="ticket-list"></div>
+    </section>
+
+    <!-- UPLOAD SLIP -->
+    <section class="view" id="view-upload">
+      <div class="grid">
+        <div class="panel span6">
+          <h3>⬆️ Upload Slip Screenshot</h3>
+          <p class="small muted">Pick a DraftKings or Novig screenshot. The file's SHA-256 hash is computed in your browser — re-uploading the same image is blocked as a duplicate. Images are not sent anywhere in this MVP.</p>
+          <input id="slip-file" type="file" accept="image/*">
+          <div class="msg" id="upload-msg"></div>
+          <img id="slip-preview" alt="Uploaded slip preview">
+          <p class="small muted"><strong>Honest note on extraction:</strong> automatic OCR extraction is NOT claimed in this MVP. Automatic extraction runs after review in this build — what gets saved is exactly what you confirm in the review form, so nothing is silently mis-read.</p>
+        </div>
+        <div class="panel span6">
+          <h3>Review &amp; Save Ticket</h3>
+          <form id="ticket-form">
+            <div class="form-grid">
+              <div><label>Sportsbook</label><select id="f-book"><option>DraftKings</option><option>Novig</option><option>Other</option></select></div>
+              <div><label>External ticket ID (optional)</label><input id="f-extid" type="text" placeholder="From the slip"></div>
+              <div><label>Date placed</label><input id="f-date" type="date" required></div>
+              <div><label>Stake ($)</label><input id="f-stake" type="number" step="0.01" min="0" required></div>
+              <div><label>Stake type</label><select id="f-staketype"><option value="cash">Cash</option><option value="trade_credit">Trade credit</option><option value="bonus">Bonus</option></select></div>
+              <div><label>Odds (optional)</label><input id="f-odds" type="text" placeholder="+436"></div>
+              <div><label>Potential payout ($)</label><input id="f-payout" type="number" step="0.01" min="0" required></div>
+            </div>
+            <label>Legs</label>
+            <div id="leg-rows"></div>
+            <button type="button" class="btn secondary" id="add-leg">+ Add leg</button>
+            <div style="margin-top:16px"><button type="submit" class="btn">Save ticket</button></div>
+            <div class="msg" id="form-msg"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="view" id="view-analytics">
+      <div class="grid">
+        <div class="panel span6"><h3>Parlay Performance (by leg count)</h3><div id="an-parlay"></div></div>
+        <div class="panel span6"><h3>Sportsbook Performance</h3><div id="an-book"></div></div>
+        <div class="panel span6"><h3>Market Performance (legs)</h3><div id="an-market"></div></div>
+        <div class="panel span6"><h3>Player Performance (legs)</h3><div id="an-player"></div></div>
+      </div>
+      <p class="small muted">Every cohort shows its sample size n. Cohorts with n &lt; 30 are labelled “small sample” — don't over-read them.</p>
+    </section>
+
+    <!-- AI INSIGHTS -->
+    <section class="view" id="view-insights">
+      <div class="panel"><h3>🧠 AI Insights — from your data only</h3><div id="full-insights"></div>
+      <p class="small muted">Insights are rules over your settled tickets (see settlement.mjs generateInsights). Each one carries its sample size and a confidence note. No tendencies are invented, and nothing is claimed from pending bets.</p></div>
+    </section>
+
+    <!-- BANKROLL -->
+    <section class="view" id="view-bankroll">
+      <div class="grid">
+        <div class="panel span6"><h3>Bankroll &amp; Cash Flow</h3><div id="bankroll-summary"></div></div>
+        <div class="panel span6">
+          <h3>Add deposit / withdrawal</h3>
+          <form id="txn-form">
+            <div class="form-grid">
+              <div><label>Type</label><select id="t-type"><option value="deposit">Deposit</option><option value="withdrawal">Withdrawal</option></select></div>
+              <div><label>Amount ($)</label><input id="t-amount" type="number" step="0.01" min="0" required></div>
+            </div>
+            <div style="margin-top:14px"><button class="btn" type="submit">Add transaction</button></div>
+          </form>
+          <div id="txn-list" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="view" id="view-reports">
+      <div class="panel"><h3>📄 Reports</h3>
+        <p class="small muted">Export every tracked ticket (one row per ticket, legs joined) as CSV.</p>
+        <button class="btn" id="csv-btn">Download CSV</button>
+        <div id="report-summary" style="margin-top:16px"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="panel"><h3>⚙️ Settings</h3>
+        <label>Starting bankroll ($)</label>
+        <input id="s-bankroll" type="number" step="0.01" style="max-width:260px">
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="s-save">Save settings</button>
+          <button class="btn secondary" id="s-reseed">Reset all data</button>
+          <button class="btn danger" id="s-clear">Clear all data</button>
+        </div>
+        <p class="small muted">Data is stored locally in this browser (localStorage key <code>betiq_v1</code>) in this MVP. The Supabase schema in <code>supabase/schema.sql</code> targets a new separate BetIQ project and is not wired up yet.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <button data-nav="dashboard" class="active"><span>🏠</span>Home</button>
+  <button data-nav="tracker"><span>🎟️</span>Bets</button>
+  <button data-nav="upload"><span>⬆️</span>Upload</button>
+  <button data-nav="analytics"><span>📊</span>Stats</button>
+  <button data-nav="bankroll"><span>🏦</span>Bank</button>
+  <button data-nav="settings"><span>⚙️</span>Settings</button>
+</nav>
+
+<script type="module" src="betiq.js"></script>
+</body>
+</html>
