@@ -53,7 +53,7 @@ function ticketCard(t, { withControls = false } = {}) {
   const profit = t.status === 'pending' || t.status === 'partial' ? null : profitForTicket(t);
   const legsHtml = (t.legs || []).map((l) => `<div class="leg">• ${esc(l.line)} ${esc(l.player)}${l.market && l.market !== 'Unspecified' ? ` — ${esc(l.market)}` : ' — <span class="muted">market unspecified on screen</span>'} <span class="pill ${l.status === 'push' ? 'void' : l.status}">${esc(l.status)}</span></div>`).join('');
   const controls = withControls ? `
-    <div style="margin-top:10px;border-top:1px dashed #22345f;padding-top:10px">
+    <div style="margin-top:10px;border-top:1px dashed #2e4a8a;padding-top:10px">
       <div class="small muted">TEST HARNESS — “simulate official result”: stands in for the future automatic-settlement feed. It calls the same applySettlement() the feed will use. This is not a manual win/loss button for real use.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
         <select id="sim-${t.id}" style="width:auto"><option value="won">All legs won</option><option value="lost">Ticket lost</option><option value="void">Void</option><option value="cashed_out">Cashed out</option><option value="partial">Partial (first leg won, rest pending)</option></select>
@@ -179,7 +179,7 @@ function drawCashflow(stats) {
   const settled = state.tickets.filter((t) => ['won', 'lost', 'void', 'cashed_out'].includes(t.status))
     .sort((a, b) => String(a.placed_at || '').localeCompare(String(b.placed_at || '')));
   if (!settled.length) {
-    ctx.fillStyle = '#8ea0c2'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#a9bce0'; ctx.font = '14px sans-serif'; ctx.textAlign = 'center';
     ctx.fillText('No settled tickets yet — the profit trend starts when tickets settle.', W / 2, H / 2);
     $('chart-note').textContent = 'Pending tickets are excluded from realized P&L.';
     return;
@@ -188,11 +188,19 @@ function drawCashflow(stats) {
   const min = Math.min(0, ...pts), max = Math.max(0, ...pts), range = (max - min) || 1;
   const X = (i) => 40 + (i / Math.max(1, pts.length - 1)) * (W - 60);
   const Y = (v) => H - 25 - ((v - min) / range) * (H - 50);
-  ctx.strokeStyle = '#1c2a4d'; ctx.beginPath(); ctx.moveTo(40, Y(0)); ctx.lineTo(W - 20, Y(0)); ctx.stroke();
-  ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2; ctx.beginPath();
+  ctx.strokeStyle = '#2b4176'; ctx.beginPath(); ctx.moveTo(40, Y(0)); ctx.lineTo(W - 20, Y(0)); ctx.stroke();
+  const lineGrad = ctx.createLinearGradient(40, 0, W - 20, 0);
+  lineGrad.addColorStop(0, '#8b5cf6'); lineGrad.addColorStop(.55, '#d946ef'); lineGrad.addColorStop(1, '#38b6ff');
+  ctx.strokeStyle = lineGrad; ctx.lineWidth = 2.5; ctx.shadowColor = 'rgba(168,85,247,.6)'; ctx.shadowBlur = 8; ctx.beginPath();
   pts.forEach((p, i) => (i ? ctx.lineTo(X(i), Y(p)) : ctx.moveTo(X(i), Y(p)))); ctx.stroke();
   ctx.lineTo(X(pts.length - 1), Y(0)); ctx.lineTo(X(0), Y(0)); ctx.closePath();
-  ctx.fillStyle = 'rgba(0,140,255,.18)'; ctx.fill();
+  ctx.shadowBlur = 0;
+  const fillGrad = ctx.createLinearGradient(0, 0, 0, H);
+  fillGrad.addColorStop(0, 'rgba(168,85,247,.50)'); fillGrad.addColorStop(.55, 'rgba(139,92,246,.20)'); fillGrad.addColorStop(1, 'rgba(0,140,255,.04)');
+  ctx.fillStyle = fillGrad; ctx.fill();
+  const lastX = X(pts.length - 1), lastY = Y(pts[pts.length - 1]);
+  ctx.beginPath(); ctx.arc(lastX, lastY, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#f5d0fe'; ctx.shadowColor = 'rgba(217,70,239,.95)'; ctx.shadowBlur = 14; ctx.fill(); ctx.shadowBlur = 0;
   ctx.fillStyle = '#eef3ff'; ctx.font = '12px sans-serif'; ctx.textAlign = 'left';
   ctx.fillText(`Net ${money(cum)}`, 44, 18);
   $('chart-note').textContent = `Cumulative realized profit across ${settled.length} settled ticket(s).`;
@@ -202,8 +210,8 @@ function drawDonut(stats) {
   const ctx = cv.getContext('2d'); const cx = 100, cy = 100, r = 78;
   ctx.clearRect(0, 0, 200, 200);
   const parts = [
-    { v: stats.wins, c: '#22e584', label: 'Wins' }, { v: stats.losses, c: '#c084fc', label: 'Losses' },
-    { v: stats.voids + stats.cashedOut, c: '#38b6ff', label: 'Void/Cashed' }, { v: stats.openCount, c: '#2a3a63', label: 'Open' },
+    { v: stats.wins, c: '#2dff8f', label: 'Wins' }, { v: stats.losses, c: '#a855f7', label: 'Losses' },
+    { v: stats.voids + stats.cashedOut, c: '#00c2ff', label: 'Void/Cashed' }, { v: stats.openCount, c: '#31477f', label: 'Open' },
   ];
   const total = parts.reduce((s, p) => s + p.v, 0);
   if (!total) { $('donut-legend').textContent = 'No tickets yet.'; return; }
@@ -216,7 +224,7 @@ function drawDonut(stats) {
   }
   ctx.fillStyle = '#eef3ff'; ctx.font = 'bold 17px sans-serif'; ctx.textAlign = 'center';
   ctx.fillText(stats.settledCount ? pct(stats.winRate) : '—', cx, cy + 2);
-  ctx.font = '10px sans-serif'; ctx.fillStyle = '#8ea0c2'; ctx.fillText('Win Rate', cx, cy + 17);
+  ctx.font = '10px sans-serif'; ctx.fillStyle = '#a9bce0'; ctx.fillText('Win Rate', cx, cy + 17);
   $('donut-legend').innerHTML = parts.filter((p) => p.v).map((p) => `<span style="color:${p.c}">●</span> ${p.label} ${p.v}`).join(' · ') + `<br>Total Settled ${stats.settledCount}`;
 }
 
