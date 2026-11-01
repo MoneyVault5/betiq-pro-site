@@ -332,3 +332,6 @@ $('s-reseed').addEventListener('click', () => { state = seedState(); save(); ren
 $('s-clear').addEventListener('click', () => { if (window.confirm('Clear ALL BetIQ data in this browser?')) { state = { tickets: [], transactions: [], settings: { startingBankroll: 0 }, uploads: [] }; save(); render(); } });
 
 render();
+
+// Read-only NFL scoreboard; does not alter tickets.
+import('./live-feed.js').catch(console.warn);
