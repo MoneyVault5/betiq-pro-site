@@ -639,6 +639,7 @@ const key=name+'|'+type+'|'+m[1];found.set(key,{name,type,target:Number(m[1]),la
 return [...found.values()]}
 function playerRows(data){
 const map=new Map();
+const readNumber=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:null};
 for(const group of data?.boxscore?.players||[]){
 const team=group.team?.abbreviation||'';
 for(const section of group.statistics||[]){
@@ -649,16 +650,16 @@ const name=entry.athlete?.displayName||entry.athlete?.fullName||'';
 const id=norm(name);if(!id)continue;
 let obj=map.get(id);if(!obj){obj={name,team,receivingYards:0,rushingYards:0,receptions:0,rushingTD:0,receivingTD:0};map.set(id,obj)}
 const values=entry.stats||[];
-for(let j=0;j<keys.length;j++){
-const k=String(keys[j]).toLowerCase().replace(/[^a-z]/g,''),v=Number(values[j]);if(!Number.isFinite(v))continue;
+for(let j=0;j<values.length;j++){
+const k=String(keys[j]||'').toLowerCase().replace(/[^a-z]/g,''),v=readNumber(values[j]);if(v===null)continue;
 if(category.includes('receiv')){
-if(['yds','yards','receivingyards','recyds'].includes(k))obj.receivingYards=v;
-if(['rec','receptions'].includes(k))obj.receptions=v;
-if(['td','touchdowns','receivingtouchdowns'].includes(k))obj.receivingTD=v;
+if(['yds','yards','receivingyards','recyds'].includes(k)||(!k&&j===1))obj.receivingYards=v;
+if(['rec','receptions'].includes(k)||(!k&&j===0))obj.receptions=v;
+if(['td','touchdowns','receivingtouchdowns'].includes(k)||(!k&&j===3))obj.receivingTD=v;
 }
 if(category.includes('rush')){
-if(['yds','yards','rushingyards','rushyds'].includes(k))obj.rushingYards=v;
-if(['td','touchdowns','rushingtouchdowns'].includes(k))obj.rushingTD=v;
+if(['yds','yards','rushingyards','rushyds'].includes(k)||(!k&&j===1))obj.rushingYards=v;
+if(['td','touchdowns','rushingtouchdowns'].includes(k)||(!k&&j===3))obj.rushingTD=v;
 }
 }
 }
@@ -686,9 +687,9 @@ try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year
 const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
 for(const event of events){const comp=event.competitions?.[0]||{},teams=comp.competitors||[],away=teams.find(t=>t.homeAway==='away'),home=teams.find(t=>t.homeAway==='home');if(!home||!away)continue;const card=text('div','','live-game');card.append(text('strong',(away.team?.abbreviation||'AWAY')+' '+(away.score||'0')+' – '+(home.score||'0')+' '+(home.team?.abbreviation||'HOME')),text('small',event.status?.type?.shortDetail||event.status?.type?.description||event.status?.displayClock||'Scheduled'));root.append(card)}
 if(!events.length)root.append(text('small','No NFL games scheduled today.'));
-const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary');return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
+const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary HTTP '+r.status);return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
 showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · '+relevant.length+' matched games · '+stats.size+' player stat lines · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
-}catch(err){status.textContent='Live feed unavailable. Tap Refresh to retry. Existing bets are unchanged.';showLegs(extractLegs(),new Map(),false)}
+}catch(err){status.textContent='Live stats error: '+String(err?.message||err)+' · Tap Refresh to retry.';showLegs(extractLegs(),new Map(),false)}
 finally{busy=false;button.disabled=false}}
 let latestStats=new Map(),latestGames=false;
  document.addEventListener('betlab-board-rendered',()=>updateInlineProps(latestStats,latestGames));
