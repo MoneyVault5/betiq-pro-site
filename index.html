@@ -642,8 +642,8 @@ const map=new Map();
 for(const group of data?.boxscore?.players||[]){
 const team=group.team?.abbreviation||'';
 for(const section of group.statistics||[]){
-const category=(section.name||section.displayName||'').toLowerCase();
-const keys=section.keys||section.labels||[];
+const category=((section.name||'')+' '+(section.displayName||'')).toLowerCase();
+const keys=section.keys?.length?section.keys:(section.labels||[]);
 for(const entry of section.athletes||[]){
 const name=entry.athlete?.displayName||entry.athlete?.fullName||'';
 const id=norm(name);if(!id)continue;
@@ -652,12 +652,12 @@ const values=entry.stats||[];
 for(let j=0;j<keys.length;j++){
 const k=String(keys[j]).toLowerCase().replace(/[^a-z]/g,''),v=Number(values[j]);if(!Number.isFinite(v))continue;
 if(category.includes('receiv')){
-if(['yds','yards','receivingyards'].includes(k))obj.receivingYards=v;
+if(['yds','yards','receivingyards','recyds'].includes(k))obj.receivingYards=v;
 if(['rec','receptions'].includes(k))obj.receptions=v;
 if(['td','touchdowns','receivingtouchdowns'].includes(k))obj.receivingTD=v;
 }
 if(category.includes('rush')){
-if(['yds','yards','rushingyards'].includes(k))obj.rushingYards=v;
+if(['yds','yards','rushingyards','rushyds'].includes(k))obj.rushingYards=v;
 if(['td','touchdowns','rushingtouchdowns'].includes(k))obj.rushingTD=v;
 }
 }
@@ -682,12 +682,12 @@ function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.repl
 const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
 const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'))latestStats=stats;latestGames=hasGames;updateInlineProps(stats,hasGames)}
 async function refresh(){if(busy)return;busy=true;const status=el('betlabLiveStatus'),button=el('betlabLiveRefresh');button.disabled=true;status.textContent='Updating scores and player stats…';
-try{const date=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).replace(/-/g,'');
+try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const date=['year','month','day'].map(k=>parts.find(p=>p.type===k)?.value||'').join('');
 const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
 for(const event of events){const comp=event.competitions?.[0]||{},teams=comp.competitors||[],away=teams.find(t=>t.homeAway==='away'),home=teams.find(t=>t.homeAway==='home');if(!home||!away)continue;const card=text('div','','live-game');card.append(text('strong',(away.team?.abbreviation||'AWAY')+' '+(away.score||'0')+' – '+(home.score||'0')+' '+(home.team?.abbreviation||'HOME')),text('small',event.status?.type?.shortDetail||event.status?.type?.description||event.status?.displayClock||'Scheduled'));root.append(card)}
 if(!events.length)root.append(text('small','No NFL games scheduled today.'));
 const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary');return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
-showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
+showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · '+relevant.length+' matched games · '+stats.size+' player stat lines · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
 }catch(err){status.textContent='Live feed unavailable. Tap Refresh to retry. Existing bets are unchanged.';showLegs(extractLegs(),new Map(),false)}
 finally{busy=false;button.disabled=false}}
 let latestStats=new Map(),latestGames=false;
