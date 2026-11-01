@@ -3,9 +3,21 @@
 // settlement.mjs (shared with the Node tests) — nothing is computed ad hoc here.
 // BetIQ Pro app logic. All figures are computed from the tickets stored in the app.
 import {
+
+
   computeStats, profitForTicket, generateInsights, applySettlement,
   detectDuplicateTicket, wilsonInterval,
 } from './settlement.mjs';
+
+// Website conversion cleanup: earlier builds registered a service worker that can
+// keep serving the old app shell from cache. Unregister any SW and clear its caches.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister())).catch(() => {});
+}
+if (window.caches) {
+  caches.keys().then((keys) => keys.forEach((k) => caches.delete(k))).catch(() => {});
+}
+
 
 const KEY = 'betiq_v1';
 const $ = (id) => document.getElementById(id);
