@@ -316,6 +316,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <div class="kpi"><div class="kpi-icon">◆</div><div><div class="kpi-label">Net Profit</div><div class="kpi-val green" id="kpiProfit">$0.00</div></div></div>
 <div class="kpi"><div class="kpi-icon">♜</div><div><div class="kpi-label">Record</div><div class="kpi-val" id="kpiRecord">0 – 0</div></div></div>
 </div><div class="main-grid"><section class="board" id="todayBoard"><div aria-label="Today's Board" aria-level="2" class="board-title" role="heading">TODAY’S BOARD</div><div aria-label="Filter sport" class="sports" role="group"><button class="active" data-sport="ALL">ALL</button><button data-sport="NBA">🏀 NBA</button><button data-sport="NFL">🏈 NFL</button><button data-sport="NCAAF">NCAAF</button><button data-sport="MLB">MLB</button></div>
+<div id="liveTicketNotice" style="border:1px solid #32e7a1;border-radius:10px;background:#071c30;padding:12px;margin:10px 0;color:#e8fff5;font-weight:700">🔴 7 Polymarket live tickets imported for Nov 1 · Scroll below for the pending tickets, or select Live Record in the menu. Mark each Winner or Loser yourself.</div>
 <div id="betlabLive" aria-live="polite"><div class="live-head"><span>● LIVE NFL GAME & PROP TRACKER</span><button type="button" id="betlabLiveRefresh">↻ Refresh</button></div><div class="live-sub" id="betlabLiveStatus">Connecting to live NFL scores…</div><div class="live-games" id="betlabLiveGames"></div><div class="live-legs" id="betlabLiveLegs"></div></div>
 <div class="table-head"><span>PLAYER / SELECTION</span><span>ODDS</span><span>CONFIDENCE</span><span>STAKE</span><span>TO WIN</span><span></span></div>
 <div id="boardRows"></div><div class="board-empty" id="boardEmpty">No bets saved yet. Open <button type="button" class="empty-import-link" data-go="Slip Importer">Slip Importer</button> to add your first ticket.</div></section>
@@ -412,7 +413,7 @@ function saveBet(b){
 }
 function renderBoard(){
  const root=node('boardRows');root.replaceChildren();
- const pending=bets.filter(b=>b.status==='Open');
+ const pending=bets.filter(b=>b.status==='Open').sort((a,b)=>Number(!!a.liveBet)-Number(!!b.liveBet));
  for(const b of pending.slice().reverse()){
   const row=document.createElement('div');row.className='bet-row';row.dataset.sport=b.sport||'Other';
   const name=document.createElement('div');name.className='bet-name';
