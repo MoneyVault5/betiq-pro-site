@@ -344,6 +344,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 </section><section id="analyticsPage" hidden style="padding:16px 0">
 <h3 style="color:#72ffb1;margin:0 0 8px">▥ BETTING ANALYTICS</h3>
 <p class="notice">Calculated from your saved tickets and your manual Winner / Loser selections. Shared wagers use your portion of the stake and payout.</p>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0"><button type="button" id="analyticsRefresh" class="primary">↻ Refresh Analytics</button><span id="analyticsDataStatus" style="color:#b9d8ef;font-size:12px">Loading saved tickets…</span></div>
 <div id="analyticsMetrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:14px 0"></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Pregame vs. Live</h3><div id="analyticsTypes"></div></div>
@@ -368,7 +369,7 @@ function go(name){
  document.getElementById('tracker').hidden=!['Bet Tracker','Slip Importer'].includes(name);
  document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record','Analytics'].includes(name);
  document.getElementById('analyticsPage').hidden=name!=='Analytics';
- if(name==='Analytics')renderAnalytics();
+ if(name==='Analytics'){renderBets();renderAnalytics();}
  document.getElementById('liveRecordPage').hidden=name!=='Live Record';
  if(name==='Live Record')renderLiveRecord();
  document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
@@ -382,6 +383,7 @@ document.addEventListener('click',e=>{
 // New, clean storage namespace. Remove the old version's sample/previous ticket data once,
 // without clearing unrelated website preferences or browser storage.
 const key='betlab_clean_real_bets_v1';
+document.getElementById('analyticsRefresh')?.addEventListener('click',()=>{try{const saved=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(saved)){const byId=new Map(bets.map(b=>[b.id,b]));for(const b of saved)byId.set(b.id,b);bets=[...byId.values()]}}catch(err){console.warn('Could not reload stored tickets',err)}renderBets()});
 try{localStorage.removeItem('betiq_stadium_command_bets')}catch(err){console.warn('Legacy ticket storage not accessible',err)}
 let bets=[];
 try{const saved=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(saved))bets=saved}catch(err){console.warn('Unable to load saved bets',err)}
@@ -541,6 +543,7 @@ function renderDashboard(){
 function renderAnalytics(){
  const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
  if(!metrics||!books||!types||!recent)return;
+ const indicator=node('analyticsDataStatus');if(indicator)indicator.textContent=bets.length+' saved tickets in this browser · Updated '+new Date().toLocaleTimeString();
  const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
  const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
  const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
