@@ -429,7 +429,19 @@ function renderBoard(){
   const stake=document.createElement('div');stake.className='amount';stake.textContent=money(b.stake);
   const win=document.createElement('div');win.className='win';win.textContent=payoutFor(b)?money(payoutFor(b)):'—';
   const check=document.createElement('div');check.className='check';check.textContent='○';check.title='Pending ticket';
-  row.append(name,odds,conf,stake,win,check);root.append(row);
+  const resultActions=document.createElement('div');resultActions.className='board-result-actions';resultActions.style.cssText='display:flex;gap:5px;flex-wrap:wrap;align-items:center;justify-content:center';
+  for(const [label,status,color] of [['✓ Winner','Won','#16b957'],['✕ Loser','Lost','#d64b68']]){
+   const button=document.createElement('button');button.type='button';button.textContent=label;
+   button.setAttribute('aria-label','Mark '+(b.selection||b.game||'ticket')+' as '+status);
+   button.style.cssText='cursor:pointer;border:1px solid '+color+';background:#0b1530;color:#fff;border-radius:7px;padding:7px 9px;font-size:12px;font-weight:700;white-space:nowrap';
+   button.addEventListener('click',()=>{
+    const old=b.status;b.status=status;
+    if(!persist()){b.status=old;return;}
+    renderBets();
+   });
+   resultActions.append(button);
+  }
+  row.append(name,odds,conf,stake,win,resultActions);root.append(row);
  }
  filterBoard(document.querySelector('[data-sport].active')?.dataset.sport||'ALL');
  document.dispatchEvent(new Event('betlab-board-rendered'));
