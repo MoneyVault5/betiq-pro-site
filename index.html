@@ -308,7 +308,32 @@ body:before{opacity:.14!important;pointer-events:none!important}
 #boardRows .bet-name .bet-prop-stack{display:flex!important;flex-direction:column!important;gap:8px!important;margin-top:10px!important;visibility:visible!important;opacity:1!important;min-height:20px!important}
 #boardRows .bet-name .bet-prop{display:block!important;padding:8px!important;border:1px solid #2a6d58!important;background:#071f27!important;border-radius:7px!important}
 #boardRows .bet-name .bet-prop-track{display:block!important;height:8px!important;background:#24404a!important;border-radius:8px!important;overflow:hidden!important}
-</style><meta name="betiq-build" content="7cc557f-design-update"/></head><body>
+</style><meta name="betiq-build" content="7cc557f-design-update"/><style id="betiq-colors-live-record">
+#dashboard .kpis .kpi:nth-child(1){--accent:#48c6f0;background:linear-gradient(130deg,#0b253c,#071827)!important;border-color:#27759d!important}
+#dashboard .kpis .kpi:nth-child(2){--accent:#b59aff;background:linear-gradient(130deg,#221b40,#0e142b)!important;border-color:#7255ae!important}
+#dashboard .kpis .kpi:nth-child(3){--accent:#4ce1ad;background:linear-gradient(130deg,#092e30,#071c25)!important;border-color:#288d78!important}
+#dashboard .kpis .kpi:nth-child(4){--accent:#f4bf65;background:linear-gradient(130deg,#30261a,#171b28)!important;border-color:#9b7842!important}
+#dashboard .kpis .kpi .kpi-val,#dashboard .kpis .kpi .kpi-val.green,#dashboard .kpis .kpi .kpi-icon{color:var(--accent)!important;text-shadow:none!important}
+#dashboard .status-grid .status-tile:nth-child(1){--accent:#48c6f0;background:linear-gradient(140deg,#0a253a,#071b2a)!important;border-color:#287ca0!important}
+#dashboard .status-grid .status-tile:nth-child(2){--accent:#f4bf65;background:linear-gradient(140deg,#312515,#191d2a)!important;border-color:#987342!important}
+#dashboard .status-grid .status-tile:nth-child(3){--accent:#4ce1ad;background:linear-gradient(140deg,#0b302b,#0b1c25)!important;border-color:#298d71!important}
+#dashboard .status-grid .status-tile:nth-child(4){--accent:#fa8096;background:linear-gradient(140deg,#341b2d,#1c1728)!important;border-color:#a54c6a!important}
+#dashboard .status-grid .status-tile:nth-child(5){--accent:#b59aff;background:linear-gradient(140deg,#241d41,#11172a)!important;border-color:#7759b4!important}
+#dashboard .status-grid .status-tile:nth-child(6){--accent:#46d6cb;background:linear-gradient(140deg,#0b3136,#0c1a28)!important;border-color:#258b8e!important}
+#dashboard .status-grid .status-tile:nth-child(7){--accent:#f3a76f;background:linear-gradient(140deg,#35231f,#1a1927)!important;border-color:#a16d4c!important}
+#dashboard .status-grid .status-tile strong,#dashboard .status-grid .status-tile .tileicon{color:var(--accent)!important;text-shadow:none!important}
+#dashboard .status-grid .status-tile label{color:#c4d7e7!important}
+.live-record-hero{padding:22px;border:1px solid #267c91;border-radius:16px;background:linear-gradient(115deg,#0b2b3d,#12192d);margin-bottom:16px;box-shadow:0 10px 30px #0004}
+.live-record-eyebrow{font-size:11px;letter-spacing:1.8px;color:#8bdedc;font-weight:800}
+.live-record-score{font-size:clamp(38px,7vw,60px);font-weight:900;letter-spacing:-2px;color:#f0f8ff;margin:9px 0 4px}
+.live-record-caption{font-size:12px;color:#a8c8d9}
+.live-record-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0 22px}
+.live-stat{min-width:0;border:1px solid #34506a;background:#101d31;border-radius:12px;padding:14px}
+.live-stat span{display:block;font-size:11px;color:#aac4d7;margin-bottom:7px}
+.live-stat strong{font-size:clamp(16px,2vw,24px);overflow-wrap:anywhere}
+.live-stat-blue strong{color:#48c6f0}.live-stat-green strong{color:#4ce1ad}.live-stat-violet strong{color:#b59aff}.live-stat-gold strong{color:#f4bf65}
+@media(max-width:600px){.live-record-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.live-record-hero{padding:17px}}
+</style></head><body>
 <div class="app"><main class="main"><div class="command-topbar" role="banner" aria-label="Bet Lab System command header"><div class="command-topbar__brand"><span class="command-topbar__mark" aria-hidden="true">♛</span><div><div class="command-topbar__title">BET LAB SYSTEM</div><div class="command-topbar__subtitle">SPORTS BETTING COMMAND CENTER</div></div></div><div class="command-topbar__status"><span class="command-topbar__light"></span>SYSTEM READY</div></div><header aria-label="BetLab Pro — Sports Betting Analytics" class="hero"><div class="header-topline"><span class="orbit-dot"></span> BETLAB PRO <span class="header-separator">/</span> GALAXY COMMAND CENTER</div><div class="system-brand" aria-label="Bet Lab System"><span class="system-brand__star">✦</span><span class="system-brand__label">BET LAB <em>SYSTEM</em></span><span class="system-brand__star">✦</span></div><button aria-label="Notifications" class="notify">♢</button><button class="profile-btn" data-open-profile="" type="button">◉ Quis Money ▾</button><div class="profile-panel" id="profilePanel">Quis Money<small>Local dashboard preview</small></div></header><nav class="nav" id="nav"></nav>
 <section class="content-page active" id="dashboard"><div class="kpis">
 <div class="kpi"><div class="kpi-icon">◎</div><div><div class="kpi-label">Win Rate</div><div class="kpi-val" id="kpiWinRate">0.0%</div><div class="small" id="kpiWinNote">No settled bets yet</div></div></div>
@@ -328,9 +353,9 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <div class="share-import-row"><input id="betShareUrl" type="url" placeholder="Paste a bet share link (https://…)" aria-label="Bet share link"><button class="primary" type="button" id="readShareLink">Read link</button></div>
 <p class="notice" id="shareStatus" role="status"></p>
 </div><div class="notice" id="slipStatus" role="status"></div><div id="slipPreview"></div><div id="slipReview"></div></section><form id="betForm"><div class="fields"><label>Game / Matchup<input id="game" placeholder="Ravens @ Bills" required=""/></label><label>Player / Selection<input id="selection" placeholder="Derrick Henry over 79.5 yards" required=""/></label><label>Odds (American)<input id="odds" placeholder="-110" required="" type="number"/></label><label>Stake ($)<input id="stake" min="0.01" placeholder="10" required="" step="0.01" type="number"/></label><label>Sportsbook<select id="book"><option>DraftKings</option><option>Novig</option><option>FanDuel</option><option>Kalshi</option><option>Polymarket</option><option>Other</option></select></label><label>Sport<select id="sport"><option>NFL</option><option>NBA</option><option>NCAAF</option><option>MLB</option><option>Other</option></select></label><label>Status<select id="status"><option>Open</option><option>Won</option><option>Lost</option><option>Void</option></select></label></div><p><button class="primary" type="submit">Save Bet</button></p></form><div class="saved" id="saved"></div><button id="resetAllBets" type="button" class="reset-bets">Clear all saved bets</button></div><section id="liveRecordPage" hidden style="padding:16px 0">
-<h3 style="color:#73ffb0;text-shadow:0 0 10px #1dfc82">🔴 LIVE BETTING RECORD</h3>
+<div id="liveRecordHero" class="live-record-hero"><div class="live-record-eyebrow">🔴 LIVE BETTING · PERSONAL RECORD</div><div class="live-record-score" id="liveRecordScore">0 <span>W</span> – 0 <span>L</span></div><div class="live-record-caption" id="liveRecordCaption">Your live betting results</div></div><h3 style="color:#73ffb0;text-shadow:0 0 10px #1dfc82">LIVE BETTING TICKETS</h3>
 <p class="notice">Your in-game bets are tracked separately here. Results update immediately when you mark a ticket Winner or Loser. Overall dashboard totals include these bets.</p>
-<div id="liveRecordStats" class="panel" style="padding:16px;margin:14px 0;border:1px solid #37ff9b"></div>
+<div id="liveRecordStats" class="live-record-stats"></div>
 <div id="liveRecordTickets" style="display:grid;gap:10px"></div>
 </section><section id="analyticsPage" hidden style="padding:16px 0">
 <h3 style="color:#72ffb1;margin:0 0 8px">▥ BETTING ANALYTICS</h3>
@@ -609,7 +634,12 @@ function renderLiveRecord(){
  const wins=live.filter(b=>b.status==='Won'),losses=live.filter(b=>b.status==='Lost'),open=live.filter(b=>b.status==='Open');
  const risk=[...wins,...losses].reduce((n,b)=>n+(Number(b.stake)||0),0);
  const net=wins.reduce((n,b)=>n+payoutFor(b)-(Number(b.stake)||0),0)-losses.reduce((n,b)=>n+(Number(b.stake)||0),0);
- stats.textContent='Record: '+wins.length+' W – '+losses.length+' L  |  Pending: '+open.length+'  |  Win rate: '+(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%  |  Net P/L: '+(net<0?'-':'')+money(Math.abs(net))+'  |  ROI: '+(risk?(100*net/risk).toFixed(1):'0.0')+'%';
+ const score=node('liveRecordScore'),caption=node('liveRecordCaption');
+ if(score)score.textContent=wins.length+' W – '+losses.length+' L';
+ if(caption)caption.textContent=(wins.length+losses.length)+' settled live bets · '+open.length+' pending';
+ stats.replaceChildren();
+ for(const [label,value,cls] of [['Win rate',(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%','live-stat-blue'],['Net P/L',(net<0?'-':'')+money(Math.abs(net)),'live-stat-green'],['ROI',(risk?(100*net/risk).toFixed(1):'0.0')+'%','live-stat-violet'],['Pending',String(open.length),'live-stat-gold']]){const tile=document.createElement('div');tile.className='live-stat '+cls;const title=document.createElement('span');title.textContent=label;const val=document.createElement('strong');val.textContent=value;tile.append(title,val);stats.append(tile)}
+
  if(!live.length){const p=document.createElement('p');p.className='notice';p.textContent='No live bets recorded yet. The screenshots you send next can be entered here as live bets.';list.append(p);return;}
  for(const b of live.slice().reverse()){
   const card=document.createElement('div');card.className='panel';card.style.cssText='padding:15px;border:1px solid #3dd6bd;border-radius:12px;background:linear-gradient(115deg,#061b30,#180d36)';
