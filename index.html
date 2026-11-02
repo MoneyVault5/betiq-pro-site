@@ -353,7 +353,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <nav aria-label="Mobile navigation" class="mobile-nav" id="mobileNav"></nav></main></div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script>
-const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Record'],['⇧','Slip Importer'],['▥','Analytics']];
+const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Record'],['▥','Analytics'],['⇧','Slip Importer']];
 const nav=document.getElementById('nav'),mobile=document.getElementById('mobileNav');
 for(const [ico,name] of items){
  const b=document.createElement('button');b.innerHTML=`<span class="ico">${ico}</span>${name}`;b.dataset.go=name;
@@ -541,7 +541,7 @@ function renderDashboard(){
  renderBoard();
 }
 function renderAnalyticsCharts(){
- if(typeof Chart==='undefined')return;
+ if(typeof Chart==='undefined'){for(const id of ['analyticsTrendCanvas','analyticsBookCanvas','analyticsOutcomeCanvas']){const canvas=node(id);if(canvas){canvas.hidden=true;if(!canvas.nextElementSibling||!canvas.nextElementSibling.classList.contains('chartFallback')){const p=document.createElement('p');p.className='chartFallback';p.style.color='#9fffee';p.textContent='Chart library did not load. The analytics totals below remain available.';canvas.after(p)}}}return;}
  const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost').sort((a,b)=>String(a.placedAt||'').localeCompare(String(b.placedAt||'')));
  const pl=b=>b.status==='Won'?payoutFor(b)-Number(b.stake||0):-Number(b.stake||0);
  const neon=['#00e5ff','#a85cff','#39ffa5','#ff48c4','#ffcb39'];
