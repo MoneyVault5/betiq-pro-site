@@ -346,12 +346,12 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <p class="notice">Calculated from your saved tickets and your manual Winner / Loser selections. Shared wagers use your portion of the stake and payout.</p>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0"><button type="button" id="analyticsRefresh" class="primary">↻ Refresh Analytics</button><span id="analyticsDataStatus" style="color:#b9d8ef;font-size:12px">Loading saved tickets…</span></div>
 <div id="analyticsMetrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:14px 0"></div>
-<div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
+<style>.analyticsCharts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0}.analyticsChart{min-width:0;padding:15px;border:1px solid #00e5ff;border-radius:12px;background:linear-gradient(130deg,#071a31,#170d37);box-shadow:0 0 18px #00e5ff33}.analyticsChart h3{color:#8effdf;text-shadow:0 0 8px #00e5ff}.analyticsChart.wide{grid-column:span 2}@media(max-width:650px){.analyticsCharts{grid-template-columns:1fr}.analyticsChart.wide{grid-column:auto}}</style><div class="analyticsCharts"><div class="analyticsChart wide"><h3>⚡ Profit Trend</h3><canvas id="analyticsTrendCanvas" height="180"></canvas></div><div class="analyticsChart"><h3>◈ Sportsbook P/L</h3><canvas id="analyticsBookCanvas" height="220"></canvas></div><div class="analyticsChart"><h3>◎ Ticket Outcomes</h3><canvas id="analyticsOutcomeCanvas" height="220"></canvas></div></div><div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Pregame vs. Live</h3><div id="analyticsTypes"></div></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Recent settled bets</h3><div id="analyticsRecent"></div></div>
 </section><div hidden="" id="other"><p class="notice">This section is not connected to outside accounts. Your imported and manually entered bets are recorded locally in Bet Tracker; updates to results must be entered manually.</p><button class="primary" data-go="Bet Tracker">Open Bet Tracker</button></div></div></section>
 <nav aria-label="Mobile navigation" class="mobile-nav" id="mobileNav"></nav></main></div>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script>
 const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Record'],['⇧','Slip Importer'],['▥','Analytics']];
 const nav=document.getElementById('nav'),mobile=document.getElementById('mobileNav');
@@ -540,10 +540,24 @@ function renderDashboard(){
  node('performanceNote').textContent=resultList.length?'Last '+resultList.length+' settled tickets · win/loss profit':'No settled bets yet';
  renderBoard();
 }
+function renderAnalyticsCharts(){
+ if(typeof Chart==='undefined')return;
+ const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost').sort((a,b)=>String(a.placedAt||'').localeCompare(String(b.placedAt||'')));
+ const pl=b=>b.status==='Won'?payoutFor(b)-Number(b.stake||0):-Number(b.stake||0);
+ const neon=['#00e5ff','#a85cff','#39ffa5','#ff48c4','#ffcb39'];
+ Chart.defaults.color='#b9d6ed';
+ const draw=(id,type,data,options)=>{const el=node(id);if(!el)return;if(el._chart)el._chart.destroy();el._chart=new Chart(el,{type,data,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{labels:{color:'#d7eeff'}}},...options}})};
+ let total=0;
+ draw('analyticsTrendCanvas','line',{labels:['Start',...settled.map((b,i)=>String(i+1))],datasets:[{label:'Cumulative net P/L ($) · placement order',data:[0,...settled.map(b=>(total+=pl(b)))],borderColor:'#00e5ff',backgroundColor:'#00e5ff22',fill:true,tension:.3,pointBackgroundColor:'#39ffa5',borderWidth:3}]},{scales:{x:{ticks:{color:'#b9d6ed'}},y:{ticks:{color:'#b9d6ed'}}}});
+ const books=new Map();for(const b of settled){const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
+ draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L ($)',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?'#39ffa5':'#ff48c4'),borderRadius:6}]},{indexAxis:'y',scales:{x:{ticks:{color:'#b9d6ed'}},y:{ticks:{color:'#b9d6ed'}}}});
+ draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:['#39ffa5','#ff48c4','#00e5ff','#ffcb39'],borderColor:'#071a31',borderWidth:3}]},{cutout:'67%'});
+}
 function renderAnalytics(){
  const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
  if(!metrics||!books||!types||!recent)return;
  const indicator=node('analyticsDataStatus');if(indicator)indicator.textContent=bets.length+' saved tickets in this browser · Updated '+new Date().toLocaleTimeString();
+ renderAnalyticsCharts();
  const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
  const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
  const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
