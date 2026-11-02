@@ -381,6 +381,20 @@ body:before{opacity:.14!important;pointer-events:none!important}
 #dashboard .board-title{text-align:center!important;color:#3af4ff!important;text-shadow:0 0 15px #00dfff99!important;font-size:clamp(20px,2.5vw,27px)!important;letter-spacing:2px!important}
 #dashboard #todayBoard .sports{display:flex!important;justify-content:center!important;width:100%!important;margin:10px auto 16px!important}
 #dashboard #todayBoard .sports button{width:100%!important;text-align:center!important;font-size:clamp(18px,2.5vw,24px)!important;font-weight:900!important;letter-spacing:2px!important;background:linear-gradient(100deg,#083b64,#086078,#083b64)!important;color:#f1ffff!important;border:1.5px solid #27eaff!important;box-shadow:0 0 19px #00dfff66,inset 0 0 15px #08c8ff29!important;border-radius:12px!important;padding:13px!important}
+</style><style id="betlab-record-charts-v2">
+#dashboard .record-breakdown-item.overall .record-wins{color:#32ff70!important;text-shadow:0 0 14px #00ff76b0!important}
+#dashboard .record-breakdown-item.overall .record-losses{color:#f56b76!important;text-shadow:0 0 8px #e94e6655!important}
+#dashboard .record-breakdown-item.live .record-wins{color:#ff9c22!important;text-shadow:0 0 17px #ff8500bd!important}
+#dashboard .record-breakdown-item.live .record-losses{color:#ff6239!important;text-shadow:0 0 9px #ed4c24a0!important}
+#dashboard .record-breakdown-item.pregame .record-wins{color:#ffeb38!important;text-shadow:0 0 18px #ffcb00b8!important}
+#dashboard .record-breakdown-item.pregame .record-losses{color:#dc9b24!important;text-shadow:0 0 8px #d68d1c6b!important}
+#dashboard #todayBoard .board-title{color:#b2ffbf!important;text-align:center!important;letter-spacing:2.5px!important;text-shadow:0 0 12px #23ff68,0 0 25px #0eff6699!important}
+#dashboard #todayBoard .sports{display:flex!important;justify-content:center!important}
+#dashboard #todayBoard .sports button[data-sport="NFL"]{width:100%!important;text-align:center!important;color:#f2ffff!important;background:linear-gradient(100deg,#025b87,#038dad,#025b87)!important;border-color:#51f5ff!important;box-shadow:0 0 20px #00efff80,inset 0 0 16px #00e0ff52!important}
+#analyticsPage .analyticsChart.analyticsLiveTrend{border-color:#ff923a!important;box-shadow:0 0 18px #ff812a35,inset 0 0 22px #ff812a0d!important}
+#analyticsPage .analyticsChart.analyticsPregameTrend{border-color:#ffc832!important;box-shadow:0 0 18px #ffcd3237,inset 0 0 22px #ffc8320c!important}
+#analyticsPage .analyticsLiveTrend h3{color:#ffae55!important;text-shadow:0 0 13px #ff87116c}
+#analyticsPage .analyticsPregameTrend h3{color:#ffdf70!important;text-shadow:0 0 13px #ffba1780}
 </style></head><body>
 <div class="app"><main class="main"><div class="command-topbar" role="banner" aria-label="Bet Lab System command header"><div class="command-topbar__brand"><span class="command-topbar__mark" aria-hidden="true">♛</span><div><div class="command-topbar__title">BET LAB SYSTEM</div><div class="command-topbar__subtitle">SPORTS BETTING COMMAND CENTER</div></div></div><div class="command-topbar__status"><span class="command-topbar__light"></span>SYSTEM READY</div></div><header aria-label="BetLab Pro — Sports Betting Analytics" class="hero"><div class="header-topline"><span class="orbit-dot"></span> BETLAB PRO <span class="header-separator">/</span> GALAXY COMMAND CENTER</div><div class="system-brand" aria-label="Bet Lab System"><span class="system-brand__star">✦</span><span class="system-brand__label">BET LAB <em>SYSTEM</em></span><span class="system-brand__star">✦</span></div><button aria-label="Notifications" class="notify">♢</button><button class="profile-btn" data-open-profile="" type="button">◉ Quis Money ▾</button><div class="profile-panel" id="profilePanel">Quis Money<small>Local dashboard preview</small></div></header><nav class="nav" id="nav"></nav>
 <section class="content-page active" id="dashboard"><div class="kpis">
@@ -433,7 +447,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 #analyticsPage .analyticsChart canvas{display:block!important;position:relative!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;box-sizing:border-box!important}
 #analyticsPage .analyticsComparisonSummary{overflow-wrap:anywhere}
 @media(max-width:720px){#analyticsPage .analyticsCharts{grid-template-columns:minmax(0,1fr)!important}#analyticsPage .analyticsChart.wide,#analyticsPage .analyticsCompare{grid-column:1!important}#analyticsPage .analyticsCanvasTrend{height:180px!important;max-height:180px!important}#analyticsPage .analyticsCanvasStandard{height:175px!important;max-height:175px!important}#analyticsPage .analyticsCanvasCompact{height:130px!important;max-height:130px!important}}
-</style><div class="analyticsCharts"><div class="analyticsChart wide analyticsTrend"><div class="analyticsHeader"><div><span class="analyticsEyebrow">PERFORMANCE OVER TIME</span><h3>Net Profit Trend</h3></div><span class="analyticsChartTag">SETTLED BETS</span></div><div id="analyticsTrendHeadline" class="analyticsTrendHeadline"></div><div class="analyticsCanvasTrend"><canvas id="analyticsTrendCanvas"></canvas></div><p class="analyticsFootnote">Cumulative P/L in ticket placement order · Hover for details</p></div><div class="analyticsChart"><h3>◈ Sportsbook P/L</h3><div class="analyticsCanvasStandard"><canvas id="analyticsBookCanvas"></canvas></div></div><div class="analyticsChart"><h3>◎ Ticket Outcomes</h3><div class="analyticsCanvasStandard"><canvas id="analyticsOutcomeCanvas"></canvas></div></div><div class="analyticsChart analyticsCompare"><h3>LIVE VS PREGAME</h3><p class="analyticsEyebrow">NET PROFIT / LOSS · SETTLED ONLY</p><div class="analyticsCanvasCompact"><canvas id="analyticsLiveVsPregame"></canvas></div><div id="analyticsLiveVsPregameSummary" class="analyticsComparisonSummary"></div></div></div><div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
+</style><div class="analyticsCharts"><div class="analyticsChart wide analyticsTrend"><div class="analyticsHeader"><div><span class="analyticsEyebrow">PERFORMANCE OVER TIME</span><h3>Net Profit Trend</h3></div><span class="analyticsChartTag">SETTLED BETS</span></div><div id="analyticsTrendHeadline" class="analyticsTrendHeadline"></div><div class="analyticsCanvasTrend"><canvas id="analyticsTrendCanvas"></canvas></div><p class="analyticsFootnote">Cumulative P/L in ticket placement order · Hover for details</p></div><div class="analyticsChart wide analyticsTrend analyticsLiveTrend"><div class="analyticsHeader"><div><span class="analyticsEyebrow">LIVE PERFORMANCE</span><h3>⚡ Live Profit Trend</h3></div><span class="analyticsChartTag">LIVE · SETTLED</span></div><div id="analyticsLiveTrendHeadline" class="analyticsTrendHeadline"></div><div class="analyticsCanvasTrend"><canvas id="analyticsLiveTrendCanvas"></canvas></div><p class="analyticsFootnote">Cumulative live-bet net profit · Settled live slips only</p></div><div class="analyticsChart wide analyticsTrend analyticsPregameTrend"><div class="analyticsHeader"><div><span class="analyticsEyebrow">PREGAME PERFORMANCE</span><h3>✦ Pregame Slips Trend</h3></div><span class="analyticsChartTag">PREGAME · SETTLED</span></div><div id="analyticsPregameTrendHeadline" class="analyticsTrendHeadline"></div><div class="analyticsCanvasTrend"><canvas id="analyticsPregameTrendCanvas"></canvas></div><p class="analyticsFootnote">Cumulative pregame net profit · Settled pregame slips only</p></div><div class="analyticsChart"><h3>◈ Sportsbook P/L</h3><div class="analyticsCanvasStandard"><canvas id="analyticsBookCanvas"></canvas></div></div><div class="analyticsChart"><h3>◎ Ticket Outcomes</h3><div class="analyticsCanvasStandard"><canvas id="analyticsOutcomeCanvas"></canvas></div></div><div class="analyticsChart analyticsCompare"><h3>LIVE VS PREGAME</h3><p class="analyticsEyebrow">NET PROFIT / LOSS · SETTLED ONLY</p><div class="analyticsCanvasCompact"><canvas id="analyticsLiveVsPregame"></canvas></div><div id="analyticsLiveVsPregameSummary" class="analyticsComparisonSummary"></div></div></div><div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Pregame vs. Live</h3><div id="analyticsTypes"></div></div>
 <div class="panel" style="padding:15px;margin:12px 0"><h3>Recent settled bets</h3><div id="analyticsRecent"></div></div>
 </section><div hidden="" id="other"><p class="notice">This section is not connected to outside accounts. Your imported and manually entered bets are recorded locally in Bet Tracker; updates to results must be entered manually.</p><button class="primary" data-go="Bet Tracker">Open Bet Tracker</button></div></div></section>
@@ -636,7 +650,7 @@ function renderDashboard(){
  renderBoard();
 }
 function renderAnalyticsCharts(){
- const ids=['analyticsTrendCanvas','analyticsBookCanvas','analyticsOutcomeCanvas','analyticsLiveVsPregame'];
+ const ids=['analyticsTrendCanvas','analyticsLiveTrendCanvas','analyticsPregameTrendCanvas','analyticsBookCanvas','analyticsOutcomeCanvas','analyticsLiveVsPregame'];
  if(typeof Chart==='undefined'){for(const id of ids){const el=node(id);if(el){el.hidden=true;if(!el.nextElementSibling||!el.nextElementSibling.classList.contains('chartFallback')){const p=document.createElement('p');p.className='chartFallback';p.textContent='Charts unavailable: chart library did not load.';el.after(p)}}}return}
  const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost').sort((a,b)=>String(a.placedAt||'').localeCompare(String(b.placedAt||'')));
  const pl=b=>b.status==='Won'?payoutFor(b)-Number(b.stake||0):-Number(b.stake||0);
@@ -649,6 +663,887 @@ function renderAnalyticsCharts(){
  const headline=node('analyticsTrendHeadline');if(headline){headline.textContent=(total<0?'−':'')+'$'+Math.abs(total).toFixed(2);headline.style.color=total<0?palette.rose:palette.teal}
  const ctx=node('analyticsTrendCanvas')?.getContext('2d');let fill='rgba(67,217,197,.10)';if(ctx){const g=ctx.createLinearGradient(0,0,0,230);g.addColorStop(0,'rgba(67,217,197,.25)');g.addColorStop(1,'rgba(67,217,197,0)');fill=g}
  draw('analyticsTrendCanvas','line',{labels:['Start',...settled.map((b,i)=>'Bet '+(i+1))],datasets:[{label:'Cumulative net P/L',data:cumulative,borderColor:palette.teal,backgroundColor:fill,fill:true,tension:.32,pointRadius:settled.length>20?0:3,pointHoverRadius:5,pointBackgroundColor:palette.teal,pointBorderColor:'#102234',pointBorderWidth:2,borderWidth:2.5}]},{interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: $'+Number(c.parsed.y).toFixed(2)}}},scales:{x:{...axis,grid:{display:false},ticks:{color:'#8ca9bf',maxTicksLimit:7}},y:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}}}});
+ const trendFor=(id,headlineId,subset,color,glow)=>{let running=0;const values=[0,...subset.map(b=>(running+=pl(b)))];const head=node(headlineId);if(head){head.textContent=(running<0?'−':'')+'{const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
+ draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?palette.teal:palette.rose),borderRadius:5,maxBarThickness:25}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:[palette.teal,palette.rose,palette.blue,palette.gold],borderColor:'#0c1b2d',borderWidth:3,hoverOffset:5}]},{cutout:'74%',plugins:{legend:{position:'bottom',labels:{color:'#adc7da',usePointStyle:true,boxWidth:8,padding:12}}}});
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live'),pregame=bets.filter(b=>b.liveBet!==true&&b.betType!=='live');
+ const done=arr=>arr.filter(b=>b.status==='Won'||b.status==='Lost'),net=arr=>done(arr).reduce((n,b)=>n+pl(b),0);
+ const rate=arr=>done(arr).length?(100*done(arr).filter(b=>b.status==='Won').length/done(arr).length).toFixed(1)+'%':'—';
+ draw('analyticsLiveVsPregame','bar',{labels:['Live betting','Pregame'],datasets:[{label:'Net profit / loss ($)',data:[net(live),net(pregame)],backgroundColor:[palette.teal,palette.violet],borderRadius:7,maxBarThickness:42}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: $'+Number(c.parsed.x).toFixed(2)}}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ const summary=node('analyticsLiveVsPregameSummary');if(summary)summary.textContent='LIVE · '+live.length+' tickets / '+done(live).length+' settled / '+rate(live)+' win rate   |   PREGAME · '+pregame.length+' tickets / '+done(pregame).length+' settled / '+rate(pregame)+' win rate. Pending excluded from profit.';
+}
+function renderAnalytics(){
+ const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
+ if(!metrics||!books||!types||!recent)return;
+ const indicator=node('analyticsDataStatus');if(indicator)indicator.textContent=bets.length+' saved tickets in this browser · Updated '+new Date().toLocaleTimeString();
+ renderAnalyticsCharts();
+ const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
+ const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
+ const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const profitOf=arr=>arr.reduce((n,b)=>n+(b.status==='Won'?payoutFor(b)-(Number(b.stake)||0):b.status==='Lost'?-(Number(b.stake)||0):0),0);
+ const rate=arr=>{const w=arr.filter(b=>b.status==='Won').length;return arr.length?(100*w/arr.length).toFixed(1)+'%':'—'};
+ const make=(label,value)=>{const div=document.createElement('div');div.style.cssText='padding:14px;border:1px solid #2d8e9d;border-radius:10px;background:#0b2036';const a=document.createElement('div');a.style.cssText='font-size:12px;color:#a5c5d5';a.textContent=label;const v=document.createElement('div');v.style.cssText='font-size:23px;font-weight:800;margin-top:5px';v.textContent=value;div.append(a,v);return div};
+ metrics.replaceChildren(
+ make('Total tickets',String(bets.length)),make('Pending',String(bets.filter(b=>b.status==='Open').length)),
+ make('Win / Loss',won.length+' / '+lost.length),make('Win rate',rate(settled)),
+ make('Net profit',absMoney(profitOf(settled))),make('ROI',stakeOf(settled)?(100*profitOf(settled)/stakeOf(settled)).toFixed(1)+'%':'—'),
+ make('Total staked',money(stakeOf(bets.filter(b=>b.status!=='Void')))),make('Settled stake',money(stakeOf(settled)))
+ );
+ const renderGroups=(root,groups)=>{root.replaceChildren();for(const [name,arr] of groups){const done=arr.filter(b=>b.status==='Won'||b.status==='Lost');const row=document.createElement('div');row.style.cssText='padding:11px 2px;border-bottom:1px solid #244359;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap';const title=document.createElement('strong');title.textContent=name+' · '+arr.length+' bets';const stat=document.createElement('span');stat.textContent=done.length+' settled · '+rate(done)+' win · '+absMoney(profitOf(done));row.append(title,stat);root.append(row)}if(!groups.length)root.textContent='No tickets yet.'};
+ const byBook=new Map();for(const b of bets){const k=b.book||'Other';if(!byBook.has(k))byBook.set(k,[]);byBook.get(k).push(b)}renderGroups(books,[...byBook]);
+ renderGroups(types,[['Live',bets.filter(b=>b.liveBet===true||b.betType==='live')],['Pregame / regular',bets.filter(b=>b.liveBet!==true&&b.betType!=='live')]]);
+ recent.replaceChildren();if(!settled.length){recent.textContent='No settled bets yet. Mark a ticket Winner or Loser to start tracking results.'}else for(const b of settled.slice().reverse().slice(0,12)){const row=document.createElement('div');row.style.cssText='padding:10px 2px;border-bottom:1px solid #244359';row.textContent=(b.status==='Won'?'✓ ':'✕ ')+(b.selection||b.game||'Ticket')+' · '+(b.book||'Other')+' · '+absMoney(profitOf([b]));recent.append(row)}
+}
+function renderLiveRecord(){
+ const stats=node('liveRecordStats'),list=node('liveRecordTickets');
+ if(!stats||!list)return;
+ list.replaceChildren();
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live');
+ const wins=live.filter(b=>b.status==='Won'),losses=live.filter(b=>b.status==='Lost'),open=live.filter(b=>b.status==='Open');
+ const risk=[...wins,...losses].reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const net=wins.reduce((n,b)=>n+payoutFor(b)-(Number(b.stake)||0),0)-losses.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const score=node('liveRecordScore'),caption=node('liveRecordCaption');
+ if(score)score.textContent=wins.length+' W – '+losses.length+' L';
+ if(caption)caption.textContent=(wins.length+losses.length)+' settled live bets · '+open.length+' pending';
+ stats.replaceChildren();
+ for(const [label,value,cls] of [['Win rate',(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%','live-stat-blue'],['Net P/L',(net<0?'-':'')+money(Math.abs(net)),'live-stat-green'],['ROI',(risk?(100*net/risk).toFixed(1):'0.0')+'%','live-stat-violet'],['Pending',String(open.length),'live-stat-gold']]){const tile=document.createElement('div');tile.className='live-stat '+cls;const title=document.createElement('span');title.textContent=label;const val=document.createElement('strong');val.textContent=value;tile.append(title,val);stats.append(tile)}
+
+ if(!live.length){const p=document.createElement('p');p.className='notice';p.textContent='No live bets recorded yet. The screenshots you send next can be entered here as live bets.';list.append(p);return;}
+ for(const b of live.slice().reverse()){
+  const card=document.createElement('div');card.className='panel';card.style.cssText='padding:15px;border:1px solid #3dd6bd;border-radius:12px;background:linear-gradient(115deg,#061b30,#180d36)';
+  const title=document.createElement('strong');title.textContent=(b.book||'Sportsbook')+' · '+(b.game||'Live game');
+  const desc=document.createElement('p');desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const moneyline=document.createElement('div');moneyline.textContent='Stake '+money(b.stake)+' · Potential payout '+money(payoutFor(b))+' · '+b.status;
+  card.append(title,desc,moneyline);
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:9px;flex-wrap:wrap;margin-top:12px';
+  for(const [label,status,color] of [['✓ Winner','Won','#3dff93'],['✕ Loser','Lost','#ff6c87'],['↶ Pending','Open','#78baff']]){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.disabled=b.status===status;btn.style.cssText='padding:9px 14px;border-radius:8px;border:1px solid '+color+';background:#09162d;color:white;cursor:pointer';
+   btn.addEventListener('click',()=>{const prior=b.status;b.status=status;if(!persist()){b.status=prior;return;}renderBets();});
+   actions.append(btn);
+  }
+  card.append(actions);list.append(card);
+ }
+}
+function renderBets(){
+ const el=node('saved');el.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent=`Your Saved Bets (${bets.length})`;el.append(heading);
+ if(!bets.length){const p=document.createElement('p');p.className='notice';p.textContent='No tickets saved. Upload a screenshot, paste a share link, or add a bet manually to begin.';el.append(p)}
+ bets.slice().reverse().forEach(b=>{
+  const row=document.createElement('div');row.className='saved-ticket';
+  const info=document.createElement('div');info.className='saved-ticket-info';
+  const first=document.createElement('strong');first.textContent=`${b.legs?.length>1?b.legs.length+'-Leg Parlay · ':''}${b.game||'Matchup unknown'} · ${b.book||'Other'}`;
+  const desc=document.createElement('div');desc.className='saved-ticket-selection';desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const summary=document.createElement('div');summary.className='saved-ticket-summary';summary.textContent=`Stake ${money(b.stake)} · Potential payout ${payoutFor(b)?money(payoutFor(b)):'Not entered'} · Odds ${ticketOdds(b)}`;
+  info.append(first,desc,summary);row.append(info);
+  const controls=document.createElement('div');controls.className='saved-ticket-actions';
+  const statusLabel=document.createElement('label');statusLabel.textContent='Result ';statusLabel.className='saved-ticket-status';
+  const select=document.createElement('select');select.setAttribute('aria-label','Ticket result');
+  for(const value of ['Open','Won','Lost','Void']){const o=document.createElement('option');o.value=value;o.textContent=value;if(value===b.status)o.selected=true;select.append(o)}
+  select.addEventListener('change',()=>{const old=b.status;b.status=select.value;if(!persist()){b.status=old;select.value=old;return}renderBets()});
+  statusLabel.append(select);controls.append(statusLabel);
+  const del=document.createElement('button');del.type='button';del.className='ticket-delete';del.textContent='Delete';del.title='Delete this saved ticket';
+  del.onclick=()=>{if(!confirm('Delete this ticket?'))return;const index=bets.findIndex(x=>x===b);bets.splice(index,1);if(!persist())bets.splice(index,0,b);renderBets()};
+  controls.append(del);row.append(controls);el.append(row);
+ });
+ node('resetAllBets').hidden=!bets.length;
+ renderDashboard();
+ renderLiveRecord();
+ renderAnalytics();
+}
+node('betForm').addEventListener('submit',e=>{
+ e.preventDefault();const form=e.currentTarget;
+ const val=id=>node(id).value.trim();
+ const b={game:val('game'),selection:val('selection'),odds:Number(val('odds')),stake:Number(val('stake')),book:val('book'),sport:val('sport'),status:val('status'),source:'Manual entry'};
+ if(!b.game||!b.selection||!Number.isFinite(b.stake)||b.stake<=0)return;
+ if(saveBet(b))form.reset();
+});
+node('resetAllBets').addEventListener('click',()=>{
+ if(!bets.length)return;
+ if(!confirm('Permanently delete ALL '+bets.length+' saved tickets from this browser? This cannot be undone.'))return;
+ const previous=bets;bets=[];if(!persist())bets=previous;renderBets();
+});
+renderBets();
+const fileInput=document.getElementById('slipFile'),slipStatus=document.getElementById('slipStatus'),slipPreview=document.getElementById('slipPreview'),slipReview=document.getElementById('slipReview');
+const escapeHTML=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function extractSlip(raw,filename){
+ const lines=raw.split(/\n/).map(x=>x.trim()).filter(Boolean);
+ const flat=raw.replace(/\s+/g,' ');
+ const book=/novig/i.test(raw)?'Novig':/draftkings|draft kings/i.test(raw)?'DraftKings':/fanduel/i.test(raw)?'FanDuel':/kalshi/i.test(raw)?'Kalshi':/polymarket/i.test(raw)?'Polymarket':'Other';
+ const money=(patterns)=>{for(const pattern of patterns){const m=flat.match(pattern);if(m)return Number(m[1].replace(/,/g,''));}return 0};
+ const stake=money([/(?:wager amount|total wager|total stake|amount|cost|risk|bet amount)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i,/(?:wager|stake)\s*:?\s*\$?([\d,]+(?:\.\d{1,2})?)/i]);
+ const payout=money([/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*(?:\$[\d,.]+\s+)?\$([\d,]+(?:\.\d{1,2})?)/i,/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i]);
+ const oddsMatch=flat.match(/(?:total odds|parlay odds|odds)\s*:?\s*([+-]\d{2,5})/i)||flat.match(/\b([+-]\d{3,5})\b/);
+ const ticketMatch=flat.match(/(?:bet id|ticket id|receipt id|wager id|bet number|reference|ID)\s*[:#]?\s*([A-Za-z0-9-]{6,})/i)||flat.match(/\b(DK\d{10,})\b/i);
+ const selections=[];
+ const add=(v)=>{v=v.trim().replace(/\s{2,}/g,' ');if(v.length>5&&!selections.includes(v))selections.push(v)};
+ // DraftKings: threshold is often on the line before the player's market.
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i], next=lines[i+1]||'';
+  if(/^\d+(?:\.\d+)?\+$/.test(line)&&/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)/i.test(next)){add(next+' '+line);i++;continue}
+  if(/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)\s+\d+(?:\.\d+)?\+?$/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}:\s*(?:\d+\+|yes|over|under|anytime)/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}\s+(?:\d+\+|over|under)\s+(?:yes|touchdowns?|yards?|receptions?)/i.test(line)){add(line);continue}
+ }
+ // Novig's compact share cards list selections in one long comma-separated sentence.
+ for(const chunk of lines.filter(x=>/,\s*[A-Z]/.test(x)&&/(?:yes|yards|td|receptions)/i.test(x)).flatMap(x=>x.split(/,\s*(?=[A-Z])/))) {
+  if(/(?:\d+\+|yes|over|under)/i.test(chunk)&&!/parlay points/i.test(chunk))add(chunk);
+ }
+ // Generic OCR fallback, avoiding headers, odds, and transaction totals.
+ if(!selections.length)for(const line of lines){
+  if(/(?:over|under|anytime|touchdown|receptions?|receiving|rushing|yards?|assists?|points?|moneyline|\d+\+|to score)/i.test(line)
+   &&!/(?:potential payout|total wager|cash out|parlay points|trade credit|share|matched|bet placed|portfolio|to pay|total payout|stake|cost)/i.test(line))add(line);
+ }
+ return {book,stake,payout,odds:oddsMatch?Number(oddsMatch[1]):0,ticket:ticketMatch?.[1]||'',selections,raw,filename};
+}
+function field(id,label,value,type='text'){return `<label>${label}<input data-field="${id}" type="${type}" value="${escapeHTML(value)}"></label>`}
+function showReview(result,index){
+ const id='slip-'+index,box=document.createElement('article');box.className='slip-review-card';box.dataset.slip=id;
+ const legs=result.selections.length?result.selections:[''];
+ box.innerHTML=`<strong>${escapeHTML(result.filename)}</strong> · ${escapeHTML(result.book)}<p class="import-warning">OCR can misread player names, odds, and amounts. Verify every field against your screenshot before importing. No bet is saved automatically.</p>
+ <div class="fields">${field('game','Game (e.g. TN vs CIN)','')}${field('ticket','Ticket ID (optional)',result.ticket)}${field('stake','Total ticket stake ($)',result.stake,'number')}${field('payout','Potential total payout ($)',result.payout,'number')}${field('odds','Ticket odds (American)',result.odds,'number')}<label>Sportsbook<select data-field="book">${['DraftKings','Novig','FanDuel','Kalshi','Polymarket','Other'].map(b=>`<option ${b===result.book?'selected':''}>${b}</option>`).join('')}</select></label><label>Sport<select data-field="sport">${['NFL','NBA','NCAAF','MLB','Other'].map(v=>`<option ${v===(result.sport||inferredSport(result.raw))?'selected':''}>${v}</option>`).join('')}</select></label></div>
+ <p class="notice">Selections / legs (one per line). Edit or remove any incorrect OCR text:</p><textarea data-field="legs">${escapeHTML(legs.join('\n'))}</textarea><details><summary>View extracted text</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${escapeHTML(result.raw)}</pre></details><button type="button" class="primary" data-import="${id}">Import reviewed ticket</button><div class="notice" data-message></div>`;
+ slipReview.append(box);
+ box.querySelector('[data-import]').onclick=()=>{
+  const get=n=>box.querySelector(`[data-field="${n}"]`).value.trim();
+  const selections=get('legs').split('\n').map(x=>x.trim()).filter(Boolean);
+  const game=get('game')||'Matchup not identified';
+  const stake=Number(get('stake')),odds=Number(get('odds'));
+  if(!selections.length||!Number.isFinite(stake)||stake<=0){box.querySelector('[data-message]').textContent='Enter at least one selection and a valid stake.';return}
+  const ticket=get('ticket'),book=get('book');
+  const duplicate=bets.some(b=>ticket&&b.ticket===ticket&&b.book===book);
+  if(duplicate){box.querySelector('[data-message]').textContent='This ticket ID has already been imported.';return}
+  // One ticket record retains every leg; stake is never duplicated across legs.
+  if(!saveBet({game,selection:selections.join(' | '),legs:selections,odds,stake,book,sport:get('sport')==='Other'?inferredSport(game+' '+selections.join(' ')):get('sport'),status:'Open',ticket,payout:Number(get('payout'))||0,source:box.dataset.sourceUrl?'Share link':'Screenshot OCR',sourceUrl:box.dataset.sourceUrl||'',importedAt:new Date().toISOString()}))return;
+  box.querySelector('[data-message]').textContent='Ticket imported! '+selections.length+' leg(s) saved together as one wager.';
+  box.querySelector('[data-import]').disabled=true;
+ };
+}
+fileInput.addEventListener('change',async()=>{
+ const files=[...fileInput.files];slipReview.innerHTML='';slipPreview.innerHTML='';
+ if(!files.length)return;
+ if(!window.Tesseract){slipStatus.textContent='OCR library could not load. Connect to the internet and reopen this page to scan screenshots.';return}
+ slipStatus.textContent='Preparing image reader…';
+ let worker;
+ try{
+  worker=await Tesseract.createWorker('eng');
+  for(let i=0;i<files.length;i++){
+   const f=files[i];if(!f.type.startsWith('image/'))continue;
+   slipStatus.textContent=`Reading screenshot ${i+1} of ${files.length}: ${f.name}…`;
+   const image=document.createElement('img');image.alt='Uploaded bet slip';image.src=URL.createObjectURL(f);image.onload=()=>URL.revokeObjectURL(image.src);slipPreview.append(image);
+   const output=await worker.recognize(f);
+   showReview(extractSlip(output.data.text,f.name),i);
+  }
+  slipStatus.textContent='Reading complete. Review each ticket and click Import reviewed ticket.';
+ }catch(err){slipStatus.textContent='Unable to read the screenshot: '+(err.message||String(err))+'. You can still enter the bet manually.'}
+ finally{if(worker)await worker.terminate().catch(()=>{})}
+});
+
+
+
+
+
+const receivedShareLinks=["https://polymarket.us/combos/9hZrUFhVSALF1ps6Q5Vw?referrer=bumpyhawk1600", "https://kalshi.com/markets/kxmvecrosscategory/minnesota-vs-detroit/KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH-VAPPLVMFW", "https://kalshi.com/markets/kxmvecrosscategory/tennessee-vs-cincinnati/KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC-NABLAJ433", "https://kalshi.com/markets/kxmvecrosscategory0/arizona-vs-dallas/KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU-RGFJDMGAO", "https://kalshi.com/markets/kxmvecrosscategory0/tennessee-vs-cincinnati/KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB-PE5F4BXYU", "https://go.novig.co/JHQQ/f23c191ebf389ccd", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d2eec35200f2%2C01a17873-e29a-7921-8467-774638b6a8fa%2C01a17ff7-3215-77b3-bbd0-4fed6e4f3bcd%2C01a17ff7-3216-7090-bde0-a83235785813%2C01a17ff7-33da-7ca1-810a-547537d16332%2C01a1802d-6774-7df1-85f9-fa55f007f6f4%2C01a1807f-c6b1-72f1-94ce-d6413e735114%2C01a180b6-ea02-72c1-9509-a84ef39c9ce1%2C01a183d3-6b90-7f00-ba97-fbe9c58e2a17%2C01a1851c-ea91-74e1-9365-65176ae898f5", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a17c87-8bd7-77c0-b691-cae4785c3694%2C01a184ae-f554-7f10-a7b5-8df93aba262f", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d1699de8b06d%2C01a17ff7-3215-77b3-bbd0-4e05dd5a8c37", "https://go.novig.co/JHQQ/16bf5580d7ae5546", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a15b07-8748-7c32-9291-8f24a0be4b83%2C01a15b07-8931-7500-a806-e0d935ed1373%2C01a15b22-a83c-7cd0-b36d-f42d616de596%2C01a15b22-ab0a-74f2-91e9-65cc92fbe8a8"];
+document.querySelectorAll('.link-review-btn').forEach(button=>button.addEventListener('click',()=>{
+ const link=receivedShareLinks[Number(button.dataset.linkIndex)];
+ document.getElementById('betShareUrl').value=link;
+ document.getElementById('readShareLink').click();
+}));
+
+document.getElementById('readShareLink').addEventListener('click',()=>{
+ const input=document.getElementById('betShareUrl'),status=document.getElementById('shareStatus');
+ let url;try{url=new URL(input.value.trim());if(!/^https?:$/.test(url.protocol))throw Error('bad protocol')}
+ catch{status.textContent='Enter a valid https:// bet share link.';return}
+ const host=url.hostname.toLowerCase(),path=url.pathname;
+ const book=host.includes('novig')?'Novig':host.includes('draftkings')?'DraftKings':host.includes('fanduel')?'FanDuel':host.includes('kalshi')?'Kalshi':host.includes('polymarket')?'Polymarket':'Other';
+ const deep=url.searchParams.get('deep_link_value')||'';
+ const eventIds=[...new Set((deep+','+path).match(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi)||[])];
+ const ticket=url.searchParams.get('ticket_id')||url.searchParams.get('bet_id')||'';
+ const result={book,stake:0,payout:0,odds:0,ticket,selections:[],raw:'Share URL: '+url.href+'\nDeep link: '+deep+'\nEvent IDs: '+eventIds.join(', '),filename:'Shared '+book+' link'};
+ showReview(result,'url-'+Date.now());
+ const card=slipReview.lastElementChild;
+ card.querySelector('[data-field="book"]').value=book;
+ // The original URL is retained as provenance on the review card and saved ticket.
+ card.dataset.sourceUrl=url.href;
+ status.textContent=eventIds.length
+  ? `Found ${eventIds.length} event identifier(s) in this ${book} link. It does not expose your wager amount or all selections. Enter those details in the review card, then import.`
+  : `Recognized ${book} link. Review and enter the selections, stake, and payout before saving; the website cannot read private sportsbook accounts from a share URL.`;
+ card.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+
+function filterBoard(sport){
+ const rows=[...document.querySelectorAll('#boardRows .bet-row')];
+ rows.forEach(row=>{row.hidden=!(sport==='ALL'||row.dataset.sport===sport)});
+ const has=rows.some(row=>!row.hidden),empty=document.getElementById('boardEmpty');
+ empty.hidden=has;
+ if(!has)empty.innerHTML=rows.length?'No pending bets for this sport. Choose ALL to see your saved open tickets.':'No bets saved yet. Open <button type="button" class="empty-import-link" data-go="Slip Importer">Slip Importer</button> to add your first ticket.';
+}
+document.querySelectorAll('[data-sport]').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('[data-sport]').forEach(b=>b.classList.toggle('active',b===x));filterBoard(x.dataset.sport)}));
+document.querySelector('[data-open-profile]').addEventListener('click',()=>document.getElementById('profilePanel').classList.toggle('show'));
+document.getElementById('nav').addEventListener('click',e=>{if(e.target.closest('[data-go="Slip Importer"]')){setTimeout(()=>document.getElementById('slipFile').closest('.slip-import').scrollIntoView({behavior:'smooth'}),80)}});
+</script>
+<script id="betlab-live-nfl-script">
+(()=>{'use strict';
+const api='https://site.api.espn.com/apis/site/v2/sports/football/nfl/';
+const el=id=>document.getElementById(id);
+const names=['Josh Allen','Derrick Henry','James Cook','Lamar Jackson','Zay Flowers',"Ja'Marr Chase",'Chase Brown','Kenneth Walker','Patrick Mahomes','Javonte Williams','Tee Higgins','Bijan Robinson','Jahmyr Gibbs','Trey McBride','Brock Bowers','Mike Gesicki','Amon-Ra St. Brown'];
+const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const knownTeams={ 'Josh Allen':'BUF','Derrick Henry':'BAL','James Cook':'BUF','Lamar Jackson':'BAL','Zay Flowers':'BAL',"Ja'Marr Chase":'CIN','Chase Brown':'CIN','Kenneth Walker':'SEA','Patrick Mahomes':'KC','Javonte Williams':'DAL','Tee Higgins':'CIN','Bijan Robinson':'ATL','Jahmyr Gibbs':'DET','Trey McBride':'ARI','Brock Bowers':'LV','Mike Gesicki':'CIN','Amon-Ra St. Brown':'DET'};
+let busy=false;
+const text=(tag,content,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=content;return e};
+function extractLegs(){const found=new Map();for(const b of (typeof bets!=='undefined'?bets:[])){if(b.status!=='Open')continue;for(const leg of b.legs||[b.selection]){const name=names.find(n=>norm(leg).includes(norm(n)));if(!name)continue;const line=String(leg);let m=line.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i);let type=m?'receivingYards':null;
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+if(!type)continue;
+const key=name+'|'+type+'|'+m[1];found.set(key,{name,type,target:Number(m[1]),label:line,team:knownTeams[name]})}}
+return [...found.values()]}
+function playerRows(data){
+const map=new Map();
+const readNumber=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:null};
+for(const group of data?.boxscore?.players||[]){
+const team=group.team?.abbreviation||'';
+for(const section of group.statistics||[]){
+const category=((section.name||'')+' '+(section.displayName||'')).toLowerCase();
+const keys=section.keys?.length?section.keys:(section.labels||[]);
+for(const entry of section.athletes||[]){
+const name=entry.athlete?.displayName||entry.athlete?.fullName||'';
+const id=norm(name);if(!id)continue;
+let obj=map.get(id);if(!obj){obj={name,team,receivingYards:0,rushingYards:0,receptions:0,rushingTD:0,receivingTD:0};map.set(id,obj)}
+const values=entry.stats||[];
+for(let j=0;j<values.length;j++){
+const k=String(keys[j]||'').toLowerCase().replace(/[^a-z]/g,''),v=readNumber(values[j]);if(v===null)continue;
+if(category.includes('receiv')){
+if(['yds','yards','receivingyards','recyds'].includes(k)||(!k&&j===1))obj.receivingYards=v;
+if(['rec','receptions'].includes(k)||(!k&&j===0))obj.receptions=v;
+if(['td','touchdowns','receivingtouchdowns'].includes(k)||(!k&&j===3))obj.receivingTD=v;
+}
+if(category.includes('rush')){
+if(['yds','yards','rushingyards','rushyds'].includes(k)||(!k&&j===1))obj.rushingYards=v;
+if(['td','touchdowns','rushingtouchdowns'].includes(k)||(!k&&j===3))obj.rushingTD=v;
+}
+}
+}
+}
+}
+return map;
+}
+function updateInlineProps(stats,hasGames){
+const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+return type?{name,type,target:Number(m[1])}:null};
+const types={receivingYards:'receiving yards',rushingYards:'rushing yards',receptions:'receptions',touchdowns:'touchdowns'};
+for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
+for(const line of b.legs||[b.selection]){const leg=parse(line);if(!leg)continue;const key=leg.name+leg.type+leg.target;if(unique.has(key))continue;unique.add(key);const p=stats.get(norm(leg.name));const value=p&&(!p.team||p.team===knownTeams[leg.name])?(leg.type==='touchdowns'?p.rushingTD+p.receivingTD:p[leg.type]):null;
+const outer=text('div','','bet-prop'),label=text('div','','bet-prop-label');label.append(text('span',leg.name+' · '+types[leg.type]),text('b',value===null?'— / '+leg.target:value+' / '+leg.target));const track=text('div','','bet-prop-track'),fill=text('div','','bet-prop-fill');fill.style.width=value===null?'0%':Math.min(100,100*value/leg.target)+'%';track.append(fill);outer.append(label,track,text('div',value===null?(hasGames?'Stats pending':'Waiting for kickoff'):value>=leg.target?'✓ Target reached':'Live progress','bet-prop-hint'));box.append(outer)}
+if(!unique.size){box.append(text('div','Live data not yet available for these selections','bet-prop-hint'))}
+}}
+function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.replaceChildren();for(const l of legs){const p=stats.get(norm(l.name));const valid=!!p&&(!p.team||p.team===l.team);const value=valid?(l.type==='touchdowns'?(p.rushingTD+p.receivingTD):p[l.type]):null;
+const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
+const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'));latestStats=stats;latestGames=hasGames;updateInlineProps(stats,hasGames)}
+async function refresh(){if(busy)return;busy=true;const status=el('betlabLiveStatus'),button=el('betlabLiveRefresh');button.disabled=true;status.textContent='Updating scores and player stats…';
+try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const date=['year','month','day'].map(k=>parts.find(p=>p.type===k)?.value||'').join('');
+const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
+for(const event of events){const comp=event.competitions?.[0]||{},teams=comp.competitors||[],away=teams.find(t=>t.homeAway==='away'),home=teams.find(t=>t.homeAway==='home');if(!home||!away)continue;const card=text('div','','live-game');card.append(text('strong',(away.team?.abbreviation||'AWAY')+' '+(away.score||'0')+' – '+(home.score||'0')+' '+(home.team?.abbreviation||'HOME')),text('small',event.status?.type?.shortDetail||event.status?.type?.description||event.status?.displayClock||'Scheduled'));root.append(card)}
+if(!events.length)root.append(text('small','No NFL games scheduled today.'));
+const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary HTTP '+r.status);return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
+showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · '+relevant.length+' matched games · '+stats.size+' player stat lines · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
+}catch(err){status.textContent='Live stats error: '+String(err?.message||err)+' · Tap Refresh to retry.';showLegs(extractLegs(),new Map(),false)}
+finally{busy=false;button.disabled=false}}
+let latestStats=new Map(),latestGames=false;
+ document.addEventListener('betlab-board-rendered',()=>updateInlineProps(latestStats,latestGames));
+ el('betlabLiveRefresh')?.addEventListener('click',refresh);updateInlineProps(new Map(),false);refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
+})();
+</script><div id="buildVersion" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:2147483647;padding:7px 13px;border-radius:0 0 10px 10px;background:#063c46;border:1px solid #51d7c8;border-top:0;color:#e9fffc;font:700 11px system-ui;box-shadow:0 5px 16px #0009;pointer-events:none">BETIQ · DESIGN UPDATE 7CC557F · LIVE CHECK</div></body></html>+Math.abs(running).toFixed(2);head.style.color=color}const context=node(id)?.getContext('2d');let gradient=glow;if(context){gradient=context.createLinearGradient(0,0,0,230);gradient.addColorStop(0,glow);gradient.addColorStop(1,'rgba(0,0,0,0)')}draw(id,'line',{labels:['Start',...subset.map((b,i)=>'Slip '+(i+1))],datasets:[{label:'Cumulative net P/L',data:values,borderColor:color,backgroundColor:gradient,fill:true,tension:.38,pointRadius:subset.length>20?0:3,pointHoverRadius:6,pointBackgroundColor:color,pointBorderColor:'#081728',pointBorderWidth:2,borderWidth:3}]},{interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: {const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
+ draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?palette.teal:palette.rose),borderRadius:5,maxBarThickness:25}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:[palette.teal,palette.rose,palette.blue,palette.gold],borderColor:'#0c1b2d',borderWidth:3,hoverOffset:5}]},{cutout:'74%',plugins:{legend:{position:'bottom',labels:{color:'#adc7da',usePointStyle:true,boxWidth:8,padding:12}}}});
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live'),pregame=bets.filter(b=>b.liveBet!==true&&b.betType!=='live');
+ const done=arr=>arr.filter(b=>b.status==='Won'||b.status==='Lost'),net=arr=>done(arr).reduce((n,b)=>n+pl(b),0);
+ const rate=arr=>done(arr).length?(100*done(arr).filter(b=>b.status==='Won').length/done(arr).length).toFixed(1)+'%':'—';
+ draw('analyticsLiveVsPregame','bar',{labels:['Live betting','Pregame'],datasets:[{label:'Net profit / loss ($)',data:[net(live),net(pregame)],backgroundColor:[palette.teal,palette.violet],borderRadius:7,maxBarThickness:42}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: $'+Number(c.parsed.x).toFixed(2)}}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ const summary=node('analyticsLiveVsPregameSummary');if(summary)summary.textContent='LIVE · '+live.length+' tickets / '+done(live).length+' settled / '+rate(live)+' win rate   |   PREGAME · '+pregame.length+' tickets / '+done(pregame).length+' settled / '+rate(pregame)+' win rate. Pending excluded from profit.';
+}
+function renderAnalytics(){
+ const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
+ if(!metrics||!books||!types||!recent)return;
+ const indicator=node('analyticsDataStatus');if(indicator)indicator.textContent=bets.length+' saved tickets in this browser · Updated '+new Date().toLocaleTimeString();
+ renderAnalyticsCharts();
+ const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
+ const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
+ const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const profitOf=arr=>arr.reduce((n,b)=>n+(b.status==='Won'?payoutFor(b)-(Number(b.stake)||0):b.status==='Lost'?-(Number(b.stake)||0):0),0);
+ const rate=arr=>{const w=arr.filter(b=>b.status==='Won').length;return arr.length?(100*w/arr.length).toFixed(1)+'%':'—'};
+ const make=(label,value)=>{const div=document.createElement('div');div.style.cssText='padding:14px;border:1px solid #2d8e9d;border-radius:10px;background:#0b2036';const a=document.createElement('div');a.style.cssText='font-size:12px;color:#a5c5d5';a.textContent=label;const v=document.createElement('div');v.style.cssText='font-size:23px;font-weight:800;margin-top:5px';v.textContent=value;div.append(a,v);return div};
+ metrics.replaceChildren(
+ make('Total tickets',String(bets.length)),make('Pending',String(bets.filter(b=>b.status==='Open').length)),
+ make('Win / Loss',won.length+' / '+lost.length),make('Win rate',rate(settled)),
+ make('Net profit',absMoney(profitOf(settled))),make('ROI',stakeOf(settled)?(100*profitOf(settled)/stakeOf(settled)).toFixed(1)+'%':'—'),
+ make('Total staked',money(stakeOf(bets.filter(b=>b.status!=='Void')))),make('Settled stake',money(stakeOf(settled)))
+ );
+ const renderGroups=(root,groups)=>{root.replaceChildren();for(const [name,arr] of groups){const done=arr.filter(b=>b.status==='Won'||b.status==='Lost');const row=document.createElement('div');row.style.cssText='padding:11px 2px;border-bottom:1px solid #244359;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap';const title=document.createElement('strong');title.textContent=name+' · '+arr.length+' bets';const stat=document.createElement('span');stat.textContent=done.length+' settled · '+rate(done)+' win · '+absMoney(profitOf(done));row.append(title,stat);root.append(row)}if(!groups.length)root.textContent='No tickets yet.'};
+ const byBook=new Map();for(const b of bets){const k=b.book||'Other';if(!byBook.has(k))byBook.set(k,[]);byBook.get(k).push(b)}renderGroups(books,[...byBook]);
+ renderGroups(types,[['Live',bets.filter(b=>b.liveBet===true||b.betType==='live')],['Pregame / regular',bets.filter(b=>b.liveBet!==true&&b.betType!=='live')]]);
+ recent.replaceChildren();if(!settled.length){recent.textContent='No settled bets yet. Mark a ticket Winner or Loser to start tracking results.'}else for(const b of settled.slice().reverse().slice(0,12)){const row=document.createElement('div');row.style.cssText='padding:10px 2px;border-bottom:1px solid #244359';row.textContent=(b.status==='Won'?'✓ ':'✕ ')+(b.selection||b.game||'Ticket')+' · '+(b.book||'Other')+' · '+absMoney(profitOf([b]));recent.append(row)}
+}
+function renderLiveRecord(){
+ const stats=node('liveRecordStats'),list=node('liveRecordTickets');
+ if(!stats||!list)return;
+ list.replaceChildren();
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live');
+ const wins=live.filter(b=>b.status==='Won'),losses=live.filter(b=>b.status==='Lost'),open=live.filter(b=>b.status==='Open');
+ const risk=[...wins,...losses].reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const net=wins.reduce((n,b)=>n+payoutFor(b)-(Number(b.stake)||0),0)-losses.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const score=node('liveRecordScore'),caption=node('liveRecordCaption');
+ if(score)score.textContent=wins.length+' W – '+losses.length+' L';
+ if(caption)caption.textContent=(wins.length+losses.length)+' settled live bets · '+open.length+' pending';
+ stats.replaceChildren();
+ for(const [label,value,cls] of [['Win rate',(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%','live-stat-blue'],['Net P/L',(net<0?'-':'')+money(Math.abs(net)),'live-stat-green'],['ROI',(risk?(100*net/risk).toFixed(1):'0.0')+'%','live-stat-violet'],['Pending',String(open.length),'live-stat-gold']]){const tile=document.createElement('div');tile.className='live-stat '+cls;const title=document.createElement('span');title.textContent=label;const val=document.createElement('strong');val.textContent=value;tile.append(title,val);stats.append(tile)}
+
+ if(!live.length){const p=document.createElement('p');p.className='notice';p.textContent='No live bets recorded yet. The screenshots you send next can be entered here as live bets.';list.append(p);return;}
+ for(const b of live.slice().reverse()){
+  const card=document.createElement('div');card.className='panel';card.style.cssText='padding:15px;border:1px solid #3dd6bd;border-radius:12px;background:linear-gradient(115deg,#061b30,#180d36)';
+  const title=document.createElement('strong');title.textContent=(b.book||'Sportsbook')+' · '+(b.game||'Live game');
+  const desc=document.createElement('p');desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const moneyline=document.createElement('div');moneyline.textContent='Stake '+money(b.stake)+' · Potential payout '+money(payoutFor(b))+' · '+b.status;
+  card.append(title,desc,moneyline);
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:9px;flex-wrap:wrap;margin-top:12px';
+  for(const [label,status,color] of [['✓ Winner','Won','#3dff93'],['✕ Loser','Lost','#ff6c87'],['↶ Pending','Open','#78baff']]){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.disabled=b.status===status;btn.style.cssText='padding:9px 14px;border-radius:8px;border:1px solid '+color+';background:#09162d;color:white;cursor:pointer';
+   btn.addEventListener('click',()=>{const prior=b.status;b.status=status;if(!persist()){b.status=prior;return;}renderBets();});
+   actions.append(btn);
+  }
+  card.append(actions);list.append(card);
+ }
+}
+function renderBets(){
+ const el=node('saved');el.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent=`Your Saved Bets (${bets.length})`;el.append(heading);
+ if(!bets.length){const p=document.createElement('p');p.className='notice';p.textContent='No tickets saved. Upload a screenshot, paste a share link, or add a bet manually to begin.';el.append(p)}
+ bets.slice().reverse().forEach(b=>{
+  const row=document.createElement('div');row.className='saved-ticket';
+  const info=document.createElement('div');info.className='saved-ticket-info';
+  const first=document.createElement('strong');first.textContent=`${b.legs?.length>1?b.legs.length+'-Leg Parlay · ':''}${b.game||'Matchup unknown'} · ${b.book||'Other'}`;
+  const desc=document.createElement('div');desc.className='saved-ticket-selection';desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const summary=document.createElement('div');summary.className='saved-ticket-summary';summary.textContent=`Stake ${money(b.stake)} · Potential payout ${payoutFor(b)?money(payoutFor(b)):'Not entered'} · Odds ${ticketOdds(b)}`;
+  info.append(first,desc,summary);row.append(info);
+  const controls=document.createElement('div');controls.className='saved-ticket-actions';
+  const statusLabel=document.createElement('label');statusLabel.textContent='Result ';statusLabel.className='saved-ticket-status';
+  const select=document.createElement('select');select.setAttribute('aria-label','Ticket result');
+  for(const value of ['Open','Won','Lost','Void']){const o=document.createElement('option');o.value=value;o.textContent=value;if(value===b.status)o.selected=true;select.append(o)}
+  select.addEventListener('change',()=>{const old=b.status;b.status=select.value;if(!persist()){b.status=old;select.value=old;return}renderBets()});
+  statusLabel.append(select);controls.append(statusLabel);
+  const del=document.createElement('button');del.type='button';del.className='ticket-delete';del.textContent='Delete';del.title='Delete this saved ticket';
+  del.onclick=()=>{if(!confirm('Delete this ticket?'))return;const index=bets.findIndex(x=>x===b);bets.splice(index,1);if(!persist())bets.splice(index,0,b);renderBets()};
+  controls.append(del);row.append(controls);el.append(row);
+ });
+ node('resetAllBets').hidden=!bets.length;
+ renderDashboard();
+ renderLiveRecord();
+ renderAnalytics();
+}
+node('betForm').addEventListener('submit',e=>{
+ e.preventDefault();const form=e.currentTarget;
+ const val=id=>node(id).value.trim();
+ const b={game:val('game'),selection:val('selection'),odds:Number(val('odds')),stake:Number(val('stake')),book:val('book'),sport:val('sport'),status:val('status'),source:'Manual entry'};
+ if(!b.game||!b.selection||!Number.isFinite(b.stake)||b.stake<=0)return;
+ if(saveBet(b))form.reset();
+});
+node('resetAllBets').addEventListener('click',()=>{
+ if(!bets.length)return;
+ if(!confirm('Permanently delete ALL '+bets.length+' saved tickets from this browser? This cannot be undone.'))return;
+ const previous=bets;bets=[];if(!persist())bets=previous;renderBets();
+});
+renderBets();
+const fileInput=document.getElementById('slipFile'),slipStatus=document.getElementById('slipStatus'),slipPreview=document.getElementById('slipPreview'),slipReview=document.getElementById('slipReview');
+const escapeHTML=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function extractSlip(raw,filename){
+ const lines=raw.split(/\n/).map(x=>x.trim()).filter(Boolean);
+ const flat=raw.replace(/\s+/g,' ');
+ const book=/novig/i.test(raw)?'Novig':/draftkings|draft kings/i.test(raw)?'DraftKings':/fanduel/i.test(raw)?'FanDuel':/kalshi/i.test(raw)?'Kalshi':/polymarket/i.test(raw)?'Polymarket':'Other';
+ const money=(patterns)=>{for(const pattern of patterns){const m=flat.match(pattern);if(m)return Number(m[1].replace(/,/g,''));}return 0};
+ const stake=money([/(?:wager amount|total wager|total stake|amount|cost|risk|bet amount)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i,/(?:wager|stake)\s*:?\s*\$?([\d,]+(?:\.\d{1,2})?)/i]);
+ const payout=money([/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*(?:\$[\d,.]+\s+)?\$([\d,]+(?:\.\d{1,2})?)/i,/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i]);
+ const oddsMatch=flat.match(/(?:total odds|parlay odds|odds)\s*:?\s*([+-]\d{2,5})/i)||flat.match(/\b([+-]\d{3,5})\b/);
+ const ticketMatch=flat.match(/(?:bet id|ticket id|receipt id|wager id|bet number|reference|ID)\s*[:#]?\s*([A-Za-z0-9-]{6,})/i)||flat.match(/\b(DK\d{10,})\b/i);
+ const selections=[];
+ const add=(v)=>{v=v.trim().replace(/\s{2,}/g,' ');if(v.length>5&&!selections.includes(v))selections.push(v)};
+ // DraftKings: threshold is often on the line before the player's market.
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i], next=lines[i+1]||'';
+  if(/^\d+(?:\.\d+)?\+$/.test(line)&&/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)/i.test(next)){add(next+' '+line);i++;continue}
+  if(/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)\s+\d+(?:\.\d+)?\+?$/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}:\s*(?:\d+\+|yes|over|under|anytime)/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}\s+(?:\d+\+|over|under)\s+(?:yes|touchdowns?|yards?|receptions?)/i.test(line)){add(line);continue}
+ }
+ // Novig's compact share cards list selections in one long comma-separated sentence.
+ for(const chunk of lines.filter(x=>/,\s*[A-Z]/.test(x)&&/(?:yes|yards|td|receptions)/i.test(x)).flatMap(x=>x.split(/,\s*(?=[A-Z])/))) {
+  if(/(?:\d+\+|yes|over|under)/i.test(chunk)&&!/parlay points/i.test(chunk))add(chunk);
+ }
+ // Generic OCR fallback, avoiding headers, odds, and transaction totals.
+ if(!selections.length)for(const line of lines){
+  if(/(?:over|under|anytime|touchdown|receptions?|receiving|rushing|yards?|assists?|points?|moneyline|\d+\+|to score)/i.test(line)
+   &&!/(?:potential payout|total wager|cash out|parlay points|trade credit|share|matched|bet placed|portfolio|to pay|total payout|stake|cost)/i.test(line))add(line);
+ }
+ return {book,stake,payout,odds:oddsMatch?Number(oddsMatch[1]):0,ticket:ticketMatch?.[1]||'',selections,raw,filename};
+}
+function field(id,label,value,type='text'){return `<label>${label}<input data-field="${id}" type="${type}" value="${escapeHTML(value)}"></label>`}
+function showReview(result,index){
+ const id='slip-'+index,box=document.createElement('article');box.className='slip-review-card';box.dataset.slip=id;
+ const legs=result.selections.length?result.selections:[''];
+ box.innerHTML=`<strong>${escapeHTML(result.filename)}</strong> · ${escapeHTML(result.book)}<p class="import-warning">OCR can misread player names, odds, and amounts. Verify every field against your screenshot before importing. No bet is saved automatically.</p>
+ <div class="fields">${field('game','Game (e.g. TN vs CIN)','')}${field('ticket','Ticket ID (optional)',result.ticket)}${field('stake','Total ticket stake ($)',result.stake,'number')}${field('payout','Potential total payout ($)',result.payout,'number')}${field('odds','Ticket odds (American)',result.odds,'number')}<label>Sportsbook<select data-field="book">${['DraftKings','Novig','FanDuel','Kalshi','Polymarket','Other'].map(b=>`<option ${b===result.book?'selected':''}>${b}</option>`).join('')}</select></label><label>Sport<select data-field="sport">${['NFL','NBA','NCAAF','MLB','Other'].map(v=>`<option ${v===(result.sport||inferredSport(result.raw))?'selected':''}>${v}</option>`).join('')}</select></label></div>
+ <p class="notice">Selections / legs (one per line). Edit or remove any incorrect OCR text:</p><textarea data-field="legs">${escapeHTML(legs.join('\n'))}</textarea><details><summary>View extracted text</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${escapeHTML(result.raw)}</pre></details><button type="button" class="primary" data-import="${id}">Import reviewed ticket</button><div class="notice" data-message></div>`;
+ slipReview.append(box);
+ box.querySelector('[data-import]').onclick=()=>{
+  const get=n=>box.querySelector(`[data-field="${n}"]`).value.trim();
+  const selections=get('legs').split('\n').map(x=>x.trim()).filter(Boolean);
+  const game=get('game')||'Matchup not identified';
+  const stake=Number(get('stake')),odds=Number(get('odds'));
+  if(!selections.length||!Number.isFinite(stake)||stake<=0){box.querySelector('[data-message]').textContent='Enter at least one selection and a valid stake.';return}
+  const ticket=get('ticket'),book=get('book');
+  const duplicate=bets.some(b=>ticket&&b.ticket===ticket&&b.book===book);
+  if(duplicate){box.querySelector('[data-message]').textContent='This ticket ID has already been imported.';return}
+  // One ticket record retains every leg; stake is never duplicated across legs.
+  if(!saveBet({game,selection:selections.join(' | '),legs:selections,odds,stake,book,sport:get('sport')==='Other'?inferredSport(game+' '+selections.join(' ')):get('sport'),status:'Open',ticket,payout:Number(get('payout'))||0,source:box.dataset.sourceUrl?'Share link':'Screenshot OCR',sourceUrl:box.dataset.sourceUrl||'',importedAt:new Date().toISOString()}))return;
+  box.querySelector('[data-message]').textContent='Ticket imported! '+selections.length+' leg(s) saved together as one wager.';
+  box.querySelector('[data-import]').disabled=true;
+ };
+}
+fileInput.addEventListener('change',async()=>{
+ const files=[...fileInput.files];slipReview.innerHTML='';slipPreview.innerHTML='';
+ if(!files.length)return;
+ if(!window.Tesseract){slipStatus.textContent='OCR library could not load. Connect to the internet and reopen this page to scan screenshots.';return}
+ slipStatus.textContent='Preparing image reader…';
+ let worker;
+ try{
+  worker=await Tesseract.createWorker('eng');
+  for(let i=0;i<files.length;i++){
+   const f=files[i];if(!f.type.startsWith('image/'))continue;
+   slipStatus.textContent=`Reading screenshot ${i+1} of ${files.length}: ${f.name}…`;
+   const image=document.createElement('img');image.alt='Uploaded bet slip';image.src=URL.createObjectURL(f);image.onload=()=>URL.revokeObjectURL(image.src);slipPreview.append(image);
+   const output=await worker.recognize(f);
+   showReview(extractSlip(output.data.text,f.name),i);
+  }
+  slipStatus.textContent='Reading complete. Review each ticket and click Import reviewed ticket.';
+ }catch(err){slipStatus.textContent='Unable to read the screenshot: '+(err.message||String(err))+'. You can still enter the bet manually.'}
+ finally{if(worker)await worker.terminate().catch(()=>{})}
+});
+
+
+
+
+
+const receivedShareLinks=["https://polymarket.us/combos/9hZrUFhVSALF1ps6Q5Vw?referrer=bumpyhawk1600", "https://kalshi.com/markets/kxmvecrosscategory/minnesota-vs-detroit/KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH-VAPPLVMFW", "https://kalshi.com/markets/kxmvecrosscategory/tennessee-vs-cincinnati/KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC-NABLAJ433", "https://kalshi.com/markets/kxmvecrosscategory0/arizona-vs-dallas/KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU-RGFJDMGAO", "https://kalshi.com/markets/kxmvecrosscategory0/tennessee-vs-cincinnati/KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB-PE5F4BXYU", "https://go.novig.co/JHQQ/f23c191ebf389ccd", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d2eec35200f2%2C01a17873-e29a-7921-8467-774638b6a8fa%2C01a17ff7-3215-77b3-bbd0-4fed6e4f3bcd%2C01a17ff7-3216-7090-bde0-a83235785813%2C01a17ff7-33da-7ca1-810a-547537d16332%2C01a1802d-6774-7df1-85f9-fa55f007f6f4%2C01a1807f-c6b1-72f1-94ce-d6413e735114%2C01a180b6-ea02-72c1-9509-a84ef39c9ce1%2C01a183d3-6b90-7f00-ba97-fbe9c58e2a17%2C01a1851c-ea91-74e1-9365-65176ae898f5", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a17c87-8bd7-77c0-b691-cae4785c3694%2C01a184ae-f554-7f10-a7b5-8df93aba262f", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d1699de8b06d%2C01a17ff7-3215-77b3-bbd0-4e05dd5a8c37", "https://go.novig.co/JHQQ/16bf5580d7ae5546", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a15b07-8748-7c32-9291-8f24a0be4b83%2C01a15b07-8931-7500-a806-e0d935ed1373%2C01a15b22-a83c-7cd0-b36d-f42d616de596%2C01a15b22-ab0a-74f2-91e9-65cc92fbe8a8"];
+document.querySelectorAll('.link-review-btn').forEach(button=>button.addEventListener('click',()=>{
+ const link=receivedShareLinks[Number(button.dataset.linkIndex)];
+ document.getElementById('betShareUrl').value=link;
+ document.getElementById('readShareLink').click();
+}));
+
+document.getElementById('readShareLink').addEventListener('click',()=>{
+ const input=document.getElementById('betShareUrl'),status=document.getElementById('shareStatus');
+ let url;try{url=new URL(input.value.trim());if(!/^https?:$/.test(url.protocol))throw Error('bad protocol')}
+ catch{status.textContent='Enter a valid https:// bet share link.';return}
+ const host=url.hostname.toLowerCase(),path=url.pathname;
+ const book=host.includes('novig')?'Novig':host.includes('draftkings')?'DraftKings':host.includes('fanduel')?'FanDuel':host.includes('kalshi')?'Kalshi':host.includes('polymarket')?'Polymarket':'Other';
+ const deep=url.searchParams.get('deep_link_value')||'';
+ const eventIds=[...new Set((deep+','+path).match(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi)||[])];
+ const ticket=url.searchParams.get('ticket_id')||url.searchParams.get('bet_id')||'';
+ const result={book,stake:0,payout:0,odds:0,ticket,selections:[],raw:'Share URL: '+url.href+'\nDeep link: '+deep+'\nEvent IDs: '+eventIds.join(', '),filename:'Shared '+book+' link'};
+ showReview(result,'url-'+Date.now());
+ const card=slipReview.lastElementChild;
+ card.querySelector('[data-field="book"]').value=book;
+ // The original URL is retained as provenance on the review card and saved ticket.
+ card.dataset.sourceUrl=url.href;
+ status.textContent=eventIds.length
+  ? `Found ${eventIds.length} event identifier(s) in this ${book} link. It does not expose your wager amount or all selections. Enter those details in the review card, then import.`
+  : `Recognized ${book} link. Review and enter the selections, stake, and payout before saving; the website cannot read private sportsbook accounts from a share URL.`;
+ card.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+
+function filterBoard(sport){
+ const rows=[...document.querySelectorAll('#boardRows .bet-row')];
+ rows.forEach(row=>{row.hidden=!(sport==='ALL'||row.dataset.sport===sport)});
+ const has=rows.some(row=>!row.hidden),empty=document.getElementById('boardEmpty');
+ empty.hidden=has;
+ if(!has)empty.innerHTML=rows.length?'No pending bets for this sport. Choose ALL to see your saved open tickets.':'No bets saved yet. Open <button type="button" class="empty-import-link" data-go="Slip Importer">Slip Importer</button> to add your first ticket.';
+}
+document.querySelectorAll('[data-sport]').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('[data-sport]').forEach(b=>b.classList.toggle('active',b===x));filterBoard(x.dataset.sport)}));
+document.querySelector('[data-open-profile]').addEventListener('click',()=>document.getElementById('profilePanel').classList.toggle('show'));
+document.getElementById('nav').addEventListener('click',e=>{if(e.target.closest('[data-go="Slip Importer"]')){setTimeout(()=>document.getElementById('slipFile').closest('.slip-import').scrollIntoView({behavior:'smooth'}),80)}});
+</script>
+<script id="betlab-live-nfl-script">
+(()=>{'use strict';
+const api='https://site.api.espn.com/apis/site/v2/sports/football/nfl/';
+const el=id=>document.getElementById(id);
+const names=['Josh Allen','Derrick Henry','James Cook','Lamar Jackson','Zay Flowers',"Ja'Marr Chase",'Chase Brown','Kenneth Walker','Patrick Mahomes','Javonte Williams','Tee Higgins','Bijan Robinson','Jahmyr Gibbs','Trey McBride','Brock Bowers','Mike Gesicki','Amon-Ra St. Brown'];
+const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const knownTeams={ 'Josh Allen':'BUF','Derrick Henry':'BAL','James Cook':'BUF','Lamar Jackson':'BAL','Zay Flowers':'BAL',"Ja'Marr Chase":'CIN','Chase Brown':'CIN','Kenneth Walker':'SEA','Patrick Mahomes':'KC','Javonte Williams':'DAL','Tee Higgins':'CIN','Bijan Robinson':'ATL','Jahmyr Gibbs':'DET','Trey McBride':'ARI','Brock Bowers':'LV','Mike Gesicki':'CIN','Amon-Ra St. Brown':'DET'};
+let busy=false;
+const text=(tag,content,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=content;return e};
+function extractLegs(){const found=new Map();for(const b of (typeof bets!=='undefined'?bets:[])){if(b.status!=='Open')continue;for(const leg of b.legs||[b.selection]){const name=names.find(n=>norm(leg).includes(norm(n)));if(!name)continue;const line=String(leg);let m=line.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i);let type=m?'receivingYards':null;
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+if(!type)continue;
+const key=name+'|'+type+'|'+m[1];found.set(key,{name,type,target:Number(m[1]),label:line,team:knownTeams[name]})}}
+return [...found.values()]}
+function playerRows(data){
+const map=new Map();
+const readNumber=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:null};
+for(const group of data?.boxscore?.players||[]){
+const team=group.team?.abbreviation||'';
+for(const section of group.statistics||[]){
+const category=((section.name||'')+' '+(section.displayName||'')).toLowerCase();
+const keys=section.keys?.length?section.keys:(section.labels||[]);
+for(const entry of section.athletes||[]){
+const name=entry.athlete?.displayName||entry.athlete?.fullName||'';
+const id=norm(name);if(!id)continue;
+let obj=map.get(id);if(!obj){obj={name,team,receivingYards:0,rushingYards:0,receptions:0,rushingTD:0,receivingTD:0};map.set(id,obj)}
+const values=entry.stats||[];
+for(let j=0;j<values.length;j++){
+const k=String(keys[j]||'').toLowerCase().replace(/[^a-z]/g,''),v=readNumber(values[j]);if(v===null)continue;
+if(category.includes('receiv')){
+if(['yds','yards','receivingyards','recyds'].includes(k)||(!k&&j===1))obj.receivingYards=v;
+if(['rec','receptions'].includes(k)||(!k&&j===0))obj.receptions=v;
+if(['td','touchdowns','receivingtouchdowns'].includes(k)||(!k&&j===3))obj.receivingTD=v;
+}
+if(category.includes('rush')){
+if(['yds','yards','rushingyards','rushyds'].includes(k)||(!k&&j===1))obj.rushingYards=v;
+if(['td','touchdowns','rushingtouchdowns'].includes(k)||(!k&&j===3))obj.rushingTD=v;
+}
+}
+}
+}
+}
+return map;
+}
+function updateInlineProps(stats,hasGames){
+const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+return type?{name,type,target:Number(m[1])}:null};
+const types={receivingYards:'receiving yards',rushingYards:'rushing yards',receptions:'receptions',touchdowns:'touchdowns'};
+for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
+for(const line of b.legs||[b.selection]){const leg=parse(line);if(!leg)continue;const key=leg.name+leg.type+leg.target;if(unique.has(key))continue;unique.add(key);const p=stats.get(norm(leg.name));const value=p&&(!p.team||p.team===knownTeams[leg.name])?(leg.type==='touchdowns'?p.rushingTD+p.receivingTD:p[leg.type]):null;
+const outer=text('div','','bet-prop'),label=text('div','','bet-prop-label');label.append(text('span',leg.name+' · '+types[leg.type]),text('b',value===null?'— / '+leg.target:value+' / '+leg.target));const track=text('div','','bet-prop-track'),fill=text('div','','bet-prop-fill');fill.style.width=value===null?'0%':Math.min(100,100*value/leg.target)+'%';track.append(fill);outer.append(label,track,text('div',value===null?(hasGames?'Stats pending':'Waiting for kickoff'):value>=leg.target?'✓ Target reached':'Live progress','bet-prop-hint'));box.append(outer)}
+if(!unique.size){box.append(text('div','Live data not yet available for these selections','bet-prop-hint'))}
+}}
+function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.replaceChildren();for(const l of legs){const p=stats.get(norm(l.name));const valid=!!p&&(!p.team||p.team===l.team);const value=valid?(l.type==='touchdowns'?(p.rushingTD+p.receivingTD):p[l.type]):null;
+const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
+const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'));latestStats=stats;latestGames=hasGames;updateInlineProps(stats,hasGames)}
+async function refresh(){if(busy)return;busy=true;const status=el('betlabLiveStatus'),button=el('betlabLiveRefresh');button.disabled=true;status.textContent='Updating scores and player stats…';
+try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const date=['year','month','day'].map(k=>parts.find(p=>p.type===k)?.value||'').join('');
+const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
+for(const event of events){const comp=event.competitions?.[0]||{},teams=comp.competitors||[],away=teams.find(t=>t.homeAway==='away'),home=teams.find(t=>t.homeAway==='home');if(!home||!away)continue;const card=text('div','','live-game');card.append(text('strong',(away.team?.abbreviation||'AWAY')+' '+(away.score||'0')+' – '+(home.score||'0')+' '+(home.team?.abbreviation||'HOME')),text('small',event.status?.type?.shortDetail||event.status?.type?.description||event.status?.displayClock||'Scheduled'));root.append(card)}
+if(!events.length)root.append(text('small','No NFL games scheduled today.'));
+const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary HTTP '+r.status);return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
+showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · '+relevant.length+' matched games · '+stats.size+' player stat lines · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
+}catch(err){status.textContent='Live stats error: '+String(err?.message||err)+' · Tap Refresh to retry.';showLegs(extractLegs(),new Map(),false)}
+finally{busy=false;button.disabled=false}}
+let latestStats=new Map(),latestGames=false;
+ document.addEventListener('betlab-board-rendered',()=>updateInlineProps(latestStats,latestGames));
+ el('betlabLiveRefresh')?.addEventListener('click',refresh);updateInlineProps(new Map(),false);refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
+})();
+</script><div id="buildVersion" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:2147483647;padding:7px 13px;border-radius:0 0 10px 10px;background:#063c46;border:1px solid #51d7c8;border-top:0;color:#e9fffc;font:700 11px system-ui;box-shadow:0 5px 16px #0009;pointer-events:none">BETIQ · DESIGN UPDATE 7CC557F · LIVE CHECK</div></body></html>+Number(c.parsed.y).toFixed(2)}}},scales:{x:{...axis,grid:{display:false},ticks:{color:'#8ca9bf',maxTicksLimit:7}},y:{...axis,ticks:{color:'#8ca9bf',callback:v=>'{const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
+ draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?palette.teal:palette.rose),borderRadius:5,maxBarThickness:25}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:[palette.teal,palette.rose,palette.blue,palette.gold],borderColor:'#0c1b2d',borderWidth:3,hoverOffset:5}]},{cutout:'74%',plugins:{legend:{position:'bottom',labels:{color:'#adc7da',usePointStyle:true,boxWidth:8,padding:12}}}});
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live'),pregame=bets.filter(b=>b.liveBet!==true&&b.betType!=='live');
+ const done=arr=>arr.filter(b=>b.status==='Won'||b.status==='Lost'),net=arr=>done(arr).reduce((n,b)=>n+pl(b),0);
+ const rate=arr=>done(arr).length?(100*done(arr).filter(b=>b.status==='Won').length/done(arr).length).toFixed(1)+'%':'—';
+ draw('analyticsLiveVsPregame','bar',{labels:['Live betting','Pregame'],datasets:[{label:'Net profit / loss ($)',data:[net(live),net(pregame)],backgroundColor:[palette.teal,palette.violet],borderRadius:7,maxBarThickness:42}]},{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: $'+Number(c.parsed.x).toFixed(2)}}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
+ const summary=node('analyticsLiveVsPregameSummary');if(summary)summary.textContent='LIVE · '+live.length+' tickets / '+done(live).length+' settled / '+rate(live)+' win rate   |   PREGAME · '+pregame.length+' tickets / '+done(pregame).length+' settled / '+rate(pregame)+' win rate. Pending excluded from profit.';
+}
+function renderAnalytics(){
+ const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
+ if(!metrics||!books||!types||!recent)return;
+ const indicator=node('analyticsDataStatus');if(indicator)indicator.textContent=bets.length+' saved tickets in this browser · Updated '+new Date().toLocaleTimeString();
+ renderAnalyticsCharts();
+ const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
+ const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
+ const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const profitOf=arr=>arr.reduce((n,b)=>n+(b.status==='Won'?payoutFor(b)-(Number(b.stake)||0):b.status==='Lost'?-(Number(b.stake)||0):0),0);
+ const rate=arr=>{const w=arr.filter(b=>b.status==='Won').length;return arr.length?(100*w/arr.length).toFixed(1)+'%':'—'};
+ const make=(label,value)=>{const div=document.createElement('div');div.style.cssText='padding:14px;border:1px solid #2d8e9d;border-radius:10px;background:#0b2036';const a=document.createElement('div');a.style.cssText='font-size:12px;color:#a5c5d5';a.textContent=label;const v=document.createElement('div');v.style.cssText='font-size:23px;font-weight:800;margin-top:5px';v.textContent=value;div.append(a,v);return div};
+ metrics.replaceChildren(
+ make('Total tickets',String(bets.length)),make('Pending',String(bets.filter(b=>b.status==='Open').length)),
+ make('Win / Loss',won.length+' / '+lost.length),make('Win rate',rate(settled)),
+ make('Net profit',absMoney(profitOf(settled))),make('ROI',stakeOf(settled)?(100*profitOf(settled)/stakeOf(settled)).toFixed(1)+'%':'—'),
+ make('Total staked',money(stakeOf(bets.filter(b=>b.status!=='Void')))),make('Settled stake',money(stakeOf(settled)))
+ );
+ const renderGroups=(root,groups)=>{root.replaceChildren();for(const [name,arr] of groups){const done=arr.filter(b=>b.status==='Won'||b.status==='Lost');const row=document.createElement('div');row.style.cssText='padding:11px 2px;border-bottom:1px solid #244359;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap';const title=document.createElement('strong');title.textContent=name+' · '+arr.length+' bets';const stat=document.createElement('span');stat.textContent=done.length+' settled · '+rate(done)+' win · '+absMoney(profitOf(done));row.append(title,stat);root.append(row)}if(!groups.length)root.textContent='No tickets yet.'};
+ const byBook=new Map();for(const b of bets){const k=b.book||'Other';if(!byBook.has(k))byBook.set(k,[]);byBook.get(k).push(b)}renderGroups(books,[...byBook]);
+ renderGroups(types,[['Live',bets.filter(b=>b.liveBet===true||b.betType==='live')],['Pregame / regular',bets.filter(b=>b.liveBet!==true&&b.betType!=='live')]]);
+ recent.replaceChildren();if(!settled.length){recent.textContent='No settled bets yet. Mark a ticket Winner or Loser to start tracking results.'}else for(const b of settled.slice().reverse().slice(0,12)){const row=document.createElement('div');row.style.cssText='padding:10px 2px;border-bottom:1px solid #244359';row.textContent=(b.status==='Won'?'✓ ':'✕ ')+(b.selection||b.game||'Ticket')+' · '+(b.book||'Other')+' · '+absMoney(profitOf([b]));recent.append(row)}
+}
+function renderLiveRecord(){
+ const stats=node('liveRecordStats'),list=node('liveRecordTickets');
+ if(!stats||!list)return;
+ list.replaceChildren();
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live');
+ const wins=live.filter(b=>b.status==='Won'),losses=live.filter(b=>b.status==='Lost'),open=live.filter(b=>b.status==='Open');
+ const risk=[...wins,...losses].reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const net=wins.reduce((n,b)=>n+payoutFor(b)-(Number(b.stake)||0),0)-losses.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const score=node('liveRecordScore'),caption=node('liveRecordCaption');
+ if(score)score.textContent=wins.length+' W – '+losses.length+' L';
+ if(caption)caption.textContent=(wins.length+losses.length)+' settled live bets · '+open.length+' pending';
+ stats.replaceChildren();
+ for(const [label,value,cls] of [['Win rate',(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%','live-stat-blue'],['Net P/L',(net<0?'-':'')+money(Math.abs(net)),'live-stat-green'],['ROI',(risk?(100*net/risk).toFixed(1):'0.0')+'%','live-stat-violet'],['Pending',String(open.length),'live-stat-gold']]){const tile=document.createElement('div');tile.className='live-stat '+cls;const title=document.createElement('span');title.textContent=label;const val=document.createElement('strong');val.textContent=value;tile.append(title,val);stats.append(tile)}
+
+ if(!live.length){const p=document.createElement('p');p.className='notice';p.textContent='No live bets recorded yet. The screenshots you send next can be entered here as live bets.';list.append(p);return;}
+ for(const b of live.slice().reverse()){
+  const card=document.createElement('div');card.className='panel';card.style.cssText='padding:15px;border:1px solid #3dd6bd;border-radius:12px;background:linear-gradient(115deg,#061b30,#180d36)';
+  const title=document.createElement('strong');title.textContent=(b.book||'Sportsbook')+' · '+(b.game||'Live game');
+  const desc=document.createElement('p');desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const moneyline=document.createElement('div');moneyline.textContent='Stake '+money(b.stake)+' · Potential payout '+money(payoutFor(b))+' · '+b.status;
+  card.append(title,desc,moneyline);
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:9px;flex-wrap:wrap;margin-top:12px';
+  for(const [label,status,color] of [['✓ Winner','Won','#3dff93'],['✕ Loser','Lost','#ff6c87'],['↶ Pending','Open','#78baff']]){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.disabled=b.status===status;btn.style.cssText='padding:9px 14px;border-radius:8px;border:1px solid '+color+';background:#09162d;color:white;cursor:pointer';
+   btn.addEventListener('click',()=>{const prior=b.status;b.status=status;if(!persist()){b.status=prior;return;}renderBets();});
+   actions.append(btn);
+  }
+  card.append(actions);list.append(card);
+ }
+}
+function renderBets(){
+ const el=node('saved');el.replaceChildren();
+ const heading=document.createElement('h3');heading.textContent=`Your Saved Bets (${bets.length})`;el.append(heading);
+ if(!bets.length){const p=document.createElement('p');p.className='notice';p.textContent='No tickets saved. Upload a screenshot, paste a share link, or add a bet manually to begin.';el.append(p)}
+ bets.slice().reverse().forEach(b=>{
+  const row=document.createElement('div');row.className='saved-ticket';
+  const info=document.createElement('div');info.className='saved-ticket-info';
+  const first=document.createElement('strong');first.textContent=`${b.legs?.length>1?b.legs.length+'-Leg Parlay · ':''}${b.game||'Matchup unknown'} · ${b.book||'Other'}`;
+  const desc=document.createElement('div');desc.className='saved-ticket-selection';desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const summary=document.createElement('div');summary.className='saved-ticket-summary';summary.textContent=`Stake ${money(b.stake)} · Potential payout ${payoutFor(b)?money(payoutFor(b)):'Not entered'} · Odds ${ticketOdds(b)}`;
+  info.append(first,desc,summary);row.append(info);
+  const controls=document.createElement('div');controls.className='saved-ticket-actions';
+  const statusLabel=document.createElement('label');statusLabel.textContent='Result ';statusLabel.className='saved-ticket-status';
+  const select=document.createElement('select');select.setAttribute('aria-label','Ticket result');
+  for(const value of ['Open','Won','Lost','Void']){const o=document.createElement('option');o.value=value;o.textContent=value;if(value===b.status)o.selected=true;select.append(o)}
+  select.addEventListener('change',()=>{const old=b.status;b.status=select.value;if(!persist()){b.status=old;select.value=old;return}renderBets()});
+  statusLabel.append(select);controls.append(statusLabel);
+  const del=document.createElement('button');del.type='button';del.className='ticket-delete';del.textContent='Delete';del.title='Delete this saved ticket';
+  del.onclick=()=>{if(!confirm('Delete this ticket?'))return;const index=bets.findIndex(x=>x===b);bets.splice(index,1);if(!persist())bets.splice(index,0,b);renderBets()};
+  controls.append(del);row.append(controls);el.append(row);
+ });
+ node('resetAllBets').hidden=!bets.length;
+ renderDashboard();
+ renderLiveRecord();
+ renderAnalytics();
+}
+node('betForm').addEventListener('submit',e=>{
+ e.preventDefault();const form=e.currentTarget;
+ const val=id=>node(id).value.trim();
+ const b={game:val('game'),selection:val('selection'),odds:Number(val('odds')),stake:Number(val('stake')),book:val('book'),sport:val('sport'),status:val('status'),source:'Manual entry'};
+ if(!b.game||!b.selection||!Number.isFinite(b.stake)||b.stake<=0)return;
+ if(saveBet(b))form.reset();
+});
+node('resetAllBets').addEventListener('click',()=>{
+ if(!bets.length)return;
+ if(!confirm('Permanently delete ALL '+bets.length+' saved tickets from this browser? This cannot be undone.'))return;
+ const previous=bets;bets=[];if(!persist())bets=previous;renderBets();
+});
+renderBets();
+const fileInput=document.getElementById('slipFile'),slipStatus=document.getElementById('slipStatus'),slipPreview=document.getElementById('slipPreview'),slipReview=document.getElementById('slipReview');
+const escapeHTML=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function extractSlip(raw,filename){
+ const lines=raw.split(/\n/).map(x=>x.trim()).filter(Boolean);
+ const flat=raw.replace(/\s+/g,' ');
+ const book=/novig/i.test(raw)?'Novig':/draftkings|draft kings/i.test(raw)?'DraftKings':/fanduel/i.test(raw)?'FanDuel':/kalshi/i.test(raw)?'Kalshi':/polymarket/i.test(raw)?'Polymarket':'Other';
+ const money=(patterns)=>{for(const pattern of patterns){const m=flat.match(pattern);if(m)return Number(m[1].replace(/,/g,''));}return 0};
+ const stake=money([/(?:wager amount|total wager|total stake|amount|cost|risk|bet amount)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i,/(?:wager|stake)\s*:?\s*\$?([\d,]+(?:\.\d{1,2})?)/i]);
+ const payout=money([/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*(?:\$[\d,.]+\s+)?\$([\d,]+(?:\.\d{1,2})?)/i,/(?:total payout|potential payout|max payout|to pay|to win|payout)\s*:?\s*\$([\d,]+(?:\.\d{1,2})?)/i]);
+ const oddsMatch=flat.match(/(?:total odds|parlay odds|odds)\s*:?\s*([+-]\d{2,5})/i)||flat.match(/\b([+-]\d{3,5})\b/);
+ const ticketMatch=flat.match(/(?:bet id|ticket id|receipt id|wager id|bet number|reference|ID)\s*[:#]?\s*([A-Za-z0-9-]{6,})/i)||flat.match(/\b(DK\d{10,})\b/i);
+ const selections=[];
+ const add=(v)=>{v=v.trim().replace(/\s{2,}/g,' ');if(v.length>5&&!selections.includes(v))selections.push(v)};
+ // DraftKings: threshold is often on the line before the player's market.
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i], next=lines[i+1]||'';
+  if(/^\d+(?:\.\d+)?\+$/.test(line)&&/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)/i.test(next)){add(next+' '+line);i++;continue}
+  if(/^[A-Za-z][\w.' -]{2,} (?:receptions?|rushing yards?|receiving yards?|passing yards?|touchdowns?|points?|assists?)\s+\d+(?:\.\d+)?\+?$/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}:\s*(?:\d+\+|yes|over|under|anytime)/i.test(line)){add(line);continue}
+  if(/^[A-Za-z][\w.' -]{2,}\s+(?:\d+\+|over|under)\s+(?:yes|touchdowns?|yards?|receptions?)/i.test(line)){add(line);continue}
+ }
+ // Novig's compact share cards list selections in one long comma-separated sentence.
+ for(const chunk of lines.filter(x=>/,\s*[A-Z]/.test(x)&&/(?:yes|yards|td|receptions)/i.test(x)).flatMap(x=>x.split(/,\s*(?=[A-Z])/))) {
+  if(/(?:\d+\+|yes|over|under)/i.test(chunk)&&!/parlay points/i.test(chunk))add(chunk);
+ }
+ // Generic OCR fallback, avoiding headers, odds, and transaction totals.
+ if(!selections.length)for(const line of lines){
+  if(/(?:over|under|anytime|touchdown|receptions?|receiving|rushing|yards?|assists?|points?|moneyline|\d+\+|to score)/i.test(line)
+   &&!/(?:potential payout|total wager|cash out|parlay points|trade credit|share|matched|bet placed|portfolio|to pay|total payout|stake|cost)/i.test(line))add(line);
+ }
+ return {book,stake,payout,odds:oddsMatch?Number(oddsMatch[1]):0,ticket:ticketMatch?.[1]||'',selections,raw,filename};
+}
+function field(id,label,value,type='text'){return `<label>${label}<input data-field="${id}" type="${type}" value="${escapeHTML(value)}"></label>`}
+function showReview(result,index){
+ const id='slip-'+index,box=document.createElement('article');box.className='slip-review-card';box.dataset.slip=id;
+ const legs=result.selections.length?result.selections:[''];
+ box.innerHTML=`<strong>${escapeHTML(result.filename)}</strong> · ${escapeHTML(result.book)}<p class="import-warning">OCR can misread player names, odds, and amounts. Verify every field against your screenshot before importing. No bet is saved automatically.</p>
+ <div class="fields">${field('game','Game (e.g. TN vs CIN)','')}${field('ticket','Ticket ID (optional)',result.ticket)}${field('stake','Total ticket stake ($)',result.stake,'number')}${field('payout','Potential total payout ($)',result.payout,'number')}${field('odds','Ticket odds (American)',result.odds,'number')}<label>Sportsbook<select data-field="book">${['DraftKings','Novig','FanDuel','Kalshi','Polymarket','Other'].map(b=>`<option ${b===result.book?'selected':''}>${b}</option>`).join('')}</select></label><label>Sport<select data-field="sport">${['NFL','NBA','NCAAF','MLB','Other'].map(v=>`<option ${v===(result.sport||inferredSport(result.raw))?'selected':''}>${v}</option>`).join('')}</select></label></div>
+ <p class="notice">Selections / legs (one per line). Edit or remove any incorrect OCR text:</p><textarea data-field="legs">${escapeHTML(legs.join('\n'))}</textarea><details><summary>View extracted text</summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere">${escapeHTML(result.raw)}</pre></details><button type="button" class="primary" data-import="${id}">Import reviewed ticket</button><div class="notice" data-message></div>`;
+ slipReview.append(box);
+ box.querySelector('[data-import]').onclick=()=>{
+  const get=n=>box.querySelector(`[data-field="${n}"]`).value.trim();
+  const selections=get('legs').split('\n').map(x=>x.trim()).filter(Boolean);
+  const game=get('game')||'Matchup not identified';
+  const stake=Number(get('stake')),odds=Number(get('odds'));
+  if(!selections.length||!Number.isFinite(stake)||stake<=0){box.querySelector('[data-message]').textContent='Enter at least one selection and a valid stake.';return}
+  const ticket=get('ticket'),book=get('book');
+  const duplicate=bets.some(b=>ticket&&b.ticket===ticket&&b.book===book);
+  if(duplicate){box.querySelector('[data-message]').textContent='This ticket ID has already been imported.';return}
+  // One ticket record retains every leg; stake is never duplicated across legs.
+  if(!saveBet({game,selection:selections.join(' | '),legs:selections,odds,stake,book,sport:get('sport')==='Other'?inferredSport(game+' '+selections.join(' ')):get('sport'),status:'Open',ticket,payout:Number(get('payout'))||0,source:box.dataset.sourceUrl?'Share link':'Screenshot OCR',sourceUrl:box.dataset.sourceUrl||'',importedAt:new Date().toISOString()}))return;
+  box.querySelector('[data-message]').textContent='Ticket imported! '+selections.length+' leg(s) saved together as one wager.';
+  box.querySelector('[data-import]').disabled=true;
+ };
+}
+fileInput.addEventListener('change',async()=>{
+ const files=[...fileInput.files];slipReview.innerHTML='';slipPreview.innerHTML='';
+ if(!files.length)return;
+ if(!window.Tesseract){slipStatus.textContent='OCR library could not load. Connect to the internet and reopen this page to scan screenshots.';return}
+ slipStatus.textContent='Preparing image reader…';
+ let worker;
+ try{
+  worker=await Tesseract.createWorker('eng');
+  for(let i=0;i<files.length;i++){
+   const f=files[i];if(!f.type.startsWith('image/'))continue;
+   slipStatus.textContent=`Reading screenshot ${i+1} of ${files.length}: ${f.name}…`;
+   const image=document.createElement('img');image.alt='Uploaded bet slip';image.src=URL.createObjectURL(f);image.onload=()=>URL.revokeObjectURL(image.src);slipPreview.append(image);
+   const output=await worker.recognize(f);
+   showReview(extractSlip(output.data.text,f.name),i);
+  }
+  slipStatus.textContent='Reading complete. Review each ticket and click Import reviewed ticket.';
+ }catch(err){slipStatus.textContent='Unable to read the screenshot: '+(err.message||String(err))+'. You can still enter the bet manually.'}
+ finally{if(worker)await worker.terminate().catch(()=>{})}
+});
+
+
+
+
+
+const receivedShareLinks=["https://polymarket.us/combos/9hZrUFhVSALF1ps6Q5Vw?referrer=bumpyhawk1600", "https://kalshi.com/markets/kxmvecrosscategory/minnesota-vs-detroit/KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026EKOQCFOGKRZTJJEH-VAPPLVMFW", "https://kalshi.com/markets/kxmvecrosscategory/tennessee-vs-cincinnati/KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY-S2026YO6EHXXZYIUSKVRC-NABLAJ433", "https://kalshi.com/markets/kxmvecrosscategory0/arizona-vs-dallas/KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026SV7O2T4ZH67WIQUU-RGFJDMGAO", "https://kalshi.com/markets/kxmvecrosscategory0/tennessee-vs-cincinnati/KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB?utm_source=kalshiapp_eventdetails&marketTicker=KXMVECROSSCATEGORY0-S2026MU5YLMPUDKQT7LLB-PE5F4BXYU", "https://go.novig.co/JHQQ/f23c191ebf389ccd", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d2eec35200f2%2C01a17873-e29a-7921-8467-774638b6a8fa%2C01a17ff7-3215-77b3-bbd0-4fed6e4f3bcd%2C01a17ff7-3216-7090-bde0-a83235785813%2C01a17ff7-33da-7ca1-810a-547537d16332%2C01a1802d-6774-7df1-85f9-fa55f007f6f4%2C01a1807f-c6b1-72f1-94ce-d6413e735114%2C01a180b6-ea02-72c1-9509-a84ef39c9ce1%2C01a183d3-6b90-7f00-ba97-fbe9c58e2a17%2C01a1851c-ea91-74e1-9365-65176ae898f5", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a17c87-8bd7-77c0-b691-cae4785c3694%2C01a184ae-f554-7f10-a7b5-8df93aba262f", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a1772a-8ac3-7583-9652-d1699de8b06d%2C01a17ff7-3215-77b3-bbd0-4e05dd5a8c37", "https://go.novig.co/JHQQ/16bf5580d7ae5546", "https://novig.onelink.me/JHQQ?pid=novig_app_share&c=Novig%20App%20Order%20Share&af_xp=custom&deep_link_value=%2Fevents%2F01a15b07-8748-7c32-9291-8f24a0be4b83%2C01a15b07-8931-7500-a806-e0d935ed1373%2C01a15b22-a83c-7cd0-b36d-f42d616de596%2C01a15b22-ab0a-74f2-91e9-65cc92fbe8a8"];
+document.querySelectorAll('.link-review-btn').forEach(button=>button.addEventListener('click',()=>{
+ const link=receivedShareLinks[Number(button.dataset.linkIndex)];
+ document.getElementById('betShareUrl').value=link;
+ document.getElementById('readShareLink').click();
+}));
+
+document.getElementById('readShareLink').addEventListener('click',()=>{
+ const input=document.getElementById('betShareUrl'),status=document.getElementById('shareStatus');
+ let url;try{url=new URL(input.value.trim());if(!/^https?:$/.test(url.protocol))throw Error('bad protocol')}
+ catch{status.textContent='Enter a valid https:// bet share link.';return}
+ const host=url.hostname.toLowerCase(),path=url.pathname;
+ const book=host.includes('novig')?'Novig':host.includes('draftkings')?'DraftKings':host.includes('fanduel')?'FanDuel':host.includes('kalshi')?'Kalshi':host.includes('polymarket')?'Polymarket':'Other';
+ const deep=url.searchParams.get('deep_link_value')||'';
+ const eventIds=[...new Set((deep+','+path).match(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi)||[])];
+ const ticket=url.searchParams.get('ticket_id')||url.searchParams.get('bet_id')||'';
+ const result={book,stake:0,payout:0,odds:0,ticket,selections:[],raw:'Share URL: '+url.href+'\nDeep link: '+deep+'\nEvent IDs: '+eventIds.join(', '),filename:'Shared '+book+' link'};
+ showReview(result,'url-'+Date.now());
+ const card=slipReview.lastElementChild;
+ card.querySelector('[data-field="book"]').value=book;
+ // The original URL is retained as provenance on the review card and saved ticket.
+ card.dataset.sourceUrl=url.href;
+ status.textContent=eventIds.length
+  ? `Found ${eventIds.length} event identifier(s) in this ${book} link. It does not expose your wager amount or all selections. Enter those details in the review card, then import.`
+  : `Recognized ${book} link. Review and enter the selections, stake, and payout before saving; the website cannot read private sportsbook accounts from a share URL.`;
+ card.scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+
+function filterBoard(sport){
+ const rows=[...document.querySelectorAll('#boardRows .bet-row')];
+ rows.forEach(row=>{row.hidden=!(sport==='ALL'||row.dataset.sport===sport)});
+ const has=rows.some(row=>!row.hidden),empty=document.getElementById('boardEmpty');
+ empty.hidden=has;
+ if(!has)empty.innerHTML=rows.length?'No pending bets for this sport. Choose ALL to see your saved open tickets.':'No bets saved yet. Open <button type="button" class="empty-import-link" data-go="Slip Importer">Slip Importer</button> to add your first ticket.';
+}
+document.querySelectorAll('[data-sport]').forEach(x=>x.addEventListener('click',()=>{document.querySelectorAll('[data-sport]').forEach(b=>b.classList.toggle('active',b===x));filterBoard(x.dataset.sport)}));
+document.querySelector('[data-open-profile]').addEventListener('click',()=>document.getElementById('profilePanel').classList.toggle('show'));
+document.getElementById('nav').addEventListener('click',e=>{if(e.target.closest('[data-go="Slip Importer"]')){setTimeout(()=>document.getElementById('slipFile').closest('.slip-import').scrollIntoView({behavior:'smooth'}),80)}});
+</script>
+<script id="betlab-live-nfl-script">
+(()=>{'use strict';
+const api='https://site.api.espn.com/apis/site/v2/sports/football/nfl/';
+const el=id=>document.getElementById(id);
+const names=['Josh Allen','Derrick Henry','James Cook','Lamar Jackson','Zay Flowers',"Ja'Marr Chase",'Chase Brown','Kenneth Walker','Patrick Mahomes','Javonte Williams','Tee Higgins','Bijan Robinson','Jahmyr Gibbs','Trey McBride','Brock Bowers','Mike Gesicki','Amon-Ra St. Brown'];
+const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const knownTeams={ 'Josh Allen':'BUF','Derrick Henry':'BAL','James Cook':'BUF','Lamar Jackson':'BAL','Zay Flowers':'BAL',"Ja'Marr Chase":'CIN','Chase Brown':'CIN','Kenneth Walker':'SEA','Patrick Mahomes':'KC','Javonte Williams':'DAL','Tee Higgins':'CIN','Bijan Robinson':'ATL','Jahmyr Gibbs':'DET','Trey McBride':'ARI','Brock Bowers':'LV','Mike Gesicki':'CIN','Amon-Ra St. Brown':'DET'};
+let busy=false;
+const text=(tag,content,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;e.textContent=content;return e};
+function extractLegs(){const found=new Map();for(const b of (typeof bets!=='undefined'?bets:[])){if(b.status!=='Open')continue;for(const leg of b.legs||[b.selection]){const name=names.find(n=>norm(leg).includes(norm(n)));if(!name)continue;const line=String(leg);let m=line.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i);let type=m?'receivingYards':null;
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||line.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=line.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+if(!type)continue;
+const key=name+'|'+type+'|'+m[1];found.set(key,{name,type,target:Number(m[1]),label:line,team:knownTeams[name]})}}
+return [...found.values()]}
+function playerRows(data){
+const map=new Map();
+const readNumber=v=>{const n=Number(String(v??'').replace(/,/g,''));return Number.isFinite(n)?n:null};
+for(const group of data?.boxscore?.players||[]){
+const team=group.team?.abbreviation||'';
+for(const section of group.statistics||[]){
+const category=((section.name||'')+' '+(section.displayName||'')).toLowerCase();
+const keys=section.keys?.length?section.keys:(section.labels||[]);
+for(const entry of section.athletes||[]){
+const name=entry.athlete?.displayName||entry.athlete?.fullName||'';
+const id=norm(name);if(!id)continue;
+let obj=map.get(id);if(!obj){obj={name,team,receivingYards:0,rushingYards:0,receptions:0,rushingTD:0,receivingTD:0};map.set(id,obj)}
+const values=entry.stats||[];
+for(let j=0;j<values.length;j++){
+const k=String(keys[j]||'').toLowerCase().replace(/[^a-z]/g,''),v=readNumber(values[j]);if(v===null)continue;
+if(category.includes('receiv')){
+if(['yds','yards','receivingyards','recyds'].includes(k)||(!k&&j===1))obj.receivingYards=v;
+if(['rec','receptions'].includes(k)||(!k&&j===0))obj.receptions=v;
+if(['td','touchdowns','receivingtouchdowns'].includes(k)||(!k&&j===3))obj.receivingTD=v;
+}
+if(category.includes('rush')){
+if(['yds','yards','rushingyards','rushyds'].includes(k)||(!k&&j===1))obj.rushingYards=v;
+if(['td','touchdowns','rushingtouchdowns'].includes(k)||(!k&&j===3))obj.rushingTD=v;
+}
+}
+}
+}
+}
+return map;
+}
+function updateInlineProps(stats,hasGames){
+const parse=line=>{const name=names.find(n=>norm(line).includes(norm(n)));if(!name)return null;const s=String(line);let m=s.match(/(\d+)\s*\+?\s*(?:receiving|rec)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:receiving|rec)/i),type=m?'receivingYards':null;
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:rushing|rush)\s*yards/i)||s.match(/(\d+)\s*\+?\s*yards?\s*(?:rushing|rush)/i);if(m)type='rushingYards'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:receptions|catches|rec\b)/i);if(m)type='receptions'}
+if(!type){m=s.match(/(\d+)\s*\+?\s*(?:touchdowns|anytime\s*td|td\b)/i);if(m)type='touchdowns'}
+return type?{name,type,target:Number(m[1])}:null};
+const types={receivingYards:'receiving yards',rushingYards:'rushing yards',receptions:'receptions',touchdowns:'touchdowns'};
+for(const b of (typeof bets!=='undefined'?bets:[])){const box=[...document.querySelectorAll('#boardRows .bet-prop-stack')].find(e=>e.dataset.betId===b.id);if(!box)continue;box.replaceChildren();const unique=new Set();
+for(const line of b.legs||[b.selection]){const leg=parse(line);if(!leg)continue;const key=leg.name+leg.type+leg.target;if(unique.has(key))continue;unique.add(key);const p=stats.get(norm(leg.name));const value=p&&(!p.team||p.team===knownTeams[leg.name])?(leg.type==='touchdowns'?p.rushingTD+p.receivingTD:p[leg.type]):null;
+const outer=text('div','','bet-prop'),label=text('div','','bet-prop-label');label.append(text('span',leg.name+' · '+types[leg.type]),text('b',value===null?'— / '+leg.target:value+' / '+leg.target));const track=text('div','','bet-prop-track'),fill=text('div','','bet-prop-fill');fill.style.width=value===null?'0%':Math.min(100,100*value/leg.target)+'%';track.append(fill);outer.append(label,track,text('div',value===null?(hasGames?'Stats pending':'Waiting for kickoff'):value>=leg.target?'✓ Target reached':'Live progress','bet-prop-hint'));box.append(outer)}
+if(!unique.size){box.append(text('div','Live data not yet available for these selections','bet-prop-hint'))}
+}}
+function showLegs(legs,stats,hasGames){const root=el('betlabLiveLegs');root.replaceChildren();for(const l of legs){const p=stats.get(norm(l.name));const valid=!!p&&(!p.team||p.team===l.team);const value=valid?(l.type==='touchdowns'?(p.rushingTD+p.receivingTD):p[l.type]):null;
+const card=text('div','', 'live-leg');card.append(text('strong',l.name+' · '+l.target+'+ '+({receivingYards:'receiving yds',rushingYards:'rushing yds',receptions:'receptions',touchdowns:'anytime TDs'}[l.type])),text('small',value===null?(hasGames?'Stat not yet available':'Awaiting game data'):(value+' / '+l.target+' · '+(value>=l.target?'TARGET REACHED':'In progress'))));
+const bar=text('div','','live-progress');const fill=document.createElement('i');fill.style.width=value===null?'0%':Math.min(100,Math.max(0,value/l.target*100))+'%';bar.append(fill);card.append(bar);root.append(card)}if(!legs.length)root.append(text('small','No open NFL player props found.'));latestStats=stats;latestGames=hasGames;updateInlineProps(stats,hasGames)}
+async function refresh(){if(busy)return;busy=true;const status=el('betlabLiveStatus'),button=el('betlabLiveRefresh');button.disabled=true;status.textContent='Updating scores and player stats…';
+try{const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const date=['year','month','day'].map(k=>parts.find(p=>p.type===k)?.value||'').join('');
+const response=await fetch(api+'scoreboard?dates='+date,{cache:'no-store'});if(!response.ok)throw Error('scoreboard unavailable');const board=await response.json();const events=board.events||[],root=el('betlabLiveGames');root.replaceChildren();
+for(const event of events){const comp=event.competitions?.[0]||{},teams=comp.competitors||[],away=teams.find(t=>t.homeAway==='away'),home=teams.find(t=>t.homeAway==='home');if(!home||!away)continue;const card=text('div','','live-game');card.append(text('strong',(away.team?.abbreviation||'AWAY')+' '+(away.score||'0')+' – '+(home.score||'0')+' '+(home.team?.abbreviation||'HOME')),text('small',event.status?.type?.shortDetail||event.status?.type?.description||event.status?.displayClock||'Scheduled'));root.append(card)}
+if(!events.length)root.append(text('small','No NFL games scheduled today.'));
+const legs=extractLegs(),teams=new Set(legs.map(l=>l.team));const relevant=events.filter(e=>e.competitions?.[0]?.competitors?.some(t=>teams.has(t.team?.abbreviation)));const maps=await Promise.allSettled(relevant.slice(0,16).map(async e=>{const r=await fetch(api+'summary?event='+encodeURIComponent(e.id),{cache:'no-store'});if(!r.ok)throw Error('summary HTTP '+r.status);return playerRows(await r.json())}));const stats=new Map();for(const item of maps)if(item.status==='fulfilled')for(const [k,v] of item.value)stats.set(k,v);
+showLegs(legs,stats,events.length>0);status.textContent='ESPN game feed · '+relevant.length+' matched games · '+stats.size+' player stat lines · Updated '+new Date().toLocaleTimeString()+' · Auto-refresh every 60 seconds · Informational only; does not settle tickets'+(maps.some(x=>x.status==='rejected')?' · Some player stats unavailable':'');
+}catch(err){status.textContent='Live stats error: '+String(err?.message||err)+' · Tap Refresh to retry.';showLegs(extractLegs(),new Map(),false)}
+finally{busy=false;button.disabled=false}}
+let latestStats=new Map(),latestGames=false;
+ document.addEventListener('betlab-board-rendered',()=>updateInlineProps(latestStats,latestGames));
+ el('betlabLiveRefresh')?.addEventListener('click',refresh);updateInlineProps(new Map(),false);refresh();setInterval(()=>{if(!document.hidden)refresh()},60000);
+})();
+</script><div id="buildVersion" style="position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:2147483647;padding:7px 13px;border-radius:0 0 10px 10px;background:#063c46;border:1px solid #51d7c8;border-top:0;color:#e9fffc;font:700 11px system-ui;box-shadow:0 5px 16px #0009;pointer-events:none">BETIQ · DESIGN UPDATE 7CC557F · LIVE CHECK</div></body></html>+v}}}})};
+ const settledLive=settled.filter(b=>b.liveBet===true||b.betType==='live');
+ const settledPregame=settled.filter(b=>b.liveBet!==true&&b.betType!=='live');
+ trendFor('analyticsLiveTrendCanvas','analyticsLiveTrendHeadline',settledLive,'#ff943b','rgba(255,148,59,.30)');
+ trendFor('analyticsPregameTrendCanvas','analyticsPregameTrendHeadline',settledPregame,'#ffdc42','rgba(255,220,66,.27)');
  const books=new Map();for(const b of settled){const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
  draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?palette.teal:palette.rose),borderRadius:5,maxBarThickness:25}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
  draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:[palette.teal,palette.rose,palette.blue,palette.gold],borderColor:'#0c1b2d',borderWidth:3,hoverOffset:5}]},{cutout:'74%',plugins:{legend:{position:'bottom',labels:{color:'#adc7da',usePointStyle:true,boxWidth:8,padding:12}}}});
