@@ -2,59 +2,54 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>BetIQ Pro — Personal Betting Analytics</title>
-<link rel="stylesheet" href="styles.css?v=20261101g">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#05070f">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="site-header">
-  <div class="util-strip">
-    <div class="wrap util-in">
-      <span>Personal Betting Analytics</span>
-      <span class="util-right">Local-first · Your data stays in your browser</span>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">📈 BetIQ <span>Pro</span></div>
+    <div class="logo-sub">Personal Betting Analytics</div>
+    <button class="nav-item active" data-nav="dashboard">🏠 Dashboard</button>
+    <button class="nav-item" data-nav="tracker">🎟️ Bet Tracker</button>
+    <button class="nav-item" data-nav="upload">⬆️ Upload Slip</button>
+    <button class="nav-item" data-nav="analytics">📊 Analytics</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Performance</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Players</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Parlays</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Markets</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Odds</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Sportsbooks</button>
+    <button class="nav-item nav-sub" data-nav="analytics">Trends &amp; Patterns</button>
+    <button class="nav-item" data-nav="insights">🧠 AI Insights</button>
+    <button class="nav-item" data-nav="bankroll">🏦 Bankroll &amp; Cash Flow</button>
+    <button class="nav-item" data-nav="reports">📄 Reports</button>
+    <button class="nav-item" data-nav="settings">⚙️ Settings</button>
+    <div class="ai-card">
+      <div style="font-size:26px">🧠</div>
+      <h4>AI Betting Analyst</h4>
+      <p>Get personalized insights, find trends, and test strategies — from your real data only.</p>
+      <button class="btn" data-nav="insights" style="width:100%">Ask BetIQ AI ✨</button>
     </div>
-  </div>
-  <div class="wrap header-in">
-    <button type="button" class="site-logo" data-nav="dashboard">📈 BetIQ <span>Pro</span></button>
-    <nav class="site-nav" aria-label="Primary">
-      <button type="button" class="nav-link active" data-nav="dashboard">🏠 Dashboard</button>
-      <button type="button" class="nav-link" data-nav="tracker">🎟️ Bet Tracker</button>
-      <button type="button" class="nav-link" data-nav="upload">⬆️ Upload Slip</button>
-      <button type="button" class="nav-link" data-nav="analytics">📊 Analytics</button>
-      <button type="button" class="nav-link" data-nav="insights">🧠 AI Insights</button>
-      <button type="button" class="nav-link" data-nav="bankroll">🏦 Bankroll &amp; Cash Flow</button>
-      <button type="button" class="nav-link" data-nav="reports">📄 Reports</button>
-      <button type="button" class="nav-link" data-nav="settings">⚙️ Settings</button>
-    </nav>
-  </div>
-  <div class="wrap sub-nav" aria-label="Analytics sections">
-    <span class="sub-label">Analytics:</span>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Performance</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Players</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Parlays</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Markets</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Odds</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Sportsbooks</button>
-    <button type="button" class="nav-link nav-sub" data-nav="analytics">Trends &amp; Patterns</button>
-  </div>
-</header>
+  </aside>
 
-<main class="site-main">
-  <div class="wrap">
-    <div class="page-head">
+  <main class="main">
+    <div class="topbar">
       <div>
         <h1>👑 <span id="greeting">Good Evening</span></h1>
         <div class="sub">Here's your betting performance and key insights — computed from your tracked tickets only.</div>
       </div>
-      <div class="page-tools">
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
         <select id="filter-range" style="width:auto"><option>All Time</option></select>
-        <select id="filter-book-top" style="width:auto"><option value="">All Sportsbooks</option><option>DraftKings</option><option>Novig</option><option>Polymarket</option></select>
+        <select id="filter-book-top" style="width:auto"><option value="">All Sportsbooks</option><option>DraftKings</option><option>Novig</option></select>
       </div>
     </div>
 
     <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
-      <h2 class="page-title">Dashboard</h2>
       <div class="kpis">
         <div class="kpi"><div class="label">↗ Net Profit</div><div class="value" id="kpi-profit">—</div><div class="foot" id="kpi-roi">ROI: —</div></div>
         <div class="kpi"><div class="label">🪙 Total Wagered</div><div class="value" id="kpi-wagered">—</div><div class="foot">Settled tickets only</div></div>
@@ -76,36 +71,21 @@
           <h3 style="margin-top:20px">Sportsbook Performance</h3>
           <div id="dash-book"></div>
         </div>
-        <div class="panel span12 ai-panel">
-          <div class="ai-icon">🧠</div>
-          <div class="ai-body">
-            <h3>AI Betting Analyst</h3>
-            <p>Get personalized insights, find trends, and test strategies — from your real data only.</p>
-          </div>
-          <button type="button" class="btn" data-nav="insights">Ask BetIQ AI ✨</button>
-        </div>
       </div>
     </section>
 
     <!-- BET TRACKER -->
     <section class="view" id="view-tracker">
-      <h2 class="page-title">Bet Tracker</h2>
       <div class="filters">
         <input id="flt-search" type="search" placeholder="Search player, market, book…">
-        <select id="flt-book"><option value="">All books</option><option>DraftKings</option><option>Novig</option><option>Polymarket</option><option>Other</option></select>
+        <select id="flt-book"><option value="">All books</option><option>DraftKings</option><option>Novig</option><option>Other</option></select>
         <select id="flt-status"><option value="">All statuses</option><option>pending</option><option>won</option><option>lost</option><option>void</option><option>cashed_out</option><option>partial</option></select>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-        <button type="button" class="btn secondary" id="live-demo-btn">▶ Live demo: synthetic game (in progress → final)</button>
-        <span class="small muted">Demo only — synthetic players and stats, not a provider feed and never applied to your real tickets.</span>
-      </div>
-      <div class="msg" id="live-msg"></div>
       <div id="ticket-list"></div>
     </section>
 
     <!-- UPLOAD SLIP -->
     <section class="view" id="view-upload">
-      <h2 class="page-title">Upload Slip</h2>
       <div class="grid">
         <div class="panel span6">
           <h3>⬆️ Upload Slip Screenshot</h3>
@@ -119,10 +99,7 @@
           <h3>Review &amp; Save Ticket</h3>
           <form id="ticket-form">
             <div class="form-grid">
-              <div><label>Sportsbook</label><select id="f-book"><option>DraftKings</option><option>Novig</option><option>Polymarket</option><option>Other</option></select></div>
-              <div><label>Polymarket market (positions only)</label><input id="f-posdesc" type="text" placeholder="e.g. Player 110+ receiving yards"></div>
-              <div><label>Position side</label><select id="f-side"><option value="YES">YES</option><option value="NO">NO</option><option value="">Combo / none</option></select></div>
-              <div><label>Position status</label><select id="f-posstatus"><option value="pending">Pending</option><option value="won">Won</option><option value="lost">Lost</option></select></div>
+              <div><label>Sportsbook</label><select id="f-book"><option>DraftKings</option><option>Novig</option><option>Other</option></select></div>
               <div><label>External ticket ID (optional)</label><input id="f-extid" type="text" placeholder="From the slip"></div>
               <div><label>Date placed</label><input id="f-date" type="date" required></div>
               <div><label>Stake ($)</label><input id="f-stake" type="number" step="0.01" min="0" required></div>
@@ -130,7 +107,6 @@
               <div><label>Odds (optional)</label><input id="f-odds" type="text" placeholder="+436"></div>
               <div><label>Potential payout ($)</label><input id="f-payout" type="number" step="0.01" min="0" required></div>
             </div>
-            <p class="small muted">Polymarket? Pick Polymarket as the sportsbook, fill in the market description, side and status above, plus stake (= cost) and payout — legs are ignored for positions, and the stake is recorded as cash.</p>
             <label>Legs</label>
             <div id="leg-rows"></div>
             <button type="button" class="btn secondary" id="add-leg">+ Add leg</button>
@@ -143,7 +119,6 @@
 
     <!-- ANALYTICS -->
     <section class="view" id="view-analytics">
-      <h2 class="page-title">Analytics</h2>
       <div class="grid">
         <div class="panel span6"><h3>Parlay Performance (by leg count)</h3><div id="an-parlay"></div></div>
         <div class="panel span6"><h3>Sportsbook Performance</h3><div id="an-book"></div></div>
@@ -155,14 +130,12 @@
 
     <!-- AI INSIGHTS -->
     <section class="view" id="view-insights">
-      <h2 class="page-title">AI Insights</h2>
       <div class="panel"><h3>🧠 AI Insights — from your data only</h3><div id="full-insights"></div>
       <p class="small muted">Insights are rules over your settled tickets (see settlement.mjs generateInsights). Each one carries its sample size and a confidence note. No tendencies are invented, and nothing is claimed from pending bets.</p></div>
     </section>
 
     <!-- BANKROLL -->
     <section class="view" id="view-bankroll">
-      <h2 class="page-title">Bankroll &amp; Cash Flow</h2>
       <div class="grid">
         <div class="panel span6"><h3>Bankroll &amp; Cash Flow</h3><div id="bankroll-summary"></div></div>
         <div class="panel span6">
@@ -181,7 +154,6 @@
 
     <!-- REPORTS -->
     <section class="view" id="view-reports">
-      <h2 class="page-title">Reports</h2>
       <div class="panel"><h3>📄 Reports</h3>
         <p class="small muted">Export every tracked ticket (one row per ticket, legs joined) as CSV.</p>
         <button class="btn" id="csv-btn">Download CSV</button>
@@ -191,37 +163,29 @@
 
     <!-- SETTINGS -->
     <section class="view" id="view-settings">
-      <h2 class="page-title">Settings</h2>
       <div class="panel"><h3>⚙️ Settings</h3>
         <label>Starting bankroll ($)</label>
         <input id="s-bankroll" type="number" step="0.01" style="max-width:260px">
         <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn" id="s-save">Save settings</button>
-          <button class="btn secondary" id="s-reseed">Reset to test fixtures</button>
+          <button class="btn secondary" id="s-reseed">Reset all data</button>
           <button class="btn danger" id="s-clear">Clear all data</button>
         </div>
         <p class="small muted">Data is stored locally in this browser (localStorage key <code>betiq_v1</code>) in this MVP. The Supabase schema in <code>supabase/schema.sql</code> targets a new separate BetIQ project and is not wired up yet.</p>
       </div>
     </section>
-  </div>
-</main>
+  </main>
+</div>
 
-<footer class="site-footer">
-  <div class="wrap foot-in">
-    <div>
-      <div class="foot-logo">📈 BetIQ <span>Pro</span></div>
-      <div class="small muted">Personal Betting Analytics — every figure on this site is computed locally from your tracked tickets.</div>
-    </div>
-    <nav class="foot-nav" aria-label="Footer">
-      <button type="button" class="foot-link" data-nav="dashboard">Dashboard</button>
-      <button type="button" class="foot-link" data-nav="tracker">Bet Tracker</button>
-      <button type="button" class="foot-link" data-nav="upload">Upload Slip</button>
-      <button type="button" class="foot-link" data-nav="reports">Reports</button>
-      <button type="button" class="foot-link" data-nav="settings">Settings</button>
-    </nav>
-  </div>
-</footer>
+<nav class="bottom-nav">
+  <button data-nav="dashboard" class="active"><span>🏠</span>Home</button>
+  <button data-nav="tracker"><span>🎟️</span>Bets</button>
+  <button data-nav="upload"><span>⬆️</span>Upload</button>
+  <button data-nav="analytics"><span>📊</span>Stats</button>
+  <button data-nav="bankroll"><span>🏦</span>Bank</button>
+  <button data-nav="settings"><span>⚙️</span>Settings</button>
+</nav>
 
-<script type="module" src="betiq.js?v=20261101g"></script>
+<script type="module" src="betiq.js"></script>
 </body>
 </html>
