@@ -319,6 +319,15 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <div id="liveTicketNotice" style="border:1px solid #32e7a1;border-radius:10px;background:#071c30;padding:12px;margin:10px 0;color:#e8fff5;font-weight:700">🔴 7 Polymarket live tickets imported for Nov 1 · Scroll below for the pending tickets, or select Live Record in the menu. Mark each Winner or Loser yourself.</div>
 <div id="betlabLive" aria-live="polite"><div class="live-head"><span>● LIVE NFL GAME & PROP TRACKER</span><button type="button" id="betlabLiveRefresh">↻ Refresh</button></div><div class="live-sub" id="betlabLiveStatus">Connecting to live NFL scores…</div><div class="live-games" id="betlabLiveGames"></div><div class="live-legs" id="betlabLiveLegs"></div></div>
 <div class="table-head"><span>PLAYER / SELECTION</span><span>ODDS</span><span>CONFIDENCE</span><span>STAKE</span><span>TO WIN</span><span></span></div>
+<div id="jaydenPregamePinned" style="margin:12px 0;padding:15px;border:2px solid #38f5aa;border-radius:12px;background:#071d35;color:#fff">
+<div style="font-size:12px;color:#73ffb0;font-weight:800;margin-bottom:5px">PREGAME · POLYMARKET · NOV 1</div>
+<div style="font-weight:800;font-size:17px">Jayden Daniels — 1+ touchdowns · Yes</div>
+<div style="font-size:12px;color:#b9d8ef;margin-top:5px">Eagles vs Commanders · Your stake $6.00 · Potential payout $20.39 · 100% yours</div>
+<div id="jaydenPregamePinnedStatus" style="margin-top:7px;font-weight:700">Pending</div>
+<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+<button type="button" id="jaydenPregamePinnedWin" style="padding:10px 15px;border-radius:8px;border:1px solid #39f99c;background:#082e25;color:white;font-weight:800">✓ Winner</button>
+<button type="button" id="jaydenPregamePinnedLose" style="padding:10px 15px;border-radius:8px;border:1px solid #ff6c8e;background:#36101c;color:white;font-weight:800">✕ Loser</button>
+</div></div>
 <div id="boardRows"></div><div class="board-empty" id="boardEmpty">No bets saved yet. Open <button type="button" class="empty-import-link" data-go="Slip Importer">Slip Importer</button> to add your first ticket.</div></section>
 <aside class="right-panels"><section class="right-panel"><h3 class="right-title">▥ PERFORMANCE</h3><div class="bars" id="performanceBars"><div class="bar" style="height:0"></div><div class="bar" style="height:0"></div><div class="bar" style="height:0"></div><div class="bar" style="height:0"></div><div class="bar" style="height:0"></div><div class="bar" style="height:0"></div></div><div class="performance-note" id="performanceNote">No settled bets yet</div></section><section class="right-panel"><div class="donut" id="winDonut"><div class="donut-in">WIN RATE<strong id="donutValue">0%</strong></div></div></section></aside></div>
 <div class="status-grid"><div class="status-tile"><label><span class="tileicon">◉</span> LIVE BETS</label><strong id="statLive">0</strong></div><div class="status-tile gold"><label><span class="tileicon">⌛</span> PENDING</label><strong id="statPending">0</strong></div><div class="status-tile green-border"><label><span class="tileicon">✓</span> WON</label><strong id="statWon">0</strong></div><div class="status-tile red"><label><span class="tileicon">⊗</span> LOST</label><strong id="statLost">0</strong></div><div class="status-tile"><label><span class="tileicon">▰</span> WAGERED</label><strong id="statWagered">$0.00</strong></div><div class="status-tile gold"><label><span class="tileicon">◎</span> POTENTIAL</label><strong id="statPotential">$0.00</strong></div><div class="status-tile gold"><label><span class="tileicon">♜</span> SEASON RECORD</label><strong id="statRecord">0 – 0</strong></div></div><div class="demo-note" id="dataDisclosure">Your results are calculated from bets saved in this browser. Open bets are excluded from net profit and win rate until settled.</div></section>
@@ -419,6 +428,22 @@ function saveBet(b){
  const normalized={...b,id:b.id||('bet-'+Date.now()+'-'+Math.random().toString(36).slice(2)),placedAt:b.placedAt||new Date().toISOString(),sport:b.sport||inferredSport((b.game||'')+' '+(b.selection||'')),stake:Number(b.stake)||0,odds:Number(b.odds)||0,payout:Number(b.payout)||0,status:b.status||'Open'};
  bets.push(normalized);if(!persist()){bets.pop();return false}renderBets();return true;
 }
+function syncJaydenPinned(){
+ const card=document.getElementById('jaydenPregamePinned');
+ if(!card)return;
+ const b=bets.find(x=>x.id==='polymarket-pregame-jayden-daniels-td-20261101');
+ if(!b)return;
+ card.hidden=b.status!=='Open';
+}
+for(const [id,status] of [['jaydenPregamePinnedWin','Won'],['jaydenPregamePinnedLose','Lost']]){
+ document.getElementById(id)?.addEventListener('click',()=>{
+  const b=bets.find(x=>x.id==='polymarket-pregame-jayden-daniels-td-20261101');
+  if(!b)return;
+  const old=b.status;b.status=status;
+  if(!persist()){b.status=old;return}
+  renderBets();
+ });
+}
 function renderBoard(){
  const root=node('boardRows');root.replaceChildren();
  const pending=bets.filter(b=>b.status==='Open').sort((a,b)=>Number(!!a.liveBet)-Number(!!b.liveBet));
@@ -469,6 +494,7 @@ function renderBoard(){
   row.append(name,odds,conf,stake,win,check);root.append(row);
  }
  filterBoard(document.querySelector('[data-sport].active')?.dataset.sport||'ALL');
+ syncJaydenPinned();
  document.dispatchEvent(new Event('betlab-board-rendered'));
 }
 function renderDashboard(){
