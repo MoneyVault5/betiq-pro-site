@@ -395,11 +395,13 @@ body:before{opacity:.14!important;pointer-events:none!important}
 #analyticsPage .analyticsChart.analyticsPregameTrend{border-color:#ffc832!important;box-shadow:0 0 18px #ffcd3237,inset 0 0 22px #ffc8320c!important}
 #analyticsPage .analyticsLiveTrend h3{color:#ffae55!important;text-shadow:0 0 13px #ff87116c}
 #analyticsPage .analyticsPregameTrend h3{color:#ffdf70!important;text-shadow:0 0 13px #ffba1780}
-</style><style id="betlab-record-percent-bottom">
-#dashboard .record-breakdown-item{position:relative!important;padding-bottom:30px!important}
-#dashboard .record-breakdown-item .record-win-rate{position:absolute!important;right:9px!important;bottom:7px!important;top:auto!important;display:flex!important;gap:3px!important;align-items:center!important;font-size:11px!important;font-weight:850!important;letter-spacing:0!important;color:var(--record-accent)!important}
-#dashboard .record-breakdown-item .record-win-rate small{font-size:9px!important;color:inherit!important}
-@media(max-width:620px){#dashboard .record-breakdown-item{padding-bottom:29px!important}#dashboard .record-breakdown-item .record-win-rate{right:6px!important;bottom:6px!important;font-size:10px!important}}
+</style><style id="record-colors-only-fix">
+#dashboard .record-breakdown-item.overall .record-wins{color:#30ff75!important;text-shadow:0 0 12px #30ff75,0 0 23px #30ff7590!important}
+#dashboard .record-breakdown-item.overall .record-losses{color:#ff476b!important;text-shadow:0 0 10px #ff476b99!important}
+#dashboard .record-breakdown-item.live .record-wins{color:#ff9d13!important;text-shadow:0 0 13px #ff9d13,0 0 24px #ff8a0080!important}
+#dashboard .record-breakdown-item.live .record-losses{color:#ff5535!important;text-shadow:0 0 11px #ff553599!important}
+#dashboard .record-breakdown-item.pregame .record-wins{color:#fff02c!important;text-shadow:0 0 13px #fff02c,0 0 24px #ffe00090!important}
+#dashboard .record-breakdown-item.pregame .record-losses{color:#ffae16!important;text-shadow:0 0 10px #ffae1699!important}
 </style></head><body>
 <div class="app"><main class="main"><div class="command-topbar" role="banner" aria-label="Bet Lab System command header"><div class="command-topbar__brand"><span class="command-topbar__mark" aria-hidden="true">♛</span><div><div class="command-topbar__title">BET LAB SYSTEM</div><div class="command-topbar__subtitle">SPORTS BETTING COMMAND CENTER</div></div></div><div class="command-topbar__status"><span class="command-topbar__light"></span>SYSTEM READY</div></div><header aria-label="BetLab Pro — Sports Betting Analytics" class="hero"><div class="header-topline"><span class="orbit-dot"></span> BETLAB PRO <span class="header-separator">/</span> GALAXY COMMAND CENTER</div><div class="system-brand" aria-label="Bet Lab System"><span class="system-brand__star">✦</span><span class="system-brand__label">BET LAB <em>SYSTEM</em></span><span class="system-brand__star">✦</span></div><button aria-label="Notifications" class="notify">♢</button><button class="profile-btn" data-open-profile="" type="button">◉ Quis Money ▾</button><div class="profile-panel" id="profilePanel">Quis Money<small>Local dashboard preview</small></div></header><nav class="nav" id="nav"></nav>
 <section class="content-page active" id="dashboard"><div class="kpis">
@@ -623,7 +625,7 @@ function renderDashboard(){
 
  const liveBets=bets.filter(b=>b.liveBet===true||String(b.betType||'').toLowerCase()==='live');
  const pregameBets=bets.filter(b=>b.liveBet!==true&&String(b.betType||'').toLowerCase()!=='live');
- const setRecord=(id,detailId,arr)=>{const w=arr.filter(b=>b.status==='Won').length,l=arr.filter(b=>b.status==='Lost').length,p=arr.filter(b=>b.status==='Open').length;const target=node(id),detail=node(detailId);if(target){target.replaceChildren();const a=document.createElement('span'),sep=document.createElement('span'),z=document.createElement('span');a.className='record-wins';a.textContent=String(w);sep.className='record-separator';sep.textContent=' – ';z.className='record-losses';z.textContent=String(l);target.append(a,sep,z)}if(detail)detail.textContent=(w+l)+' settled · '+p+' pending';if(target){const card=target.closest('.record-breakdown-item');if(card){let rate=card.querySelector('.record-win-rate');if(!rate){rate=document.createElement('div');rate.className='record-win-rate';rate.setAttribute('aria-label','Win percentage');card.append(rate)}const percentage=w+l?((w/(w+l))*100).toFixed(1)+'%':'—';rate.replaceChildren();const value=document.createElement('b');value.textContent=percentage;const label=document.createElement('small');label.textContent='WIN';rate.append(value,label)}}};
+ const setRecord=(id,detailId,arr)=>{const w=arr.filter(b=>b.status==='Won').length,l=arr.filter(b=>b.status==='Lost').length,p=arr.filter(b=>b.status==='Open').length;const target=node(id),detail=node(detailId);if(target){target.replaceChildren();const a=document.createElement('span'),sep=document.createElement('span'),z=document.createElement('span');a.className='record-wins';a.textContent=String(w);sep.className='record-separator';sep.textContent=' – ';z.className='record-losses';z.textContent=String(l);target.append(a,sep,z)}if(detail)detail.textContent=(w+l)+' settled · '+p+' pending'};
  setRecord('homeOverallRecord','homeOverallDetail',bets);
  setRecord('homeLiveRecord','homeLiveDetail',liveBets);
  setRecord('homePregameRecord','homePregameDetail',pregameBets);
