@@ -326,11 +326,16 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <p class="notice">Paste a DraftKings, Novig, Kalshi, Polymarket, FanDuel, or other bet link. Links that expose only an event ID cannot reveal your private wager, so you can complete the ticket in the review form.</p>
 <div class="share-import-row"><input id="betShareUrl" type="url" placeholder="Paste a bet share link (https://…)" aria-label="Bet share link"><button class="primary" type="button" id="readShareLink">Read link</button></div>
 <p class="notice" id="shareStatus" role="status"></p>
-</div><div class="notice" id="slipStatus" role="status"></div><div id="slipPreview"></div><div id="slipReview"></div></section><form id="betForm"><div class="fields"><label>Game / Matchup<input id="game" placeholder="Ravens @ Bills" required=""/></label><label>Player / Selection<input id="selection" placeholder="Derrick Henry over 79.5 yards" required=""/></label><label>Odds (American)<input id="odds" placeholder="-110" required="" type="number"/></label><label>Stake ($)<input id="stake" min="0.01" placeholder="10" required="" step="0.01" type="number"/></label><label>Sportsbook<select id="book"><option>DraftKings</option><option>Novig</option><option>FanDuel</option><option>Kalshi</option><option>Polymarket</option><option>Other</option></select></label><label>Sport<select id="sport"><option>NFL</option><option>NBA</option><option>NCAAF</option><option>MLB</option><option>Other</option></select></label><label>Status<select id="status"><option>Open</option><option>Won</option><option>Lost</option><option>Void</option></select></label></div><p><button class="primary" type="submit">Save Bet</button></p></form><div class="saved" id="saved"></div><button id="resetAllBets" type="button" class="reset-bets">Clear all saved bets</button></div><div hidden="" id="other"><p class="notice">This section is not connected to outside accounts. Your imported and manually entered bets are recorded locally in Bet Tracker; updates to results must be entered manually.</p><button class="primary" data-go="Bet Tracker">Open Bet Tracker</button></div></div></section>
+</div><div class="notice" id="slipStatus" role="status"></div><div id="slipPreview"></div><div id="slipReview"></div></section><form id="betForm"><div class="fields"><label>Game / Matchup<input id="game" placeholder="Ravens @ Bills" required=""/></label><label>Player / Selection<input id="selection" placeholder="Derrick Henry over 79.5 yards" required=""/></label><label>Odds (American)<input id="odds" placeholder="-110" required="" type="number"/></label><label>Stake ($)<input id="stake" min="0.01" placeholder="10" required="" step="0.01" type="number"/></label><label>Sportsbook<select id="book"><option>DraftKings</option><option>Novig</option><option>FanDuel</option><option>Kalshi</option><option>Polymarket</option><option>Other</option></select></label><label>Sport<select id="sport"><option>NFL</option><option>NBA</option><option>NCAAF</option><option>MLB</option><option>Other</option></select></label><label>Status<select id="status"><option>Open</option><option>Won</option><option>Lost</option><option>Void</option></select></label></div><p><button class="primary" type="submit">Save Bet</button></p></form><div class="saved" id="saved"></div><button id="resetAllBets" type="button" class="reset-bets">Clear all saved bets</button></div><section id="liveRecordPage" hidden style="padding:16px 0">
+<h3 style="color:#73ffb0;text-shadow:0 0 10px #1dfc82">🔴 LIVE BETTING RECORD</h3>
+<p class="notice">Your in-game bets are tracked separately here. Results update immediately when you mark a ticket Winner or Loser. Overall dashboard totals include these bets.</p>
+<div id="liveRecordStats" class="panel" style="padding:16px;margin:14px 0;border:1px solid #37ff9b"></div>
+<div id="liveRecordTickets" style="display:grid;gap:10px"></div>
+</section><div hidden="" id="other"><p class="notice">This section is not connected to outside accounts. Your imported and manually entered bets are recorded locally in Bet Tracker; updates to results must be entered manually.</p><button class="primary" data-go="Bet Tracker">Open Bet Tracker</button></div></div></section>
 <nav aria-label="Mobile navigation" class="mobile-nav" id="mobileNav"></nav></main></div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['⇧','Slip Importer'],['▥','Analytics'],['▣','Bankroll'],['♜','Results'],['⚙','Settings']];
+const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Record'],['⇧','Slip Importer'],['▥','Analytics'],['▣','Bankroll'],['♜','Results'],['⚙','Settings']];
 const nav=document.getElementById('nav'),mobile=document.getElementById('mobileNav');
 for(const [ico,name] of items){
  const b=document.createElement('button');b.innerHTML=`<span class="ico">${ico}</span>${name}`;b.dataset.go=name;
@@ -344,7 +349,9 @@ function go(name){
  document.getElementById('workspace').classList.toggle('active',!onBoard);
  document.getElementById('pageTitle').textContent=name;
  document.getElementById('tracker').hidden=!['Bet Tracker','Slip Importer'].includes(name);
- document.getElementById('other').hidden=['Bet Tracker','Slip Importer'].includes(name);
+ document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record'].includes(name);
+ document.getElementById('liveRecordPage').hidden=name!=='Live Record';
+ if(name==='Live Record')renderLiveRecord();
  document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
  if(name==='Today’s Board')document.getElementById('todayBoard').scrollIntoView({behavior:'smooth',block:'center'});
  else window.scrollTo({top:0,behavior:'smooth'});
@@ -481,6 +488,31 @@ function renderDashboard(){
  node('performanceNote').textContent=resultList.length?'Last '+resultList.length+' settled tickets · win/loss profit':'No settled bets yet';
  renderBoard();
 }
+function renderLiveRecord(){
+ const stats=node('liveRecordStats'),list=node('liveRecordTickets');
+ if(!stats||!list)return;
+ list.replaceChildren();
+ const live=bets.filter(b=>b.liveBet===true||b.betType==='live');
+ const wins=live.filter(b=>b.status==='Won'),losses=live.filter(b=>b.status==='Lost'),open=live.filter(b=>b.status==='Open');
+ const risk=[...wins,...losses].reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const net=wins.reduce((n,b)=>n+payoutFor(b)-(Number(b.stake)||0),0)-losses.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ stats.textContent='Record: '+wins.length+' W – '+losses.length+' L  |  Pending: '+open.length+'  |  Win rate: '+(wins.length+losses.length?(100*wins.length/(wins.length+losses.length)).toFixed(1):'0.0')+'%  |  Net P/L: '+(net<0?'-':'')+money(Math.abs(net))+'  |  ROI: '+(risk?(100*net/risk).toFixed(1):'0.0')+'%';
+ if(!live.length){const p=document.createElement('p');p.className='notice';p.textContent='No live bets recorded yet. The screenshots you send next can be entered here as live bets.';list.append(p);return;}
+ for(const b of live.slice().reverse()){
+  const card=document.createElement('div');card.className='panel';card.style.cssText='padding:15px;border:1px solid #3dd6bd;border-radius:12px;background:linear-gradient(115deg,#061b30,#180d36)';
+  const title=document.createElement('strong');title.textContent=(b.book||'Sportsbook')+' · '+(b.game||'Live game');
+  const desc=document.createElement('p');desc.textContent=b.selection||b.legs?.join(' | ')||'';
+  const moneyline=document.createElement('div');moneyline.textContent='Stake '+money(b.stake)+' · Potential payout '+money(payoutFor(b))+' · '+b.status;
+  card.append(title,desc,moneyline);
+  const actions=document.createElement('div');actions.style.cssText='display:flex;gap:9px;flex-wrap:wrap;margin-top:12px';
+  for(const [label,status,color] of [['✓ Winner','Won','#3dff93'],['✕ Loser','Lost','#ff6c87'],['↶ Pending','Open','#78baff']]){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.disabled=b.status===status;btn.style.cssText='padding:9px 14px;border-radius:8px;border:1px solid '+color+';background:#09162d;color:white;cursor:pointer';
+   btn.addEventListener('click',()=>{const prior=b.status;b.status=status;if(!persist()){b.status=prior;return;}renderBets();});
+   actions.append(btn);
+  }
+  card.append(actions);list.append(card);
+ }
+}
 function renderBets(){
  const el=node('saved');el.replaceChildren();
  const heading=document.createElement('h3');heading.textContent=`Your Saved Bets (${bets.length})`;el.append(heading);
@@ -504,6 +536,7 @@ function renderBets(){
  });
  node('resetAllBets').hidden=!bets.length;
  renderDashboard();
+ renderLiveRecord();
 }
 node('betForm').addEventListener('submit',e=>{
  e.preventDefault();const form=e.currentTarget;
