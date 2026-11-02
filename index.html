@@ -378,6 +378,12 @@ const newLiveScreenshotBets=[{"id":"polymarket-live-20261101-lamb-8rec","book":"
  const added=newLiveScreenshotBets.filter(b=>!known.has(b.id));
  if(added.length){bets.push(...added);try{localStorage.setItem(key,JSON.stringify(bets))}catch(err){console.warn('Could not save new live tickets',err)}}
 }
+const newPregameSharedBets=[{"id":"draftkings-pregame-20261101-six-leg-639291782457205344","book":"DraftKings","selection":"6-Pick SGP: Jayden Daniels 30+ rushing yards; Stefon Diggs 3+ receptions; Makai Lemon 30+ receiving yards; Dallas Goedert 20+ receiving yards; Stefon Diggs 30+ receiving yards; Rachaad White 2+ receptions","legs":["Jayden Daniels 30+ rushing yards","Stefon Diggs 3+ receptions","Makai Lemon 30+ receiving yards","Dallas Goedert 20+ receiving yards","Stefon Diggs 30+ receiving yards","Rachaad White 2+ receptions"],"stake":10,"payout":51,"fullStake":20,"fullPayout":102,"sharePercent":50,"game":"Philadelphia Eagles at Washington Commanders","source":"User DraftKings receipt Nov 1, 2026","status":"Open","sport":"NFL","odds":410,"betType":"pregame","placedAt":"2026-11-01T20:04:05","note":"30% parlay boost; user owns 50%; original stake $20, full payout $102"},{"id":"draftkings-pregame-20261101-diggs-td-639291788813193920","book":"DraftKings","selection":"Stefon Diggs anytime touchdown scorer","legs":["Stefon Diggs 1+ touchdowns"],"stake":10,"payout":34.1,"fullStake":20,"fullPayout":68.2,"sharePercent":50,"game":"Philadelphia Eagles at Washington Commanders","source":"User DraftKings receipt Nov 1, 2026","status":"Open","sport":"NFL","odds":241,"betType":"pregame","placedAt":"2026-11-01T20:14:41","note":"30% boost; user owns 50%; original stake $20, full payout $68.20"}];
+{
+ const known=new Set(bets.map(b=>b.id));
+ const added=newPregameSharedBets.filter(b=>!known.has(b.id));
+ if(added.length){bets.push(...added);try{localStorage.setItem(key,JSON.stringify(bets))}catch(err){console.warn('Could not save shared pregame tickets',err)}}
+}
 const money=n=>'$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const absMoney=n=>(n<0?'-':n>0?'+':'')+money(Math.abs(n));
 const pct=n=>Number(n||0).toFixed(1)+'%';
