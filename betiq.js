@@ -1,13 +1,20 @@
 // BetIQ Pro — MVP app logic (vanilla JS, ES module)
 // Data: localStorage key 'betiq_v1'. All money/analytics math lives in
 // settlement.mjs (shared with the Node tests) — nothing is computed ad hoc here.
-// BetIQ Pro app logic. All figures are computed from the tickets stored in the app.
+// HONESTY: seeded tickets below are the verified ground-truth fixtures from
+// test-slips/fixtures.json (read off Marquis's 4 screenshots, 2026-11-01).
+// The design reference's numbers ($2,847.60 profit, 1,189 bets, player hit
+// rates) are mockup filler and are NEVER used. Novig's $57.46 portfolio
+// header is an account value, not a ticket, and is not seeded anywhere.
 import {
 
 
   computeStats, profitForTicket, generateInsights, applySettlement,
   detectDuplicateTicket, wilsonInterval,
 } from './settlement.mjs';
+import { applyLiveSnapshot, migrateState } from './live-data.mjs';
+import { polymarketSeedPositions, ensurePositions } from './positions.mjs';
+import { applyVerifiedGrade, applyVerifiedGradesToState } from './verified-grades.mjs';
 
 // Website conversion cleanup: earlier builds registered a service worker that can
 // keep serving the old app shell from cache. Unregister any SW and clear its caches.
@@ -26,19 +33,44 @@ const pct = (n) => `${((Number(n) || 0) * 100).toFixed(1)}%`;
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const leg = (player, market, line) => ({ player, market: market ?? 'Unspecified', line: line ?? '', team: '', opponent: '', status: 'pending' });
 
-// Seed state: empty on first run.
+// TEST FIXTURES — source of truth: test-slips/fixtures.json (verified 2026-11-01)
 function seedTickets() {
-  // Public mirror build: starts empty. Tickets are added by the user in the app.
   return [];
 }
 
 function seedState() {
-  return { tickets: seedTickets(), transactions: [], settings: { startingBankroll: 0 }, uploads: [] };
+  // Fresh seed (TASK-0028): the 5 fixture tickets carry their operator-
+  // verified STAT-DERIVED final grades (book_confirmed_status stays null),
+  // plus the 4 seeded Polymarket positions (private build only).
+  const tickets = [
+    ...seedTickets().map(applyVerifiedGrade),
+    ...polymarketSeedPositions(),
+  ];
+  return {
+    tickets, transactions: [], settings: { startingBankroll: 0 }, uploads: [],
+    positions_v1: true, verified_grades_v1: true,
+  };
 }
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const s = JSON.parse(raw); if (s && Array.isArray(s.tickets)) return s; }
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && Array.isArray(s.tickets)) {
+        // Migrations are additive and flag-guarded; user data is never
+        // rewritten beyond what each step documents:
+        //  TASK-0027: existing tickets gain live fields only.
+        //  TASK-0028: seed Polymarket positions are appended once, and the
+        //  operator-verified stat-derived fixture grades are applied once
+        //  to fixture tickets still pending (book-confirmed and manually
+        //  settled tickets are never overwritten).
+        let m = migrateState(s);
+        m = ensurePositions(m);
+        m = applyVerifiedGradesToState(m);
+        if (JSON.stringify(m) !== raw) localStorage.setItem(KEY, JSON.stringify(m));
+        return m;
+      }
+    }
   } catch { /* fall through to seed */ }
   const s = seedState(); localStorage.setItem(KEY, JSON.stringify(s)); return s;
 }
@@ -63,7 +95,29 @@ const barCell = (v) => `<div class="bar"><i class="${v < 0.4 ? 'low' : ''}" styl
 
 function ticketCard(t, { withControls = false } = {}) {
   const profit = t.status === 'pending' || t.status === 'partial' ? null : profitForTicket(t);
-  const legsHtml = (t.legs || []).map((l) => `<div class="leg">• ${esc(l.line)} ${esc(l.player)}${l.market && l.market !== 'Unspecified' ? ` — ${esc(l.market)}` : ' — <span class="muted">market unspecified on screen</span>'} <span class="pill ${l.status === 'push' ? 'void' : l.status}">${esc(l.status)}</span></div>`).join('');
+  const legsHtml = (t.legs || []).map((l, i) => {
+    const g = (t.live_grades || [])[i];
+    const live = g && g.current != null && g.lineValue != null
+      ? `<div class="small">Live: ${esc(g.current)} / ${esc(g.lineValue)} ${barCell(g.progress || 0)} <span class="muted">${esc(g.reason || '')}</span></div>`
+      : (g && g.current != null ? `<div class="small muted">Live: ${esc(g.current)} — ${esc(g.reason || '')}</div>` : '');
+    const finalLine = l.stat_line ? `<div class="small muted">Final: ${esc(l.stat_line)}</div>` : '';
+    const unspecifiedNote = !(l.market && l.market !== 'Unspecified')
+      ? ' — <span class="muted">market unspecified on screen · stat not specified on slip</span>' : '';
+    return `<div class="leg">• ${esc(l.line)} ${esc(l.player)}${l.market && l.market !== 'Unspecified' ? ` — ${esc(l.market)}` : unspecifiedNote} <span class="pill ${l.status === 'push' ? 'void' : l.status}">${esc(l.status)}</span>${live}${finalLine}</div>`;
+  }).join('');
+  // Settlement provenance (TASK-0028): a stat-derived grade is always
+  // labelled as such and never presented as book-confirmed.
+  const sourceHtml = t.settlement_source === 'stat-derived'
+    ? `<div class="small"><span class="tag-small">stat-derived grade</span> <span class="muted">Settled from final stats${t.stat_grade?.event_id ? ` (ESPN event ${esc(t.stat_grade.event_id)})` : ''} — not book-confirmed.</span></div>`
+    : (t.settlement_source === 'book-confirmed' || t.book_confirmed_status
+      ? `<div class="small"><span class="tag-small">book-confirmed</span></div>` : '');
+  if (t.type === 'position') {
+    return `<div class="ticket">
+    <div class="ticket-head"><strong>Polymarket — Position</strong><span class="pill ${t.status}">${esc(t.status.replace('_', ' '))}</span></div>
+    <div class="leg">• ${esc(t.description || 'Position')}${t.side ? ` — <strong>${esc(t.side)}</strong>` : ''}</div>
+    <div class="small muted">${t.placed_at ? esc(t.placed_at.replace('T', ' ')) : esc(t.placed_at_note || 'Date not shown')} · Cost ${money(t.stake)} (cash) · Payout ${money(t.potential_payout)}${profit != null ? ` · P&amp;L <strong class="${profit >= 0 ? 'pos' : 'neg'}">${money(profit)}</strong>` : ''}</div>
+    ${t.note ? `<div class="small muted">${esc(t.note)}</div>` : ''}${sourceHtml}</div>`;
+  }
   const controls = withControls ? `
     <div style="margin-top:10px;border-top:1px dashed #2e4a8a;padding-top:10px">
       <div class="small muted">TEST HARNESS — “simulate official result”: stands in for the future automatic-settlement feed. It calls the same applySettlement() the feed will use. This is not a manual win/loss button for real use.</div>
@@ -78,7 +132,7 @@ function ticketCard(t, { withControls = false } = {}) {
     <div class="small muted">${t.placed_at ? esc(t.placed_at.replace('T', ' ')) : esc(t.placed_at_note || 'Date not shown')} · Stake ${money(t.stake)} (${esc(t.stake_type.replace('_', ' '))}) · Odds ${esc(t.odds || '—')} · To win/payout ${money(t.potential_payout)}${profit != null ? ` · P&amp;L <strong class="${profit >= 0 ? 'pos' : 'neg'}">${money(profit)}</strong>` : ''}</div>
     ${t.external_ticket_id ? `<div class="small muted">Ticket ID: ${esc(t.external_ticket_id)}</div>` : ''}
     ${t.note ? `<div class="small muted">${esc(t.note)}</div>` : ''}
-    ${legsHtml}${controls}</div>`;
+    ${sourceHtml}${legsHtml}${controls}</div>`;
 }
 
 // ---------- Main render ----------
@@ -284,6 +338,25 @@ addLegRow();
 $('ticket-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const msg = $('form-msg');
+  // Polymarket position mode: no legs — a market description, a side, a cash
+  // cost and a payout. Positions are cash only, never trade credit.
+  if ($('f-book').value === 'Polymarket') {
+    const description = $('f-posdesc').value.trim();
+    if (!description) { showMsg(msg, 'error', 'Describe the Polymarket market (e.g. "Ja\'Marr Chase 110+ receiving yards").'); return; }
+    state.tickets.push({
+      id: `t-${Date.now()}`, type: 'position', book: 'Polymarket',
+      description, side: $('f-side').value || null,
+      external_ticket_id: null, placed_at: $('f-date').value || '',
+      stake: parseFloat($('f-stake').value) || 0, stake_type: 'cash',
+      odds: '', potential_payout: parseFloat($('f-payout').value) || 0,
+      status: $('f-posstatus').value, cashout_amount: null, image_hash: null, legs: [],
+      note: 'Polymarket position — cash stake (manual entry).',
+    });
+    save(); render();
+    showMsg(msg, 'ok', 'Polymarket position saved and persisted.');
+    e.target.reset(); $('leg-rows').innerHTML = ''; addLegRow(); $('slip-preview').style.display = 'none';
+    return;
+  }
   const legs = [...document.querySelectorAll('#leg-rows > div')].map((row) => ({
     player: row.querySelector('.leg-player').value.trim(),
     market: row.querySelector('.leg-market').value.trim() || 'Unspecified',
@@ -321,7 +394,7 @@ $('txn-form').addEventListener('submit', (e) => {
 });
 $('csv-btn').addEventListener('click', () => {
   const rows = [['ticket_id', 'book', 'external_ticket_id', 'placed_at', 'stake', 'stake_type', 'odds', 'potential_payout', 'status', 'profit', 'legs']];
-  for (const t of state.tickets) rows.push([t.id, t.book, t.external_ticket_id || '', t.placed_at || '', t.stake, t.stake_type, t.odds || '', t.potential_payout, t.status, profitForTicket(t).toFixed(2), (t.legs || []).map((l) => `${l.line} ${l.player} (${l.market})`).join(' | ')]);
+  for (const t of state.tickets) rows.push([t.id, t.book, t.external_ticket_id || '', t.placed_at || '', t.stake, t.stake_type, t.odds || '', t.potential_payout, t.status, profitForTicket(t).toFixed(2), (t.legs || []).length ? (t.legs || []).map((l) => `${l.line} ${l.player} (${l.market})`).join(' | ') : (t.description ? `Position: ${t.description}${t.side ? ` (${t.side})` : ''}` : '')]);
   const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'betiq-tickets.csv'; a.click();
@@ -329,9 +402,49 @@ $('csv-btn').addEventListener('click', () => {
 });
 $('s-save').addEventListener('click', () => { state.settings.startingBankroll = parseFloat($('s-bankroll').value) || 0; save(); render(); });
 $('s-reseed').addEventListener('click', () => { state = seedState(); save(); render(); });
-$('s-clear').addEventListener('click', () => { if (window.confirm('Clear ALL BetIQ data in this browser?')) { state = { tickets: [], transactions: [], settings: { startingBankroll: 0 }, uploads: [] }; save(); render(); } });
+$('s-clear').addEventListener('click', () => { if (window.confirm('Clear ALL BetIQ data in this browser?')) { state = { tickets: [], transactions: [], settings: { startingBankroll: 0 }, uploads: [], positions_v1: true, verified_grades_v1: true }; save(); render(); } });
+
+// ---------- Live demo (TASK-0027): SYNTHETIC game only ----------
+// Demonstrates per-leg progress bars + automatic settlement end to end.
+// Nothing here touches real tickets: the demo ticket is created separately
+// and its players exist only in these snapshots — never a provider feed.
+const DEMO_BASE = { game_id: 'demo-game-1', source: 'demo', latency_note: 'synthetic demo — not a provider feed', void_leg_keys: [], binary_results: {} };
+function demoSnap(status, players) {
+  return { ...DEMO_BASE, status, updated_at: new Date().toISOString(), players };
+}
+$('live-demo-btn').addEventListener('click', () => {
+  const msg = $('live-msg');
+  let demo = state.tickets.find((t) => t.id === 'demo-live-ticket');
+  if (!demo) {
+    demo = {
+      id: 'demo-live-ticket', book: 'DraftKings', game_id: 'demo-game-1',
+      external_ticket_id: null, placed_at: '', stake: 10.00, stake_type: 'cash',
+      odds: '+200', potential_payout: 30.00, status: 'pending', cashout_amount: null,
+      image_hash: null, note: 'DEMO ticket — synthetic players, not a real bet',
+      legs: [
+        leg('Synth WR', 'Receptions', '4+'), leg('Synth RB', 'Rushing Yards', '50+'),
+        leg('Synth QB', 'Anytime TD Scorer', ''),
+      ],
+    };
+    state.tickets.push(demo);
+    state.tickets = applyLiveSnapshot(state.tickets, demoSnap('in_progress', {
+      'Synth WR': { snaps: 40, receptions: 3 },
+      'Synth RB': { snaps: 30, rushing_yards: 42 },
+      'Synth QB': { snaps: 50, passing_tds: 1, scoring_tds: 0 },
+    }));
+    save(); render();
+    showMsg(msg, 'ok', 'Demo game in progress: WR 3/4 receptions, RB 42/50 rushing yards, QB has a passing TD but 0 scoring TDs (still pending — the anytime-TD trap). Click again for the final.');
+  } else if (demo.settlement_state === 'provisional' || demo.status === 'pending' || demo.status === 'partial') {
+    state.tickets = applyLiveSnapshot(state.tickets, demoSnap('final', {
+      'Synth WR': { snaps: 55, receptions: 4 },
+      'Synth RB': { snaps: 55, rushing_yards: 61 },
+      'Synth QB': { snaps: 60, passing_tds: 1, scoring_tds: 1 },
+    }));
+    save(); render();
+    showMsg(msg, 'ok', 'Demo game final: all three legs won, demo ticket settled +$20.00. Real tickets are untouched — a live provider feed still needs approval (see LIVE-DATA.md).');
+  } else {
+    showMsg(msg, 'warn', 'Demo ticket already settled. Use Settings → Reset to test fixtures to run the demo again.');
+  }
+});
 
 render();
-
-// Read-only NFL scoreboard; does not alter tickets.
-import('./live-feed.js').catch(console.warn);

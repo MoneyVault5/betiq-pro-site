@@ -76,7 +76,7 @@ export function detectDuplicateHash(hash, tickets) {
 
 // Duplicate detection by ticket identity — catches the SAME ticket arriving
 // from two DIFFERENT image files (different hashes). Real case from the test
-// The same ticket can appear in two different screenshots; identity is book + ticket ID, not the image.
+// Note: the same ticket can appear in more than one screenshot; dedupe by book + ticket ID.
 export function detectDuplicateExternalId(book, externalTicketId, tickets) {
   if (!externalTicketId) return false;
   return tickets.some((t) => t.book === book && t.external_ticket_id && t.external_ticket_id === externalTicketId);
@@ -196,7 +196,9 @@ export function computeStats(tickets, transactions = [], settings = {}) {
     bankroll, deposits, withdrawals, startingBankroll,
     byStakeType,
     perBook: groupStats(tickets, (t) => t.book),
-    parlayPerformance: groupStats(tickets, (t) => `${(t.legs?.length || 1)}`),
+    // Positions (e.g. Polymarket) are not parlays — excluded from leg-count
+    // cohorts (groupStats skips null keys) but counted everywhere else.
+    parlayPerformance: groupStats(tickets, (t) => (t.type === 'position' ? null : `${(t.legs?.length || 1)}`)),
     marketPerformance,
     playerPerformance,
   };
