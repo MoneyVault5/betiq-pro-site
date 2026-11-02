@@ -441,7 +441,10 @@ function renderBoard(){
    });
    resultActions.append(button);
   }
-  row.append(name,odds,conf,stake,win,resultActions);root.append(row);
+  resultActions.style.cssText='display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-start;margin-top:12px;padding-top:10px;border-top:1px solid #24e9ac55;position:relative;z-index:2';
+  resultActions.querySelectorAll('button').forEach(button=>{button.style.padding='10px 16px';button.style.fontSize='13px';button.style.minWidth='92px';});
+  name.append(resultActions);
+  row.append(name,odds,conf,stake,win,check);root.append(row);
  }
  filterBoard(document.querySelector('[data-sport].active')?.dataset.sport||'ALL');
  document.dispatchEvent(new Event('betlab-board-rendered'));
