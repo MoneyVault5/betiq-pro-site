@@ -347,7 +347,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <nav aria-label="Mobile navigation" class="mobile-nav" id="mobileNav"></nav></main></div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Bets'],['⇧','Slip Importer'],['▥','Analytics'],['▣','Bankroll'],['♜','Results'],['⚙','Settings']];
+const items=[['⌂','Dashboard'],['▦','Today’s Board'],['▤','Bet Tracker'],['🔴','Live Bet'],['⇧','Slip Importer'],['▥','Analytics'],['▣','Bankroll'],['♜','Results'],['⚙','Settings']];
 const nav=document.getElementById('nav'),mobile=document.getElementById('mobileNav');
 for(const [ico,name] of items){
  const b=document.createElement('button');b.innerHTML=`<span class="ico">${ico}</span>${name}`;b.dataset.go=name;
@@ -361,9 +361,9 @@ function go(name){
  document.getElementById('workspace').classList.toggle('active',!onBoard);
  document.getElementById('pageTitle').textContent=name;
  document.getElementById('tracker').hidden=!['Bet Tracker','Slip Importer'].includes(name);
- document.getElementById('liveBetsPage').hidden=name!=='Live Bets';
- if(name==='Live Bets')renderLiveBets();
- document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Bets'].includes(name);
+ document.getElementById('liveBetsPage').hidden=name!=='Live Bet';
+ if(name==='Live Bet')renderLiveBets();
+ document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Bet'].includes(name);
  document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
  if(name==='Today’s Board')document.getElementById('todayBoard').scrollIntoView({behavior:'smooth',block:'center'});
  else window.scrollTo({top:0,behavior:'smooth'});
