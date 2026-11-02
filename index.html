@@ -384,6 +384,8 @@ const newPregameSharedBets=[{"id":"draftkings-pregame-20261101-six-leg-639291782
  const added=newPregameSharedBets.filter(b=>!known.has(b.id));
  if(added.length){bets.push(...added);try{localStorage.setItem(key,JSON.stringify(bets))}catch(err){console.warn('Could not save shared pregame tickets',err)}}
 }
+const newSoloPregameBet={"id":"polymarket-pregame-jayden-daniels-td-20261101","book":"Polymarket","selection":"Jayden Daniels 1+ touchdowns · Yes","legs":["Jayden Daniels 1+ touchdowns"],"stake":6,"payout":20.39,"game":"Philadelphia Eagles vs Washington Commanders","source":"User screenshot Nov 1 2026","status":"Open","sport":"NFL","odds":0,"betType":"pregame","liveBet":false,"sharePercent":100,"placedAt":"2026-11-01T19:17:00","note":"Pregame; 100% user-owned; screenshot shows 28% contract price and $20.39 to win"};
+if(!bets.some(b=>b.id===newSoloPregameBet.id)){bets.push(newSoloPregameBet);try{localStorage.setItem(key,JSON.stringify(bets))}catch(err){console.warn('Unable to save new pregame bet',err)}}
 const money=n=>'$'+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const absMoney=n=>(n<0?'-':n>0?'+':'')+money(Math.abs(n));
 const pct=n=>Number(n||0).toFixed(1)+'%';
