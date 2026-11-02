@@ -341,6 +341,13 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <p class="notice">Your in-game bets are tracked separately here. Results update immediately when you mark a ticket Winner or Loser. Overall dashboard totals include these bets.</p>
 <div id="liveRecordStats" class="panel" style="padding:16px;margin:14px 0;border:1px solid #37ff9b"></div>
 <div id="liveRecordTickets" style="display:grid;gap:10px"></div>
+</section><section id="analyticsPage" hidden style="padding:16px 0">
+<h3 style="color:#72ffb1;margin:0 0 8px">▥ BETTING ANALYTICS</h3>
+<p class="notice">Calculated from your saved tickets and your manual Winner / Loser selections. Shared wagers use your portion of the stake and payout.</p>
+<div id="analyticsMetrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:14px 0"></div>
+<div class="panel" style="padding:15px;margin:12px 0"><h3>Performance by sportsbook</h3><div id="analyticsBooks"></div></div>
+<div class="panel" style="padding:15px;margin:12px 0"><h3>Pregame vs. Live</h3><div id="analyticsTypes"></div></div>
+<div class="panel" style="padding:15px;margin:12px 0"><h3>Recent settled bets</h3><div id="analyticsRecent"></div></div>
 </section><div hidden="" id="other"><p class="notice">This section is not connected to outside accounts. Your imported and manually entered bets are recorded locally in Bet Tracker; updates to results must be entered manually.</p><button class="primary" data-go="Bet Tracker">Open Bet Tracker</button></div></div></section>
 <nav aria-label="Mobile navigation" class="mobile-nav" id="mobileNav"></nav></main></div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -359,7 +366,9 @@ function go(name){
  document.getElementById('workspace').classList.toggle('active',!onBoard);
  document.getElementById('pageTitle').textContent=name;
  document.getElementById('tracker').hidden=!['Bet Tracker','Slip Importer'].includes(name);
- document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record'].includes(name);
+ document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record','Analytics'].includes(name);
+ document.getElementById('analyticsPage').hidden=name!=='Analytics';
+ if(name==='Analytics')renderAnalytics();
  document.getElementById('liveRecordPage').hidden=name!=='Live Record';
  if(name==='Live Record')renderLiveRecord();
  document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
@@ -529,6 +538,26 @@ function renderDashboard(){
  node('performanceNote').textContent=resultList.length?'Last '+resultList.length+' settled tickets · win/loss profit':'No settled bets yet';
  renderBoard();
 }
+function renderAnalytics(){
+ const metrics=node('analyticsMetrics'),books=node('analyticsBooks'),types=node('analyticsTypes'),recent=node('analyticsRecent');
+ if(!metrics||!books||!types||!recent)return;
+ const settled=bets.filter(b=>b.status==='Won'||b.status==='Lost');
+ const won=settled.filter(b=>b.status==='Won'),lost=settled.filter(b=>b.status==='Lost');
+ const stakeOf=arr=>arr.reduce((n,b)=>n+(Number(b.stake)||0),0);
+ const profitOf=arr=>arr.reduce((n,b)=>n+(b.status==='Won'?payoutFor(b)-(Number(b.stake)||0):b.status==='Lost'?-(Number(b.stake)||0):0),0);
+ const rate=arr=>{const w=arr.filter(b=>b.status==='Won').length;return arr.length?(100*w/arr.length).toFixed(1)+'%':'—'};
+ const make=(label,value)=>{const div=document.createElement('div');div.style.cssText='padding:14px;border:1px solid #2d8e9d;border-radius:10px;background:#0b2036';const a=document.createElement('div');a.style.cssText='font-size:12px;color:#a5c5d5';a.textContent=label;const v=document.createElement('div');v.style.cssText='font-size:23px;font-weight:800;margin-top:5px';v.textContent=value;div.append(a,v);return div};
+ metrics.replaceChildren(
+ make('Total tickets',String(bets.length)),make('Pending',String(bets.filter(b=>b.status==='Open').length)),
+ make('Win / Loss',won.length+' / '+lost.length),make('Win rate',rate(settled)),
+ make('Net profit',absMoney(profitOf(settled))),make('ROI',stakeOf(settled)?(100*profitOf(settled)/stakeOf(settled)).toFixed(1)+'%':'—'),
+ make('Total staked',money(stakeOf(bets.filter(b=>b.status!=='Void')))),make('Settled stake',money(stakeOf(settled)))
+ );
+ const renderGroups=(root,groups)=>{root.replaceChildren();for(const [name,arr] of groups){const done=arr.filter(b=>b.status==='Won'||b.status==='Lost');const row=document.createElement('div');row.style.cssText='padding:11px 2px;border-bottom:1px solid #244359;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap';const title=document.createElement('strong');title.textContent=name+' · '+arr.length+' bets';const stat=document.createElement('span');stat.textContent=done.length+' settled · '+rate(done)+' win · '+absMoney(profitOf(done));row.append(title,stat);root.append(row)}if(!groups.length)root.textContent='No tickets yet.'};
+ const byBook=new Map();for(const b of bets){const k=b.book||'Other';if(!byBook.has(k))byBook.set(k,[]);byBook.get(k).push(b)}renderGroups(books,[...byBook]);
+ renderGroups(types,[['Live',bets.filter(b=>b.liveBet===true||b.betType==='live')],['Pregame / regular',bets.filter(b=>b.liveBet!==true&&b.betType!=='live')]]);
+ recent.replaceChildren();if(!settled.length){recent.textContent='No settled bets yet. Mark a ticket Winner or Loser to start tracking results.'}else for(const b of settled.slice().reverse().slice(0,12)){const row=document.createElement('div');row.style.cssText='padding:10px 2px;border-bottom:1px solid #244359';row.textContent=(b.status==='Won'?'✓ ':'✕ ')+(b.selection||b.game||'Ticket')+' · '+(b.book||'Other')+' · '+absMoney(profitOf([b]));recent.append(row)}
+}
 function renderLiveRecord(){
  const stats=node('liveRecordStats'),list=node('liveRecordTickets');
  if(!stats||!list)return;
@@ -578,6 +607,7 @@ function renderBets(){
  node('resetAllBets').hidden=!bets.length;
  renderDashboard();
  renderLiveRecord();
+ renderAnalytics();
 }
 node('betForm').addEventListener('submit',e=>{
  e.preventDefault();const form=e.currentTarget;
