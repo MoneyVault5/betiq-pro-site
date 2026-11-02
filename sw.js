@@ -1,13 +1,17 @@
-// BetIQ Pro service worker — cache-first app shell (v1)
-const CACHE = 'betiq-v1';
-const ASSETS = ['./', './index.html', './styles.css', './betiq.js', './settlement.mjs', './manifest.json'];
+// Bet Lab migration cleanup (2026-11-02): the previous BetIQ Pro build's
+// cache-first service worker (cache 'betiq-v1') kept serving the old app
+// shell to returning browsers, hiding the current Bet Lab site and its
+// cloud sign-in. This worker clears all caches, unregisters itself, and
+// reloads open pages so every browser loads the live site from the network.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  self.skipWaiting();
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
-});
-self.addEventListener('fetch', (e) => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request)));
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    await self.registration.unregister();
+    const clients = await self.clients.matchAll({ type: 'window' });
+    clients.forEach((c) => c.navigate(c.url));
+  })());
 });
