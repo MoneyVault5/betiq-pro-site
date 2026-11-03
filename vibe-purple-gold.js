@@ -205,3 +205,241 @@
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",mount,{once:true});else mount();
 })();
+
+/* command-center-reference-v2: visual-only dashboard extension.
+   The existing nav, record IDs, engine, imports and sync stay untouched. */
+(function () {
+  "use strict";
+  const byId = id => document.getElementById(id);
+  const dataKey = "betlab_clean_real_bets_v1";
+  const positive = "#39FF88", negative = "#FF3B5C";
+  let waiting = false;
+
+  function readTickets() {
+    try {
+      const value = JSON.parse(localStorage.getItem(dataKey) || "[]");
+      return Array.isArray(value) ? value.filter(t => t && typeof t === "object") : [];
+    } catch (e) { return []; }
+  }
+  function payout(t) {
+    const value = Number(t.payout);
+    if (Number.isFinite(value) && value > 0) return value;
+    const stake = Number(t.stake) || 0, odds = Number(t.odds) || 0;
+    return odds === 0 ? 0 : stake + (odds > 0 ? stake * odds / 100 : stake * 100 / Math.abs(odds));
+  }
+  function profit(t) {
+    const stake = Number(t.stake) || 0;
+    return t.status === "Won" ? payout(t) - stake : t.status === "Lost" ? -stake : 0;
+  }
+  function usd(num, signed) {
+    const abs = Math.abs(Number(num) || 0).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
+    return (num < 0 ? "−" : signed && num > 0 ? "+" : "") + "$" + abs;
+  }
+  function el(tag, cls, content) {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (content !== undefined) node.textContent = content;
+    return node;
+  }
+  function header() {
+    const top = document.querySelector(".command-topbar");
+    const nav = byId("nav");
+    if (!top || !nav || top.classList.contains("vcc-ready")) return;
+    const mark = top.querySelector(".command-topbar__mark");
+    if (mark) {
+      mark.innerHTML = '<svg viewBox="0 0 48 48" width="39" height="39" fill="none" aria-hidden="true"><defs><linearGradient id="vcc-flask-liquid" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c13fff"/><stop offset=".55" stop-color="#ff931e"/><stop offset="1" stop-color="#ffc555"/></linearGradient></defs><path d="M18 5h12M21 5v12L9 37a4 4 0 0 0 3.4 6h23.2a4 4 0 0 0 3.4-6L27 17V5" stroke="#efceff" stroke-width="3" stroke-linejoin="round"/><path d="M14 32h20l5 8H9l5-8Z" fill="url(#vcc-flask-liquid)"/><circle cx="20" cy="36" r="2" fill="#fff7d6"/><circle cx="28" cy="34" r="1.3" fill="#fff7d6"/></svg>';
+      mark.setAttribute("aria-label", "Bet Lab flask");
+    }
+    const title = top.querySelector(".command-topbar__title");
+    const sub = top.querySelector(".command-topbar__subtitle");
+    if (title) title.textContent = "BET LAB";
+    if (sub) sub.textContent = "COMMAND CENTER";
+    const controls = el("div", "vcc-header-actions");
+    const status = top.querySelector(".command-topbar__status");
+    const profile = document.querySelector(".hero .profile-btn");
+    const panel = byId("profilePanel");
+    if (status) controls.appendChild(status);
+    if (profile) controls.appendChild(profile);
+    if (panel) controls.appendChild(panel);
+    top.appendChild(nav);
+    top.appendChild(controls);
+    top.classList.add("vcc-ready");
+    document.querySelectorAll("div").forEach(node => {
+      if (!node.children.length && /^BETIQ\s*·\s*DESIGN UPDATE/.test((node.textContent || "").trim())) node.remove();
+    });
+    const seasonTile = byId("statRecord")?.closest(".status-tile");
+    const seasonIcon = seasonTile?.querySelector(".tileicon");
+    if (seasonIcon) seasonIcon.textContent = "▦";
+  }
+  function panel(title, cls) {
+    const box = el("section", "vcc-panel " + cls);
+    const heading = el("h2", "vcc-panel-title", title);
+    box.appendChild(heading);
+    return box;
+  }
+  function chip(label, id, type, color) {
+    const box = el("div", "vcc-chip vcc-chip-" + color);
+    box.dataset.valueFrom = id;
+    box.dataset.type = type;
+    box.append(el("span", "vcc-chip-label", label), el("strong", "vcc-chip-value", "—"));
+    return box;
+  }
+  function build() {
+    const dash = byId("dashboard");
+    const trend = dash?.querySelector(".vibe-panel.vibe-profit");
+    const metrics = dash?.querySelector(".vibe-metrics");
+    if (!dash || !trend || !metrics || byId("vccCommandDashboard")) return;
+    const shell = el("div", "vcc-dashboard-shell");
+    shell.id = "vccCommandDashboard";
+    const main = el("div", "vcc-main-column");
+    const side = el("aside", "vcc-side-column");
+    side.setAttribute("aria-label", "Bet Lab dashboard status panels");
+    const chartTitle = trend.querySelector(".vibe-panel-heading h2");
+    if (chartTitle) chartTitle.textContent = "CUMULATIVE PROFIT TRAJECTORY";
+    const chips = el("section", "vcc-chips");
+    chips.setAttribute("aria-label", "Live betting totals");
+    chips.append(
+      chip("TOTAL WAGERED", "statWagered", "money", "orange"),
+      chip("NET PROFIT", "kpiProfit", "net", "purple"),
+      chip("WIN RATE", "kpiWinRate", "percent", "pink"),
+      chip("ROI", "kpiROI", "roi", "orange")
+    );
+    const recent = panel("RECENT WAGERS", "vcc-recent");
+    const scroll = el("div", "vcc-table-scroll");
+    const table = el("table", "vcc-wagers");
+    const thead = el("thead");
+    const tr = el("tr");
+    for (const col of ["WAGER", "MARKET", "STAKE", "RESULT"]) tr.appendChild(el("th", "", col));
+    thead.appendChild(tr);
+    const tbody = el("tbody"); tbody.id = "vccRecentRows";
+    table.append(thead, tbody); scroll.appendChild(table); recent.appendChild(scroll);
+    main.append(trend, chips, recent);
+    const live = panel("LIVE ACTION", "vcc-live");
+    const liveState = el("div", "vcc-live-state"); liveState.id = "vccLiveState";
+    const liveList = el("div", "vcc-side-list"); liveList.id = "vccLiveList";
+    live.append(liveState, liveList);
+    const slate = panel("TODAY'S SLATE", "vcc-slate");
+    const slateState = el("div", "vcc-slate-state"); slateState.id = "vccSlateState";
+    const slateButton = el("button", "vcc-link", "Open Today’s Board");
+    slateButton.type = "button"; slateButton.dataset.go = "Today’s Board";
+    slate.append(slateState, slateButton);
+    const account = panel("ACCOUNT SUMMARY", "vcc-account");
+    const stats = el("div", "vcc-account-stats");
+    for (const [name, id] of [["Pending", "statPending"], ["Wins", "statWon"], ["Losses", "statLost"], ["Total wagered", "statWagered"]]) {
+      const row = el("div", "vcc-account-row");
+      row.append(el("span", "", name), el("strong", "", "—"));
+      row.lastChild.dataset.valueFrom = id;
+      stats.appendChild(row);
+    }
+    account.appendChild(stats);
+    side.append(live, slate, account);
+    shell.append(main, side);
+    dash.insertBefore(shell, metrics);
+  }
+  function renderChips() {
+    for (const card of document.querySelectorAll(".vcc-chip")) {
+      const source = byId(card.dataset.valueFrom);
+      const value = card.querySelector(".vcc-chip-value");
+      if (!source || !value) continue;
+      const display = (source.textContent || "").trim() || "—";
+      value.textContent = display;
+      const isNet = card.dataset.type === "net";
+      const isROI = card.dataset.type === "roi";
+      const numeric = Number(display.replace(/[^0-9.-]/g, "")) || 0;
+      const isNegative = (isNet && !source.classList.contains("green")) || (isROI && numeric < 0);
+      card.classList.toggle("vcc-negative", isNegative);
+      value.style.color = (isNet || isROI || card.dataset.type === "money") ? (isNegative ? negative : positive) : "";
+    }
+    for (const value of document.querySelectorAll(".vcc-account-row [data-value-from]")) {
+      const source = byId(value.dataset.valueFrom);
+      if (source) value.textContent = source.textContent || "—";
+    }
+  }
+  function renderRecent(tickets) {
+    const root = byId("vccRecentRows");
+    if (!root) return;
+    root.replaceChildren();
+    const relevant = tickets.filter(t => ["Won", "Lost", "Open", "Void", "Push"].includes(t.status));
+    relevant.sort((a,b) => String(b.placedAt || b.createdAt || "").localeCompare(String(a.placedAt || a.createdAt || "")));
+    if (!relevant.length) {
+      const row = el("tr"), cell = el("td", "vcc-empty", "No wagers saved yet.");
+      cell.colSpan = 4; row.appendChild(cell); root.appendChild(row); return;
+    }
+    for (const t of relevant.slice(0,6)) {
+      const row = el("tr");
+      const wager = el("td");
+      const title = el("strong", "vcc-wager-name", t.legs?.length > 1 ? t.legs.length + "-Leg Parlay" : (t.selection || t.game || "Wager"));
+      const provider = el("small", "vcc-wager-provider", t.book || "Sportsbook");
+      wager.append(title, provider);
+      const market = el("td", "", t.game || t.selection || "Selection");
+      const stake = el("td", "vcc-money", usd(Number(t.stake) || 0, false));
+      const result = el("td");
+      const pill = el("span", "vcc-result " + (t.status === "Won" ? "is-won" : t.status === "Lost" ? "is-lost" : "is-open"), t.status === "Lost" ? "LOSS" : t.status === "Won" ? "WON" : t.status.toUpperCase());
+      result.appendChild(pill);
+      if (t.status === "Won" || t.status === "Lost") {
+        const amount = profit(t);
+        const note = el("small", "vcc-result-amount" + (amount < 0 ? " vcc-negative" : ""), usd(amount, true));
+        result.appendChild(note);
+      }
+      row.append(wager, market, stake, result);
+      root.appendChild(row);
+    }
+  }
+  function renderSide(tickets) {
+    const live = tickets.filter(t => t.status === "Open" && (t.liveBet === true || String(t.betType || "").toLowerCase() === "live"));
+    const node = byId("vccLiveState");
+    const list = byId("vccLiveList");
+    if (node) {
+      node.replaceChildren();
+      node.append(el("strong", "vcc-live-count", String(live.length)), el("span", "", " OPEN LIVE TICKETS"));
+      const source = byId("betlabLiveStatus");
+      node.appendChild(el("small", "vcc-subtle", source?.textContent?.trim() || "Live tracker status unavailable"));
+    }
+    if (list) {
+      list.replaceChildren();
+      if (!live.length) list.appendChild(el("p", "vcc-empty", "No live tickets currently pending."));
+      else for (const t of live.slice(-3).reverse()) {
+        const line = el("div", "vcc-side-row");
+        line.append(el("span", "", t.selection || t.game || "Live wager"), el("strong", "", usd(Number(t.stake) || 0, false)));
+        list.appendChild(line);
+      }
+    }
+    const slate = byId("vccSlateState");
+    if (slate) {
+      slate.replaceChildren();
+      const games = byId("betlabLiveGames");
+      const entries = games ? Array.from(games.children).filter(n => (n.textContent || "").trim()) : [];
+      if (entries.length) {
+        slate.appendChild(el("p", "vcc-subtle", "From your live game feed"));
+        for (const game of entries.slice(0,3)) slate.appendChild(el("div", "vcc-slate-game", (game.textContent || "").replace(/\s+/g, " ").trim().slice(0,120)));
+      } else slate.appendChild(el("p", "vcc-empty", "Current NFL games and prop tracking are in Today’s Board."));
+    }
+  }
+  function update() {
+    const tickets = readTickets();
+    renderChips();
+    renderRecent(tickets);
+    renderSide(tickets);
+  }
+  function schedule() {
+    if (waiting) return; waiting = true;
+    requestAnimationFrame(() => { waiting = false; update(); });
+  }
+  function init() {
+    if (byId("vccCommandDashboard")) return;
+    try {
+      header(); build(); update();
+      for (const id of ["kpiProfit", "kpiROI", "statWagered", "statPending", "statWon", "statLost", "betlabLiveStatus", "betlabLiveGames"]) {
+        const node = byId(id);
+        if (node) new MutationObserver(schedule).observe(node, {childList:true, subtree:true, characterData:true});
+      }
+      document.addEventListener("betlab-board-rendered", schedule);
+      window.addEventListener("storage", event => { if (event.key === dataKey) schedule(); });
+      window.setInterval(() => { if (!document.hidden) schedule(); }, 15000);
+    } catch (error) {
+      console.error("Bet Lab visual-only command center extension failed:", error);
+    }
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once:true});
+  else init();
+})();
