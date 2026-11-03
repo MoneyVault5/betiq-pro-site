@@ -1,136 +1,148 @@
-/* BET LAB — Neon Fusion (neon-fusion-v1). Visual-only overlay.
-   Deep black-blue night ambience fused with stadium heat: neon violet→magenta
-   gradient chrome, electric cyan accents, hot orange horizon in the hero.
-   Bright two-tone glowing borders on every card and panel.
-   Semantic colors: positives bright green #39ff88, negatives red #ff3b5c.
+/* BET LAB — Command Center Flame (command-flame-v1). Visual-only overlay.
+   Purple + orange flames around a night-stadium arena, flask Command Center
+   branding, glowing pill nav and alternating neon stat chips — after the mock
+   Marquis endorsed. Deep black night-stadium ambience, vivid purple + hot orange neon,
+   semantic colors: positives bright green #39ff88, negatives red #ff3b5c.
    The page background and the hero chart BREATHE (slow 7s glow pulse).
    Does not change data, sync, bet settling, or analytics calculations. */
-:root { --v-bg:#04060f; --v-panel:#0d0a24; --v-violet:#b537f2; --v-violet-soft:#7b5cff; --v-cyan:#00e5ff; --v-magenta:#ff2ea6; --v-gold:#ffb300; --v-amber:#ff8a00; --v-border:#b537f2; --v-muted:#93a5cc; --v-mint:#39ff88; --v-green:#39ff88; --v-red:#ff3b5c; }
-html { background:#04060f; }
-body.betlab-vibe {background:linear-gradient(165deg,#060a1c 0%,#04060f 46%,#0a0416 100%)!important;color:#f4f8ff!important;font-family:Inter,"Segoe UI",Arial,sans-serif!important;overflow-x:hidden;}
-/* Ambient neon glow layer — breathes slowly (opacity + scale), alive not flashing. */
-body.betlab-vibe:before {content:"";position:fixed;inset:-3%;background:radial-gradient(ellipse at 74% 4%,rgba(255,46,166,.17),transparent 52%),radial-gradient(ellipse at 10% 92%,rgba(0,229,255,.13),transparent 50%),radial-gradient(ellipse at 88% 96%,rgba(181,55,242,.15),transparent 46%),radial-gradient(ellipse at 50% 108%,rgba(255,110,0,.08),transparent 55%)!important;opacity:.62!important;filter:none!important;pointer-events:none;z-index:0;animation:sfBreathe 7s ease-in-out infinite alternate;will-change:opacity,transform;}
+:root { --v-bg:#050309; --v-panel:#120818; --v-violet:#b534ff; --v-violet-soft:#7c3aed; --v-gold:#ffb300; --v-amber:#ff8a00; --v-border:#a855f7; --v-muted:#b7a5c9; --v-mint:#39ff88; --v-green:#39ff88; --v-red:#ff3b5c; }
+html { background:#050309; }
+body.betlab-vibe {background:linear-gradient(165deg,#07030f 0%,#050309 46%,#0a0408 100%)!important;color:#faf3ff!important;font-family:Inter,"Segoe UI",Arial,sans-serif!important;overflow-x:hidden;}
+/* Ambient stadium glow layer — breathes slowly (opacity + scale), alive not flashing. */
+body.betlab-vibe:before {content:"";position:fixed;inset:-3%;background:radial-gradient(ellipse at 74% 4%,rgba(181,52,255,.26),transparent 52%),radial-gradient(ellipse at 10% 92%,rgba(255,94,0,.20),transparent 50%),radial-gradient(ellipse at 88% 96%,rgba(255,138,0,.18),transparent 46%),radial-gradient(ellipse at 50% 108%,rgba(255,110,0,.17),transparent 55%)!important;opacity:.7!important;filter:none!important;pointer-events:none;z-index:0;animation:sfBreathe 7s ease-in-out infinite alternate;will-change:opacity,transform;}
 @keyframes sfBreathe {from{opacity:.5;transform:scale(1)}to{opacity:.92;transform:scale(1.035)}}
+/* Flame frame: layered fire-glow licking the page edges (left / right / bottom / top), breathing with the ambience. */
+body.betlab-vibe:after {content:"";position:fixed;inset:0;background:linear-gradient(90deg,rgba(255,110,0,.13),transparent 84px),linear-gradient(270deg,rgba(255,110,0,.13),transparent 84px),linear-gradient(0deg,rgba(255,94,0,.17),transparent 118px),linear-gradient(180deg,rgba(181,52,255,.12),transparent 92px),radial-gradient(ellipse 16% 34% at 0% 62%,rgba(255,122,26,.16),transparent 70%),radial-gradient(ellipse 16% 34% at 100% 62%,rgba(255,122,26,.16),transparent 70%),radial-gradient(ellipse 20% 30% at 0% 30%,rgba(147,51,234,.14),transparent 70%),radial-gradient(ellipse 20% 30% at 100% 30%,rgba(147,51,234,.14),transparent 70%);opacity:.66;pointer-events:none;z-index:0;animation:sfBreathe 8s ease-in-out infinite alternate;will-change:opacity;}
 body.betlab-vibe .app {display:block!important;max-width:none!important;width:100%!important;}
-body.betlab-vibe .main {position:relative;padding:0 clamp(16px,2vw,34px) 46px calc(158px + clamp(15px,2vw,32px))!important;max-width:2000px!important;margin:auto!important;}
+body.betlab-vibe .main {position:relative;padding:0 clamp(16px,2vw,34px) 46px calc(158px + clamp(15px,2vw,32px))!important;max-width:2000px!important;margin:auto!important;box-shadow:inset 0 0 150px rgba(255,110,0,.05),inset 0 0 90px rgba(181,52,255,.05);}
 body.betlab-vibe .command-topbar {display:none!important;}
 body.betlab-vibe #buildVersion {display:none!important;}
 /* Responsive persistent left menu uses the application's ORIGINAL nav buttons. */
-body.betlab-vibe .main > #nav.nav {display:flex!important;position:fixed!important;z-index:100!important;top:0!important;bottom:0!important;left:0!important;width:152px!important;height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:9px!important;padding:174px 10px 64px!important;margin:0!important;border:0!important;border-right:1px solid #6d247f!important;border-radius:0!important;background:linear-gradient(105deg,#060813f2,#12082af6 88%)!important;box-shadow:8px 0 28px #0005,inset -1px 0 rgba(0,229,255,.10)!important;scrollbar-width:thin;}
-body.betlab-vibe .main > #nav.nav:before {content:"BET LAB";display:block;position:absolute;top:22px;left:7px;right:7px;text-align:center;color:#f7e9ff;font-size:18px;font-weight:1000;font-style:italic;letter-spacing:1px;text-shadow:0 0 12px rgba(255,46,166,.55),0 0 22px rgba(0,229,255,.30);border-bottom:1px solid #4a2566;padding-bottom:18px;}
-body.betlab-vibe .main > #nav.nav:after {content:"◆ LIVE TRACKER";position:absolute;top:85px;left:5px;right:5px;color:#7dd7f5;font-size:9px;letter-spacing:1.35px;font-weight:800;text-align:center;}
-body.betlab-vibe .main > #nav.nav button {flex:0 0 auto!important;width:100%!important;min-width:0!important;max-width:none!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;border:1px solid #2a1b45!important;border-radius:13px!important;clip-path:none!important;background:linear-gradient(120deg,#0d0a20,#08061a)!important;color:#e9dff2!important;padding:13px 9px!important;margin:0!important;font-size:12px!important;white-space:normal!important;min-height:54px!important;font-weight:800!important;text-align:left!important;box-shadow:inset 0 1px #ffffff0c!important;text-shadow:none!important;}
-body.betlab-vibe .main > #nav.nav button .ico {display:inline!important;font-size:18px!important;color:#8be9ff!important;min-width:20px;}
-body.betlab-vibe .main > #nav.nav button.active,body.betlab-vibe .main > #nav.nav button:hover {background:linear-gradient(135deg,#3d0a54,#1d0b45)!important;border-color:#ff2ea6!important;color:#fff!important;box-shadow:0 0 15px rgba(255,46,166,.48),inset 0 0 16px rgba(181,55,242,.24)!important;}
-body.betlab-vibe .main > #nav.nav button.active .ico {color:#00e5ff!important;}
+body.betlab-vibe .main > #nav.nav {display:flex!important;position:fixed!important;z-index:100!important;top:0!important;bottom:0!important;left:0!important;width:152px!important;height:100dvh!important;overflow-y:auto!important;overflow-x:hidden!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;flex-wrap:nowrap!important;gap:9px!important;padding:174px 10px 64px!important;margin:0!important;border:0!important;border-right:1px solid #69318a!important;border-radius:0!important;background:linear-gradient(105deg,#0a0513ee,#140824f6 88%)!important;box-shadow:8px 0 28px #0005,inset -1px 0 #c255f21f!important;scrollbar-width:thin;}
+body.betlab-vibe .main > #nav.nav:before {content:"BET LAB";display:block;position:absolute;top:22px;left:7px;right:7px;text-align:center;font-size:18px;font-weight:1000;font-style:italic;letter-spacing:1px;background:linear-gradient(92deg,#a335f5 5%,#cf4bd8 48%,#ff8a00 95%);background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 9px rgba(181,52,255,.45)) drop-shadow(0 0 13px rgba(255,138,0,.30));border-bottom:1px solid #532966;padding-bottom:18px;}
+body.betlab-vibe .main > #nav.nav:after {content:"◆ COMMAND CENTER";position:absolute;top:85px;left:5px;right:5px;color:#ffa03c;font-size:9px;letter-spacing:1.6px;font-weight:850;text-align:center;text-shadow:0 0 9px rgba(255,138,0,.5);}
+body.betlab-vibe .main > #nav.nav button {flex:0 0 auto!important;width:100%!important;min-width:0!important;max-width:none!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;border:1px solid #3d2058!important;border-radius:99px!important;clip-path:none!important;background:linear-gradient(135deg,rgba(32,15,52,.92),rgba(10,5,20,.95))!important;color:#e9dff2!important;padding:13px 14px!important;margin:0!important;font-size:12px!important;white-space:normal!important;min-height:54px!important;font-weight:800!important;text-align:left!important;box-shadow:inset 0 1px #ffffff10,inset 0 0 14px #7b2ff714,0 2px 9px #0006!important;text-shadow:none!important;}
+body.betlab-vibe .main > #nav.nav button .ico {display:inline!important;font-size:18px!important;color:#dcb4fc!important;min-width:20px;}
+body.betlab-vibe .main > #nav.nav button.active,body.betlab-vibe .main > #nav.nav button:hover {background:linear-gradient(135deg,#7c3aed,#4c1d95)!important;border-color:#d8b4fe!important;color:#fff!important;box-shadow:0 0 19px rgba(168,85,247,.6),0 0 30px rgba(124,58,237,.30),inset 0 0 16px #ffffff1f!important;}
+body.betlab-vibe .main > #nav.nav button.active .ico {color:#ffbb75!important;}
 /* New hero illustration is generated as CSS + inline SVG, not an image with baked-in stats. */
-body.betlab-vibe .hero {margin:0 calc(-1 * clamp(16px,2vw,34px)) 22px calc(-1 * clamp(15px,2vw,32px))!important;width:auto!important;height:clamp(180px,17vw,255px)!important;min-height:180px!important;overflow:hidden!important;isolation:isolate!important;border:0!important;border-bottom:1px solid rgba(255,46,166,.66)!important;background:linear-gradient(180deg,#02040c 0%,#0a1030 26%,#2a0f4e 50%,#7a1e5e 72%,#b3541c 86%,#0d0316 100%)!important;box-shadow:inset 0 -31px 40px #04060f,0 9px 28px rgba(255,46,166,.18),0 4px 22px rgba(0,229,255,.16)!important;filter:none!important;}
+body.betlab-vibe .hero {margin:0 calc(-1 * clamp(16px,2vw,34px)) 22px calc(-1 * clamp(15px,2vw,32px))!important;width:auto!important;height:clamp(180px,17vw,255px)!important;min-height:180px!important;overflow:hidden!important;isolation:isolate!important;border:0!important;border-bottom:2px solid rgba(255,138,0,.88)!important;background:linear-gradient(180deg,#010006 0%,#150530 28%,#4a1170 50%,#c25e1e 78%,#7a3408 88%,#0d0316 100%)!important;box-shadow:inset 0 -36px 44px #050309,0 12px 34px rgba(255,110,0,.28),0 6px 26px rgba(181,52,255,.30)!important;filter:none!important;}
+/* Flame tongues licking down from the hero's top edge (mock frame flames). */
+body.betlab-vibe .hero:after {content:"";position:absolute;top:0;left:0;right:0;height:66px;z-index:1;pointer-events:none;background:radial-gradient(ellipse 22% 92% at 8% 0%,rgba(255,122,26,.52),transparent 70%),radial-gradient(ellipse 18% 82% at 30% 0%,rgba(181,52,255,.46),transparent 70%),radial-gradient(ellipse 24% 96% at 55% 0%,rgba(255,94,0,.52),transparent 70%),radial-gradient(ellipse 18% 82% at 78% 0%,rgba(147,51,234,.46),transparent 70%),radial-gradient(ellipse 20% 92% at 96% 0%,rgba(255,150,40,.46),transparent 70%);filter:blur(6px);animation:sfRibbonBreathe 7s ease-in-out infinite alternate;}
 /* Flask / lab mark (from Marquis's endorsed mock) above the wordmark. */
-.vibe-flask {position:absolute;top:4.5%;left:50%;transform:translateX(-50%);width:clamp(30px,3.2vw,44px);z-index:7;filter:drop-shadow(0 0 7px rgba(0,229,255,.65)) drop-shadow(0 0 13px rgba(255,46,166,.5));animation:sfBreathe 7s ease-in-out infinite alternate;}
+.vibe-flask {position:absolute;top:4.5%;left:50%;transform:translateX(-50%);width:clamp(30px,3.2vw,44px);z-index:7;filter:drop-shadow(0 0 7px rgba(255,138,0,.65)) drop-shadow(0 0 13px rgba(181,52,255,.5));animation:sfBreathe 7s ease-in-out infinite alternate;}
 .vibe-flask svg {display:block;width:100%;height:auto;}
-body.betlab-vibe .hero:before {content:"";z-index:0!important;inset:0!important;background:radial-gradient(ellipse at 50% 67%,rgba(255,138,0,.24),transparent 42%),linear-gradient(180deg,#060a2b2b,#0a052109 54%,#04060fc4 100%)!important;}
+body.betlab-vibe .hero:before {content:"";z-index:0!important;inset:0!important;background:radial-gradient(ellipse at 50% 67%,#ffb4503d,transparent 42%),linear-gradient(180deg,#10081b2b,#19052109 54%,#090412c4 100%)!important;}
 body.betlab-vibe .hero .header-topline,body.betlab-vibe .hero .system-brand {display:none!important;}
-body.betlab-vibe .hero .profile-btn {top:13px!important;right:17px!important;z-index:12!important;background:#120a2bba!important;border:1px solid #4dd8f5!important;border-radius:99px!important;padding:8px 11px!important;color:#fbeaff!important;font-size:12px!important;box-shadow:0 2px 12px #0008,0 0 10px rgba(0,229,255,.25)!important;}
-body.betlab-vibe .hero .notify {top:13px!important;right:155px!important;z-index:12!important;background:#120a2bba!important;border-color:#ff2ea6!important;color:#ff9ecf!important;}
-body.betlab-vibe .profile-panel {z-index:20!important;background:#160b2e!important;border-color:#b537f2!important;}
+body.betlab-vibe .hero .profile-btn {top:13px!important;right:17px!important;z-index:12!important;background:#1a0b2bba!important;border:1px solid #ce81df!important;border-radius:99px!important;padding:8px 11px!important;color:#fbeaff!important;font-size:12px!important;box-shadow:0 2px 12px #0008!important;}
+body.betlab-vibe .hero .notify {top:13px!important;right:155px!important;z-index:12!important;background:#1a0b2bba!important;border-color:#ce81df!important;color:#ffc573!important;}
+body.betlab-vibe .profile-panel {z-index:20!important;background:#1e0e2d!important;border-color:#d382f3!important;}
 .vibe-hero-art {position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;}
-.vibe-skyline {position:absolute;bottom:8px;height:70%;width:36%;display:flex;align-items:flex-end;gap:3px;opacity:.9;filter:drop-shadow(0 -2px 9px rgba(0,229,255,.25));}
+.vibe-skyline {position:absolute;bottom:8px;height:70%;width:36%;display:flex;align-items:flex-end;gap:3px;opacity:.95;filter:drop-shadow(0 -2px 11px rgba(255,155,112,.38));}
 .vibe-skyline.left {left:-1%;}.vibe-skyline.right {right:-1%;transform:scaleX(-1);}
-.vibe-tower {display:block;flex:1 1 7%;max-width:35px;height:var(--tower-h);border:1px solid #2c1a55;background:repeating-linear-gradient(90deg,transparent 0 5px,rgba(125,211,252,.25) 5px 6px,transparent 6px 10px),repeating-linear-gradient(0deg,#0d1030 0 7px,#3a1655 7px 8px,#0d1030 8px 13px);box-shadow:0 0 11px rgba(181,55,242,.22);}
-.vibe-tower:nth-child(3n){background-color:#1a0f3d}.vibe-tower:nth-child(4n){max-width:22px;}
-.vibe-flame-ribbons {position:absolute;width:100%;height:100%;left:0;top:0;overflow:visible;z-index:5;opacity:.64;filter:drop-shadow(0 0 6px rgba(255,46,166,.40));animation:sfRibbonBreathe 8s ease-in-out infinite alternate;}
-@keyframes sfRibbonBreathe {from{opacity:.48}to{opacity:.74}}
+.vibe-tower {display:block;flex:1 1 7%;max-width:35px;height:var(--tower-h);border:1px solid #3c1555;background:repeating-linear-gradient(90deg,transparent 0 5px,#f5a35942 5px 6px,transparent 6px 10px),repeating-linear-gradient(0deg,#1a0929 0 7px,#431b43 7px 8px,#1a0929 8px 13px);box-shadow:0 0 11px #d87b3c36;}
+.vibe-tower:nth-child(3n){background-color:#260b39}.vibe-tower:nth-child(4n){max-width:22px;}
+.vibe-flame-ribbons {position:absolute;width:100%;height:100%;left:0;top:0;overflow:visible;z-index:5;opacity:.85;filter:drop-shadow(0 0 9px rgba(242,163,83,.55));animation:sfRibbonBreathe 8s ease-in-out infinite alternate;}
+@keyframes sfRibbonBreathe {from{opacity:.6}to{opacity:.95}}
 .vibe-flame-ribbons path {stroke-linecap:round;fill:none;stroke-width:2.2;}
 .vibe-brand-block {position:absolute;top:22%;left:50%;transform:translateX(-50%);text-align:center;width:min(88%,780px);z-index:7;}
-.vibe-wordmark {font-size:clamp(48px,6.1vw,108px);font-style:italic;letter-spacing:.035em;white-space:nowrap;font-weight:1000;line-height:1.07;display:inline-block;position:relative;background:linear-gradient(95deg,#8ff4ff 0%,#00e5ff 22%,#7b5cff 52%,#b537f2 74%,#ff2ea6 100%);background-clip:text;-webkit-background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent!important;filter:drop-shadow(0 3px 0 #160a24) drop-shadow(0 0 13px rgba(0,229,255,.45)) drop-shadow(0 0 26px rgba(255,46,166,.45));}
-.vibe-wordmark::after {content:"BET LAB";position:absolute;inset:0;white-space:nowrap;font:inherit;letter-spacing:inherit;line-height:inherit;background:linear-gradient(100deg,#00e5ff 8%,#b537f2 30%,#ff2ea6 48%,#ff8a00 62%,#b537f2 80%,#00e5ff 94%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:transparent;opacity:.5;clip-path:polygon(0 58%,13% 48%,30% 64%,49% 42%,67% 57%,82% 44%,100% 58%,100% 78%,80% 67%,67% 78%,49% 64%,30% 85%,13% 69%,0 80%);}
-.vibe-subtitle {position:relative;z-index:9;font-size:clamp(10px,1.22vw,16px);letter-spacing:clamp(.8px,.3vw,3.5px);font-weight:750;color:#e8f6ff;text-shadow:0 2px 8px #0a0618;margin-top:4px;white-space:nowrap;}
-.vibe-flame-sheen {position:absolute;top:29%;left:12%;width:76%;height:48%;border-radius:50%;background:linear-gradient(95deg,transparent,rgba(0,229,255,.08) 18%,rgba(255,46,166,.10) 48%,rgba(181,55,242,.10) 75%,transparent);filter:blur(16px);z-index:4;animation:vibe-glow 8s ease-in-out infinite alternate;pointer-events:none;}
+.vibe-wordmark {font-size:clamp(48px,6.1vw,108px);font-style:italic;letter-spacing:.035em;white-space:nowrap;font-weight:1000;line-height:1.07;display:inline-block;position:relative;background:linear-gradient(93deg,#7a1fd0 0%,#a335f5 30%,#cf4bd8 52%,#ff7a1a 76%,#ffb300 100%);background-clip:text;-webkit-background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent!important;filter:drop-shadow(0 3px 0 #1f0c22) drop-shadow(0 0 15px rgba(255,138,0,.55)) drop-shadow(0 0 30px rgba(181,52,255,.48));}
+.vibe-wordmark::after {content:"BET LAB";position:absolute;inset:0;white-space:nowrap;font:inherit;letter-spacing:inherit;line-height:inherit;background:linear-gradient(96deg,#7a35c9 8%,#b947ff 30%,#ff8a00 58%,#ffb74b 78%,#ad31ef 95%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:transparent;opacity:.5;clip-path:polygon(0 58%,13% 48%,30% 64%,49% 42%,67% 57%,82% 44%,100% 58%,100% 78%,80% 67%,67% 78%,49% 64%,30% 85%,13% 69%,0 80%);}
+.vibe-subtitle {position:relative;z-index:9;font-size:clamp(10px,1.22vw,16px);letter-spacing:clamp(2px,.45vw,5px);font-weight:850;color:#ffab4a;text-transform:uppercase;text-shadow:0 0 12px rgba(255,138,0,.55),0 2px 8px #200720;margin-top:5px;white-space:nowrap;}
+.vibe-flame-sheen {position:absolute;top:29%;left:12%;width:76%;height:48%;border-radius:50%;background:linear-gradient(95deg,transparent,#b72eff13 18%,#f29d2516 48%,#8c2eff18 75%,transparent);filter:blur(16px);z-index:4;animation:vibe-glow 8s ease-in-out infinite alternate;pointer-events:none;}
 @keyframes vibe-glow{from{opacity:.36;transform:scaleX(.96)}to{opacity:.7;transform:scaleX(1.025)}}
 /* Re-arranged DOM nodes retain original IDs, handlers, and data bindings. */
 body.betlab-vibe #dashboard {min-width:0!important;}
-/* "Total Bankroll Vault" treatment: the metrics grid sits inside one dominant
-   glowing panel, with the KPI / record cards reading as stat chips inside it. */
-body.betlab-vibe #dashboard .vibe-metrics {display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;margin:0 0 20px!important;align-items:stretch;padding:14px;border:1px solid rgba(181,55,242,.55);border-radius:20px;background:radial-gradient(ellipse at 18% 0%,rgba(181,55,242,.20),transparent 55%),radial-gradient(ellipse at 88% 110%,rgba(0,229,255,.10),transparent 55%),linear-gradient(160deg,#140b31,#07051a 78%);box-shadow:0 0 26px rgba(181,55,242,.22),0 0 18px rgba(255,46,166,.10),inset 0 1px rgba(255,255,255,.08);}
-body.betlab-vibe #dashboard .vibe-metrics > .record-breakdown-item,body.betlab-vibe #dashboard .vibe-metrics > .kpi {display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:7px!important;min-width:0!important;min-height:116px!important;padding:16px 8px!important;text-align:center!important;border:1px solid #9e43cc!important;border-radius:16px!important;background:linear-gradient(158deg,rgba(23,13,51,.94),rgba(7,8,24,.94) 76%,#1c0b38)!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 16px rgba(4,2,17,.66),0 0 13px rgba(134,45,175,.19)!important;clip-path:none!important;position:relative;overflow:hidden;}
-body.betlab-vibe #dashboard .vibe-metrics > *:before {content:"";display:block;position:absolute;inset:auto 22px 0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,229,255,.5),rgba(255,46,166,.5),transparent);pointer-events:none;}
+body.betlab-vibe #dashboard .vibe-metrics {display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:12px!important;margin:0 0 20px!important;align-items:stretch;}
+body.betlab-vibe #dashboard .vibe-metrics > .record-breakdown-item,body.betlab-vibe #dashboard .vibe-metrics > .kpi {display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:7px!important;min-width:0!important;min-height:116px!important;padding:16px 8px!important;text-align:center!important;border:1px solid #9e43cc!important;border-radius:16px!important;background:linear-gradient(158deg,#23102feF,#0d071aed 76%,#230c35)!important;box-shadow:inset 0 1px #ffffff17,0 4px 16px #080211a9,0 0 17px rgba(134,45,175,.30)!important;clip-path:none!important;position:relative;overflow:hidden;}
+body.betlab-vibe #dashboard .vibe-metrics > *:before {content:"";display:block;position:absolute;inset:auto 22px 0;height:2px;background:linear-gradient(90deg,transparent,#c74bff77,transparent);pointer-events:none;}
 body.betlab-vibe #dashboard .vibe-metrics .kpi-icon {display:none!important;}
 body.betlab-vibe #dashboard .vibe-metrics .kpi > div:not(.kpi-icon){display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;}
 body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item span:not(.record-wins):not(.record-losses):not(.record-separator),body.betlab-vibe #dashboard .vibe-metrics .kpi-label {font-size:clamp(10px,1.18vw,16px)!important;font-weight:900!important;line-height:1.2!important;letter-spacing:.3px!important;color:#f3e7fa!important;text-shadow:none!important;white-space:normal!important;}
-body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item strong,body.betlab-vibe #dashboard .vibe-metrics .kpi-val {font-size:clamp(23px,2.7vw,43px)!important;font-weight:950!important;line-height:1.05!important;white-space:nowrap!important;text-align:center!important;letter-spacing:-.7px!important;text-shadow:0 0 12px rgba(123,92,255,.25)!important;}
-body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item small {font-size:10px!important;color:#93a5cc!important;line-height:1.2!important;max-width:100%;}
-body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.overall {border-color:#ff2ea6!important;box-shadow:inset 0 0 15px rgba(255,46,166,.08),0 0 14px rgba(255,46,166,.30)!important;}
-body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.pregame {border-color:#00e5ff!important;box-shadow:inset 0 0 15px rgba(0,229,255,.07),0 0 14px rgba(0,229,255,.28)!important;background:linear-gradient(150deg,#0a1a33,#0a0719 72%)!important;}
-body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.live {border-color:#b537f2!important;box-shadow:inset 0 0 16px rgba(181,55,242,.09),0 0 16px rgba(181,55,242,.30)!important;}
-body.betlab-vibe #dashboard .vibe-metrics .record-separator {color:#93a5cc!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item strong,body.betlab-vibe #dashboard .vibe-metrics .kpi-val {font-size:clamp(23px,2.7vw,43px)!important;font-weight:950!important;line-height:1.05!important;white-space:nowrap!important;text-align:center!important;letter-spacing:-.7px!important;text-shadow:0 0 12px #7721b74a!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item small {font-size:10px!important;color:#a98dbd!important;line-height:1.2!important;max-width:100%;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.overall {border-color:#bd62e4!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.pregame {border-color:#eeb34b!important;box-shadow:inset 0 0 15px #eaa04113,0 0 14px #f6a53138!important;background:linear-gradient(150deg,#2c1b16,#120a19 72%)!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.live {border-color:#ce61f2!important;box-shadow:inset 0 0 16px #d149ff18,0 0 16px #ce4fff38!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.overall .record-wins {color:#e6b3ff!important;text-shadow:0 0 10px #b531f76b!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.overall .record-losses {color:#ff708a!important;text-shadow:0 0 10px #fc46726b!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.pregame .record-wins {color:#ffcf6f!important;text-shadow:0 0 11px #ffc04a85!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.pregame .record-losses {color:#f7a85c!important;text-shadow:0 0 10px #df833583!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.live .record-wins {color:#df9dff!important;text-shadow:0 0 10px #b837ef85!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item.live .record-losses {color:#ffaf68!important;text-shadow:0 0 10px #f6a34273!important;}
+body.betlab-vibe #dashboard .vibe-metrics .record-separator {color:#d3aecf!important;}
 body.betlab-vibe #dashboard .vibe-metrics .kpi-val {color:#f8e9ff!important;}
 body.betlab-vibe #dashboard .vibe-metrics #kpiROI,body.betlab-vibe #dashboard .vibe-metrics #kpiProfit {color:#39ff88!important;text-shadow:0 0 14px rgba(57,255,136,.4)!important;}
 body.betlab-vibe #dashboard .vibe-metrics #kpiProfit[style*="color: rgb(255"] {color:#ff3b5c!important;text-shadow:0 0 14px rgba(255,59,92,.4)!important;}
-/* Rotating two-tone neon borders on KPI stat chips: magenta / cyan / violet. */
-body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n+1) {border-color:#ff2ea6!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 16px rgba(4,2,17,.66),0 0 14px rgba(255,46,166,.30)!important;}
-body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n+2) {border-color:#00e5ff!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 16px rgba(4,2,17,.66),0 0 14px rgba(0,229,255,.28)!important;}
-body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n) {border-color:#b537f2!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 4px 16px rgba(4,2,17,.66),0 0 14px rgba(181,55,242,.30)!important;}
+/* Alternating neon borders on KPI chips, like the mock: orange / violet / magenta-pink cycle, each chip its own glow. */
+body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n+1) {border-color:#ff8a00!important;box-shadow:inset 0 1px #ffffff17,0 4px 16px #080211a9,0 0 20px rgba(255,138,0,.40)!important;}
+body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n+2) {border-color:#b534ff!important;box-shadow:inset 0 1px #ffffff17,0 4px 16px #080211a9,0 0 20px rgba(181,52,255,.40)!important;}
+body.betlab-vibe #dashboard .vibe-metrics > .kpi:nth-child(3n) {border-color:#ff4d8d!important;box-shadow:inset 0 1px #ffffff17,0 4px 16px #080211a9,0 0 20px rgba(255,77,141,.36)!important;}
 /* SEMANTIC RULE (hard): wins / positive = bright green, losses / negative = red. */
 body.betlab-vibe #dashboard .vibe-metrics .record-wins {color:#39ff88!important;text-shadow:0 0 10px rgba(57,255,136,.55)!important;}
 body.betlab-vibe #dashboard .vibe-metrics .record-losses {color:#ff3b5c!important;text-shadow:0 0 10px rgba(255,59,92,.55)!important;}
-body.betlab-vibe #dashboard .vibe-metrics .kpi .small {color:#93a5cc!important;font-size:10px!important;font-weight:650!important;}
+body.betlab-vibe #dashboard .vibe-metrics .kpi .small {color:#bba2c8!important;font-size:10px!important;font-weight:650!important;}
 body.betlab-vibe #dashboard .vibe-panels {display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);gap:18px;margin:0 0 18px;align-items:stretch;}
-body.betlab-vibe .vibe-panel {position:relative;min-width:0;padding:18px 18px 17px;border:1px solid #b537f2;border-radius:19px;background:linear-gradient(155deg,#150b31,#060818 76%);box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 19px rgba(181,55,242,.30),0 0 14px rgba(255,46,166,.12),0 16px 28px rgba(0,0,0,.25);overflow:hidden;}
-/* Alternating glow: breakdown panel burns cyan, trend panel stays violet-magenta. */
-body.betlab-vibe .vibe-panel.vibe-breakdown {border-color:#00e5ff;box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 19px rgba(0,229,255,.28),0 16px 28px rgba(0,0,0,.25);}
+body.betlab-vibe .vibe-panel {position:relative;min-width:0;padding:18px 18px 17px;border:1px solid #b534ff;border-radius:19px;background:linear-gradient(155deg,#1b0b2b,#0c0718 76%);box-shadow:inset 0 1px #ffffff1b,0 0 27px rgba(181,52,255,.42),0 16px 28px #0004;overflow:hidden;}
+body.betlab-vibe .vibe-panel.vibe-weekly {border-color:#ff4d8d;box-shadow:inset 0 1px #ffffff1b,0 0 24px rgba(255,77,141,.34),0 16px 28px #0004;}
+/* Alternating glow: breakdown panel burns orange, trend panel stays purple. */
+body.betlab-vibe .vibe-panel.vibe-breakdown {border-color:#ff8a00;box-shadow:inset 0 1px #ffffff1b,0 0 27px rgba(255,138,0,.42),0 16px 28px #0004;}
 /* Hero chart breathing: the trend panel's glow slowly swells and settles (7s). */
 body.betlab-vibe .vibe-panel.vibe-profit {animation:sfPanelBreathe 7s ease-in-out infinite alternate;}
-@keyframes sfPanelBreathe {from{box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 13px rgba(181,55,242,.22),0 0 8px rgba(0,229,255,.08),0 16px 28px rgba(0,0,0,.25)}to{box-shadow:inset 0 1px rgba(255,255,255,.11),0 0 26px rgba(181,55,242,.45),0 0 18px rgba(255,46,166,.22),0 16px 28px rgba(0,0,0,.25)}}
+@keyframes sfPanelBreathe {from{box-shadow:inset 0 1px #ffffff1b,0 0 18px rgba(181,52,255,.30),0 0 11px rgba(255,138,0,.16),0 16px 28px #0004}to{box-shadow:inset 0 1px #ffffff1b,0 0 36px rgba(181,52,255,.55),0 0 24px rgba(255,138,0,.30),0 16px 28px #0004}}
 .sf-chart-breathe {animation:sfChartBreathe 7s ease-in-out infinite alternate;will-change:filter;}
-@keyframes sfChartBreathe {from{filter:drop-shadow(0 0 4px rgba(0,229,255,.25)) drop-shadow(0 0 8px rgba(181,55,242,.18))}to{filter:drop-shadow(0 0 10px rgba(255,46,166,.50)) drop-shadow(0 0 19px rgba(181,55,242,.45))}}
-body.betlab-vibe .vibe-panel:after {content:"";position:absolute;left:15%;right:15%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#00e5ff,rgba(255,46,166,.66),transparent);opacity:.7;}
+@keyframes sfChartBreathe {from{filter:drop-shadow(0 0 4px rgba(255,138,0,.28)) drop-shadow(0 0 8px rgba(181,52,255,.20))}to{filter:drop-shadow(0 0 10px rgba(255,138,0,.55)) drop-shadow(0 0 19px rgba(181,52,255,.45))}}
+body.betlab-vibe .vibe-panel:after {content:"";position:absolute;left:15%;right:15%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,#c34afa,#ffb45899,transparent);opacity:.7;}
 body.betlab-vibe .vibe-panel-heading {display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
 body.betlab-vibe .vibe-panel-heading h2 {margin:0;color:#fef5ff;font-size:clamp(17px,1.6vw,24px);letter-spacing:.35px;font-weight:900;}
-body.betlab-vibe .vibe-panel-heading h2 .vibe-mark{color:#00e5ff;margin-right:8px;}
-body.betlab-vibe .vibe-panel-tag {font-size:12px;color:#ff7ac0;font-weight:900;}
+body.betlab-vibe .vibe-panel-heading h2 .vibe-mark{color:#ffbc5c;margin-right:8px;}
+body.betlab-vibe .vibe-panel-tag {font-size:12px;color:#ffd17e;font-weight:900;}
 body.betlab-vibe .vibe-trend-svg {display:block;min-height:190px;width:100%;height:220px;}
-body.betlab-vibe .vibe-trend-zero {color:#93a5cc;font-size:13px;padding:65px 0 55px;text-align:center;}
+body.betlab-vibe .vibe-trend-zero {color:#ae93be;font-size:13px;padding:65px 0 55px;text-align:center;}
 body.betlab-vibe .vibe-donut-area {display:flex;align-items:center;justify-content:center;gap:24px;min-height:212px;}
-body.betlab-vibe .vibe-donut {flex:0 0 155px;height:155px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(#ff2ea6 0 50%,#00e5ff 50% 100%);box-shadow:0 0 20px rgba(255,46,166,.40),0 0 18px rgba(0,229,255,.22);position:relative;}
-body.betlab-vibe .vibe-donut:before {content:"";position:absolute;inset:17px;background:#0a0722;border-radius:50%;box-shadow:inset 0 0 8px rgba(0,0,0,.78);}
+body.betlab-vibe .vibe-donut {flex:0 0 155px;height:155px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(#c648ff 0 50%,#ffb645 50% 100%);box-shadow:0 0 20px #b82bff66,0 0 18px #ffae3b22;position:relative;}
+body.betlab-vibe .vibe-donut:before {content:"";position:absolute;inset:17px;background:#11081b;border-radius:50%;box-shadow:inset 0 0 8px #000c;}
 body.betlab-vibe .vibe-donut-inner {z-index:1;text-align:center;}
 body.betlab-vibe .vibe-donut-inner strong {display:block;color:#fff;font-size:34px;font-weight:950;line-height:1.05;}
-body.betlab-vibe .vibe-donut-inner small {display:block;color:#93a5cc;font-size:12px;margin-top:5px;}
+body.betlab-vibe .vibe-donut-inner small {display:block;color:#bda6ca;font-size:12px;margin-top:5px;}
 body.betlab-vibe .vibe-counts {flex:1;min-width:0;display:flex;flex-direction:column;gap:7px;}
-body.betlab-vibe .vibe-counts > div {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid rgba(123,92,255,.25);color:#ecdff2;font-size:14px;}
+body.betlab-vibe .vibe-counts > div {display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #6c367344;color:#ecdff2;font-size:14px;}
 body.betlab-vibe .vibe-counts strong {color:#fff;font-size:19px;}
-body.betlab-vibe .vibe-counts .vibe-win-icon{color:#39ff88}.vibe-loss-icon{color:#ff3b5c}.vibe-push-icon{color:#93a5cc}
+body.betlab-vibe .vibe-counts .vibe-win-icon{color:#39ff88}.vibe-loss-icon{color:#ff3b5c}.vibe-push-icon{color:#b0a6ba}
 body.betlab-vibe #dashboard .main-grid {display:grid!important;grid-template-columns:minmax(0,1.5fr) minmax(290px,.8fr)!important;gap:18px!important;align-items:start!important;}
-body.betlab-vibe #dashboard .board,body.betlab-vibe #dashboard .right-panel {border:1px solid #b537f2!important;background:linear-gradient(150deg,#140b30,#060818 70%)!important;border-radius:19px!important;clip-path:none!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 0 20px rgba(181,55,242,.26)!important;overflow:hidden!important;min-width:0!important;}
-body.betlab-vibe #dashboard .right-panel {border-color:#ff2ea6!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 0 20px rgba(255,46,166,.26)!important;}
+body.betlab-vibe #dashboard .board,body.betlab-vibe #dashboard .right-panel {border:1px solid #b534ff!important;background:linear-gradient(150deg,#1c0d2c,#0c0718 70%)!important;border-radius:19px!important;clip-path:none!important;box-shadow:inset 0 1px #ffffff15,0 0 28px rgba(181,52,255,.38)!important;overflow:hidden!important;min-width:0!important;}
+body.betlab-vibe #dashboard .right-panel {border-color:#ff8a00!important;box-shadow:inset 0 1px #ffffff15,0 0 28px rgba(255,138,0,.38)!important;}
 body.betlab-vibe #dashboard .board {padding:14px!important;}
-body.betlab-vibe #dashboard .board-title {display:flex!important;justify-content:flex-start!important;align-items:center!important;margin:0 0 12px!important;width:100%!important;height:auto!important;min-height:48px!important;padding:0 6px 11px!important;font-size:clamp(18px,1.75vw,26px)!important;font-weight:950!important;color:#f6ecff!important;text-shadow:none!important;border:0!important;border-bottom:1px solid #5b2a86!important;border-radius:0!important;background:none!important;box-shadow:none!important;filter:none!important;}
+body.betlab-vibe #dashboard .board-title {display:flex!important;justify-content:flex-start!important;align-items:center!important;margin:0 0 12px!important;width:100%!important;height:auto!important;min-height:48px!important;padding:0 6px 11px!important;font-size:clamp(18px,1.75vw,26px)!important;font-weight:950!important;color:#f6ecff!important;text-shadow:none!important;border:0!important;border-bottom:1px solid #783b95!important;border-radius:0!important;background:none!important;box-shadow:none!important;filter:none!important;}
 body.betlab-vibe #dashboard .sports {display:flex!important;flex-wrap:wrap!important;justify-content:flex-start!important;border:0!important;background:none!important;padding:0 0 12px!important;}
-body.betlab-vibe #dashboard .sports button {flex:0 0 auto!important;min-width:96px!important;background:#170d2e!important;color:#efdeff!important;border:1px solid #7b3fd4!important;border-radius:10px!important;clip-path:none!important;padding:10px 14px!important;box-shadow:none!important;}
-body.betlab-vibe #dashboard .sports button.active {background:linear-gradient(120deg,#ff2ea6,#7b2dc9)!important;color:#fff!important;border-color:#ff8fd2!important;box-shadow:0 0 13px rgba(255,46,166,.52)!important;}
+body.betlab-vibe #dashboard .sports button {flex:0 0 auto!important;min-width:96px!important;background:#25112f!important;color:#efdeff!important;border:1px solid #a046c8!important;border-radius:10px!important;clip-path:none!important;padding:10px 14px!important;box-shadow:none!important;}
+body.betlab-vibe #dashboard .sports button.active {background:linear-gradient(120deg,#c14fff,#7d24bc)!important;color:#fff!important;border-color:#e28dff!important;box-shadow:0 0 13px #a334cc85!important;}
 body.betlab-vibe #liveTicketNotice {display:none!important;} /* dated notice is cosmetic, real tickets remain */
-body.betlab-vibe #dashboard #betlabLive {border:1px solid #5b34a8!important;background:#0d0a26!important;border-radius:12px!important;padding:10px!important;margin:0 0 12px!important;max-width:100%!important;overflow:hidden!important;}
-body.betlab-vibe #dashboard #betlabLive .live-head {color:#ff7ac0!important;}
-body.betlab-vibe #dashboard .bet-row {background:linear-gradient(105deg,#130b2b,#08061a)!important;border:1px solid #4a3575!important;border-radius:11px!important;box-shadow:none!important;transition:border .15s ease;}
-body.betlab-vibe #dashboard .bet-row:hover {border-color:#ff2ea6!important;box-shadow:0 0 11px rgba(255,46,166,.30)!important;}
-body.betlab-vibe #dashboard .table-head{color:#9fb2d8!important;}
+body.betlab-vibe #dashboard #betlabLive {border:1px solid #7b348c!important;background:#160b25!important;border-radius:12px!important;padding:10px!important;margin:0 0 12px!important;max-width:100%!important;overflow:hidden!important;}
+body.betlab-vibe #dashboard #betlabLive .live-head {color:#ffbe71!important;}
+body.betlab-vibe #dashboard .bet-row {background:linear-gradient(105deg,#1a0f2b,#100b1e)!important;border:1px solid #633475!important;border-radius:11px!important;box-shadow:none!important;transition:border .15s ease;}
+body.betlab-vibe #dashboard .bet-row:hover {border-color:#c760f8!important;box-shadow:0 0 14px rgba(150,46,171,.42)!important;}
+body.betlab-vibe #dashboard .bet-row .win {color:#39ff88;text-shadow:0 0 9px rgba(57,255,136,.35);}
+body.betlab-vibe .board-result-actions button:first-child {background:linear-gradient(135deg,rgba(18,84,44,.88),rgba(7,38,22,.92))!important;box-shadow:0 0 11px rgba(57,255,136,.30)!important;}
+body.betlab-vibe .board-result-actions button:last-child {background:linear-gradient(135deg,rgba(96,20,38,.88),rgba(42,8,20,.92))!important;box-shadow:0 0 11px rgba(255,59,92,.30)!important;}
+body.betlab-vibe #dashboard .table-head{color:#b7a2c8!important;}
 body.betlab-vibe #dashboard .right-panels {display:flex!important;flex-direction:column!important;gap:17px!important;}
 body.betlab-vibe #dashboard .right-panel {padding:16px!important;min-height:0!important;}
-body.betlab-vibe #dashboard .right-title {color:#a5f3ff!important;text-align:left!important;font-size:19px!important;text-shadow:none!important;}
+body.betlab-vibe #dashboard .right-title {color:#ffe1b1!important;text-align:left!important;font-size:19px!important;text-shadow:none!important;}
 body.betlab-vibe #dashboard .status-grid {display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:11px!important;margin-top:18px!important;}
-body.betlab-vibe #dashboard .status-tile {border:1px solid #4a3a8d!important;border-radius:13px!important;clip-path:none!important;background:linear-gradient(150deg,#130b2c,#07061a)!important;box-shadow:0 0 11px rgba(123,92,255,.18)!important;padding:10px!important;min-height:90px!important;}
-body.betlab-vibe #dashboard .status-tile.gold{border-color:#ff8a00!important;}body.betlab-vibe #dashboard .status-tile.green-border{border-color:#2f9e63!important;}body.betlab-vibe #dashboard .status-tile.red{border-color:#b03a52!important;}
-body.betlab-vibe #dashboard .status-tile label {color:#b9c6e2!important;}body.betlab-vibe #dashboard .status-tile strong {color:#fff!important;}
+body.betlab-vibe #dashboard .status-tile {border:1px solid #75418d!important;border-radius:13px!important;clip-path:none!important;background:linear-gradient(150deg,#1d112a,#0e081b)!important;box-shadow:0 0 14px rgba(123,44,157,.35)!important;padding:10px!important;min-height:90px!important;}
+body.betlab-vibe #dashboard .status-tile.gold{border-color:#ffb300!important;box-shadow:0 0 16px rgba(255,179,0,.38)!important;}body.betlab-vibe #dashboard .status-tile.green-border{border-color:#39ff88!important;box-shadow:0 0 16px rgba(57,255,136,.36)!important;}body.betlab-vibe #dashboard .status-tile.red{border-color:#ff3b5c!important;box-shadow:0 0 16px rgba(255,59,92,.36)!important;}
+body.betlab-vibe #dashboard .status-tile label {color:#ccb9d2!important;}body.betlab-vibe #dashboard .status-tile strong {color:#fff!important;}
 body.betlab-vibe .vibe-weekly {grid-column:1/-1;margin-top:17px;}
-body.betlab-vibe .vibe-weekly-chart {height:132px;display:flex;align-items:flex-end;gap:9px;padding:10px 2px 20px;border-bottom:1px solid #5b2a86;}
+body.betlab-vibe .vibe-weekly-chart {height:132px;display:flex;align-items:flex-end;gap:9px;padding:10px 2px 20px;border-bottom:1px solid #724089;}
 body.betlab-vibe .vibe-week-column {height:100%;min-width:0;flex:1;display:flex;align-items:flex-end;justify-content:center;position:relative;}
-body.betlab-vibe .vibe-week-column b {display:block;min-height:3px;width:65%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#00e5ff,#b537f2);box-shadow:0 0 10px rgba(0,229,255,.5);}
-body.betlab-vibe .vibe-week-column.alt b{background:linear-gradient(180deg,#ff2ea6,#ff8a00);box-shadow:0 0 10px rgba(255,46,166,.5);}
+body.betlab-vibe .vibe-week-column b {display:block;min-height:3px;width:65%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,#ff9a3c,#b534ff);box-shadow:0 0 10px rgba(255,138,0,.5);}
+body.betlab-vibe .vibe-week-column.alt b{background:linear-gradient(180deg,#ffd76e,#ff8a00);box-shadow:0 0 10px rgba(255,179,0,.5);}
 body.betlab-vibe .vibe-week-column.negative b{background:linear-gradient(180deg,#ff6b84,#8f1d33);box-shadow:0 0 10px rgba(255,59,92,.45);}
-body.betlab-vibe .vibe-week-column small{position:absolute;bottom:-21px;left:0;right:0;text-align:center;color:#93a5cc;font-size:10px;}
-body.betlab-vibe .workspace,body.betlab-vibe #analyticsPage .analyticsChart{background:linear-gradient(155deg,#140b30,#05071a)!important;border:1px solid #6d34c9!important;box-shadow:0 0 20px rgba(123,43,170,.20)!important;border-radius:15px!important;}
-body.betlab-vibe .primary {background:linear-gradient(135deg,#ff2ea6,#8a2be2)!important;color:#ffffff!important;border-color:#ff8fd2!important;}
-body.betlab-vibe .demo-note {color:#93a5cc!important;}
+body.betlab-vibe .vibe-week-column small{position:absolute;bottom:-21px;left:0;right:0;text-align:center;color:#ac90c0;font-size:10px;}
+body.betlab-vibe .workspace,body.betlab-vibe #analyticsPage .analyticsChart{background:linear-gradient(155deg,#1d0d2b,#0a0716)!important;border:1px solid #8740ad!important;box-shadow:0 0 20px #7b2baa32!important;border-radius:15px!important;}
+body.betlab-vibe .primary {background:linear-gradient(135deg,#ffd27e,#e29a3c)!important;color:#1a0e1b!important;border-color:#ffd58a!important;}
+body.betlab-vibe .demo-note {color:#ab91ba!important;}
 @media(max-width:1400px) {
  body.betlab-vibe #dashboard .vibe-metrics {grid-template-columns:repeat(3,minmax(0,1fr))!important}
  body.betlab-vibe #dashboard .vibe-metrics > .record-breakdown-item,body.betlab-vibe #dashboard .vibe-metrics > .kpi {min-height:101px!important}
@@ -145,7 +157,7 @@ body.betlab-vibe .demo-note {color:#93a5cc!important;}
 }
 @media(max-width:700px) {
  body.betlab-vibe .main {padding:0 12px 88px!important;}
- body.betlab-vibe .main > #nav.nav {position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;height:66px!important;min-height:66px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;white-space:nowrap!important;padding:6px 7px!important;border-right:0!important;border-top:1px solid #a02bb0!important;border-radius:0!important;background:#07051cf8!important;box-shadow:0 -5px 24px #0009!important;}
+ body.betlab-vibe .main > #nav.nav {position:fixed!important;top:auto!important;bottom:0!important;left:0!important;right:0!important;width:100%!important;height:66px!important;min-height:66px!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:hidden!important;gap:5px!important;white-space:nowrap!important;padding:6px 7px!important;border-right:0!important;border-top:1px solid #9c4bc5!important;border-radius:0!important;background:#0d0619f8!important;box-shadow:0 -5px 24px #0009!important;}
  body.betlab-vibe .main > #nav.nav:before,body.betlab-vibe .main > #nav.nav:after {display:none!important;}
  body.betlab-vibe .main > #nav.nav button {width:auto!important;max-width:none!important;min-width:68px!important;min-height:48px!important;display:flex!important;flex:0 0 auto!important;justify-content:center!important;gap:4px!important;padding:7px 9px!important;font-size:10px!important;border-radius:10px!important;}
  body.betlab-vibe .main > #nav.nav button .ico{font-size:14px!important;min-width:0!important;}
@@ -156,7 +168,7 @@ body.betlab-vibe .demo-note {color:#93a5cc!important;}
  .vibe-wordmark {font-size:clamp(40px,9vw,74px);letter-spacing:.015em;}
  .vibe-subtitle {font-size:9px;letter-spacing:.9px;}
  .vibe-skyline {width:45%;opacity:.68;}
- body.betlab-vibe #dashboard .vibe-metrics {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-bottom:13px!important;padding:9px;border-radius:14px;}
+ body.betlab-vibe #dashboard .vibe-metrics {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;margin-bottom:13px!important;}
  body.betlab-vibe #dashboard .vibe-metrics > .record-breakdown-item,body.betlab-vibe #dashboard .vibe-metrics > .kpi {min-height:98px!important;padding:11px 7px!important;border-radius:11px!important;}
  body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item strong,body.betlab-vibe #dashboard .vibe-metrics .kpi-val{font-size:clamp(24px,7vw,35px)!important;}
  body.betlab-vibe #dashboard .vibe-metrics .record-breakdown-item span:not(.record-wins):not(.record-losses):not(.record-separator),body.betlab-vibe #dashboard .vibe-metrics .kpi-label {font-size:12px!important;}
@@ -173,4 +185,4 @@ body.betlab-vibe .demo-note {color:#93a5cc!important;}
  body.betlab-vibe #dashboard .status-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important;}
  body.betlab-vibe .vibe-weekly-chart{height:115px;gap:4px;}
 }
-@media(prefers-reduced-motion:reduce){.vibe-flame-sheen{animation:none!important;} .vibe-flame-ribbons{filter:none!important;animation:none!important;} body.betlab-vibe:before{animation:none!important;opacity:.75!important;transform:none!important;} .vibe-flask{animation:none!important;} .sf-chart-breathe{animation:none!important;filter:none!important;} body.betlab-vibe .vibe-panel.vibe-profit{animation:none!important;}}
+@media(prefers-reduced-motion:reduce){.vibe-flame-sheen{animation:none!important;} .vibe-flame-ribbons{filter:none!important;animation:none!important;} body.betlab-vibe:before{animation:none!important;opacity:.75!important;transform:none!important;} body.betlab-vibe:after{animation:none!important;opacity:.6!important;} body.betlab-vibe .hero:after{animation:none!important;} .vibe-flask{animation:none!important;} .sf-chart-breathe{animation:none!important;filter:none!important;} body.betlab-vibe .vibe-panel.vibe-profit{animation:none!important;}}

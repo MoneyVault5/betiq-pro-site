@@ -27,14 +27,14 @@
     const glow = document.createElement("div");glow.className="vibe-flame-sheen";art.appendChild(glow);
     const flask = document.createElement("div");
     flask.className = "vibe-flask";
-    flask.innerHTML = '<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="vibe-flask-rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#00e5ff"/><stop offset="1" stop-color="#ff2ea6"/></linearGradient><linearGradient id="vibe-flask-liquid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffb300"/><stop offset="1" stop-color="#ff5e00"/></linearGradient></defs><path d="M20 5h8M24 5v9.2c0 1-.3 1.9-.9 2.7L10.6 38.1A3.4 3.4 0 0 0 13.5 43h21a3.4 3.4 0 0 0 2.9-4.9L24.9 16.9c-.6-.8-.9-1.7-.9-2.7V5Z" stroke="url(#vibe-flask-rim)" stroke-width="2.6" stroke-linejoin="round"/><path d="M15.4 33.5h17.2l3.1 5.5a1.7 1.7 0 0 1-1.5 2.5H13.8a1.7 1.7 0 0 1-1.5-2.5l3.1-5.5Z" fill="url(#vibe-flask-liquid)" opacity=".92"/><circle cx="20.5" cy="37.6" r="1.7" fill="#ffe9b0"/><circle cx="27.8" cy="35.4" r="1.2" fill="#ffe9b0" opacity=".85"/></svg>';
+    flask.innerHTML = '<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="vibe-flask-rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c149ff"/><stop offset="1" stop-color="#ff8a00"/></linearGradient><linearGradient id="vibe-flask-liquid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffc21f"/><stop offset=".55" stop-color="#ff8a00"/><stop offset="1" stop-color="#ff5e00"/></linearGradient></defs><path d="M20 5h8M24 5v9.2c0 1-.3 1.9-.9 2.7L10.6 38.1A3.4 3.4 0 0 0 13.5 43h21a3.4 3.4 0 0 0 2.9-4.9L24.9 16.9c-.6-.8-.9-1.7-.9-2.7V5Z" stroke="url(#vibe-flask-rim)" stroke-width="2.6" stroke-linejoin="round"/><path d="M15.4 33.5h17.2l3.1 5.5a1.7 1.7 0 0 1-1.5 2.5H13.8a1.7 1.7 0 0 1-1.5-2.5l3.1-5.5Z" fill="url(#vibe-flask-liquid)" opacity=".92"/><circle cx="20.5" cy="37.6" r="1.7" fill="#ffe9b0"/><circle cx="27.8" cy="35.4" r="1.2" fill="#ffe9b0" opacity=".85"/></svg>';
     art.appendChild(flask);
     const ns = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(ns, "svg");
     svg.setAttribute("class", "vibe-flame-ribbons");
     svg.setAttribute("viewBox", "0 0 1440 240");
     svg.setAttribute("preserveAspectRatio", "none");
-    svg.innerHTML = '<defs><linearGradient id="vibe-fire-a" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#00e5ff" stop-opacity="0"/><stop offset=".17" stop-color="#00e5ff"/><stop offset=".43" stop-color="#b537f2"/><stop offset=".65" stop-color="#ff2ea6"/><stop offset=".84" stop-color="#7b5cff"/><stop offset="1" stop-color="#ff2ea6" stop-opacity="0"/></linearGradient><linearGradient id="vibe-fire-b" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff2ea6" stop-opacity="0"/><stop offset=".3" stop-color="#ff8a00"/><stop offset=".5" stop-color="#ff2ea6"/><stop offset=".75" stop-color="#ffb300"/><stop offset="1" stop-color="#ff8a00" stop-opacity="0"/></linearGradient></defs><path d="M-50 112 C125 103 190 58 325 91 S550 137 697 90 S950 53 1090 101 S1326 94 1500 58" stroke="url(#vibe-fire-a)" stroke-width="3.5"/><path d="M-45 137 C135 98 220 113 356 78 S600 70 748 110 S1062 130 1222 90 S1402 97 1490 83" stroke="url(#vibe-fire-b)" stroke-width="2.5" opacity=".55"/><path d="M-50 154 C150 128 225 160 375 130 S605 109 760 133 S1015 92 1188 126 S1350 144 1490 103" stroke="url(#vibe-fire-a)" stroke-width="2" opacity=".28"/>';
+    svg.innerHTML = '<defs><linearGradient id="vibe-fire-a" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#9a2bef" stop-opacity="0"/><stop offset=".17" stop-color="#c149ff"/><stop offset=".38" stop-color="#ff9a32"/><stop offset=".55" stop-color="#ffbd53"/><stop offset=".7" stop-color="#ec6a2c"/><stop offset=".86" stop-color="#a231ee"/><stop offset="1" stop-color="#ffbd63" stop-opacity="0"/></linearGradient><linearGradient id="vibe-fire-b" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#ff9a32" stop-opacity="0"/><stop offset=".3" stop-color="#fd9c32"/><stop offset=".5" stop-color="#b94aff"/><stop offset=".75" stop-color="#ffba56"/><stop offset="1" stop-color="#a72bff" stop-opacity="0"/></linearGradient></defs><path d="M-50 112 C125 103 190 58 325 91 S550 137 697 90 S950 53 1090 101 S1326 94 1500 58" stroke="url(#vibe-fire-a)" stroke-width="4.2"/><path d="M-45 137 C135 98 220 113 356 78 S600 70 748 110 S1062 130 1222 90 S1402 97 1490 83" stroke="url(#vibe-fire-b)" stroke-width="3" opacity=".7"/><path d="M-50 154 C150 128 225 160 375 130 S605 109 760 133 S1015 92 1188 126 S1350 144 1490 103" stroke="url(#vibe-fire-a)" stroke-width="2.4" opacity=".4"/><path d="M-50 178 C170 158 260 182 420 152 S640 138 800 158 S1050 122 1210 150 S1360 168 1490 132" stroke="url(#vibe-fire-b)" stroke-width="1.8" opacity=".3"/>';
     art.appendChild(svg);
     const brand = document.createElement("div");
     brand.className = "vibe-brand-block";
@@ -127,10 +127,10 @@
     const pts=values.map(at),path=pts.map(([x,y],i)=>(i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)).join(" ");
     const first=pts[0],last=pts[pts.length-1];const baseline=h-py;
     const area=path+" L "+last[0].toFixed(1)+" "+baseline+" L "+first[0].toFixed(1)+" "+baseline+" Z";
-    const grid=[0,.25,.5,.75,1].map(p=>'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+(py+p*plotH).toFixed(1)+'" y2="'+(py+p*plotH).toFixed(1)+'" stroke="#46589e4d" stroke-width="1"/>').join("");
+    const grid=[0,.25,.5,.75,1].map(p=>'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+(py+p*plotH).toFixed(1)+'" y2="'+(py+p*plotH).toFixed(1)+'" stroke="#743b845a" stroke-width="1"/>').join("");
     const endVal=values.at(-1);
-    /* Neon Fusion hero chart: cyan→violet→magenta glowing gradient line, soft
-       gradient area fill, dashed cyan zero baseline, glowing peak dot with
+    /* Command Center Flame hero chart: purple→orange glowing gradient line, soft
+       gradient area fill, dashed purple zero baseline, glowing peak dot with
        a semantic callout chip (bright green positive / red negative). */
     const zeroY=at(0,0)[1];
     const peakIdx=values.indexOf(Math.max(...values));
@@ -140,10 +140,10 @@
     const chipW=chipText.length*8.4+22, chipH=25;
     let chipX=Math.min(Math.max(peak[0]-chipW/2,px),w-px-chipW);
     let chipY=peak[1]-chipH-14; if(chipY<4)chipY=peak[1]+14;
-    const chip='<g><rect x="'+chipX.toFixed(1)+'" y="'+chipY.toFixed(1)+'" width="'+chipW.toFixed(1)+'" height="'+chipH+'" rx="7" fill="rgba(4,6,20,.92)" stroke="#ff2ea6" stroke-width="1.2"/><text x="'+(chipX+chipW/2).toFixed(1)+'" y="'+(chipY+17).toFixed(1)+'" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13.5" font-weight="800" fill="'+semColor+'">'+chipText+'</text></g>';
-    const peakDot='<circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="11" fill="#ff2ea6" opacity=".32"/><circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="5.2" fill="#fff0fa" stroke="#ffffff" stroke-width="1.6" vector-effect="non-scaling-stroke"/>';
-    const lastDot=peakIdx===pts.length-1?"":'<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4" fill="#00e5ff" stroke="#eafcff" stroke-width="1.3" vector-effect="non-scaling-stroke"/>';
-    root.innerHTML='<svg class="vibe-trend-svg sf-chart-breathe" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sf-line-grad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#00e5ff"/><stop offset=".52" stop-color="#b537f2"/><stop offset="1" stop-color="#ff2ea6"/></linearGradient><linearGradient id="sf-area-grad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff2ea6" stop-opacity=".30"/><stop offset=".55" stop-color="#b537f2" stop-opacity=".12"/><stop offset="1" stop-color="#00e5ff" stop-opacity="0"/></linearGradient></defs>'+grid+'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+zeroY.toFixed(1)+'" y2="'+zeroY.toFixed(1)+'" stroke="#00e5ff" stroke-width="1.4" stroke-dasharray="7 6" opacity=".55"/><path d="'+area+'" fill="url(#sf-area-grad)"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" opacity=".28" vector-effect="non-scaling-stroke"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'+lastDot+peakDot+chip+'</svg>';
+    const chip='<g><rect x="'+chipX.toFixed(1)+'" y="'+chipY.toFixed(1)+'" width="'+chipW.toFixed(1)+'" height="'+chipH+'" rx="7" fill="rgba(9,3,18,.9)" stroke="#b534ff" stroke-width="1.2"/><text x="'+(chipX+chipW/2).toFixed(1)+'" y="'+(chipY+17).toFixed(1)+'" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13.5" font-weight="800" fill="'+semColor+'">'+chipText+'</text></g>';
+    const peakDot='<circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="11" fill="#ff8a00" opacity=".32"/><circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="5.2" fill="#ffd9a0" stroke="#fff3d6" stroke-width="1.6" vector-effect="non-scaling-stroke"/>';
+    const lastDot=peakIdx===pts.length-1?"":'<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4" fill="#ffb300" stroke="#fff3d6" stroke-width="1.3" vector-effect="non-scaling-stroke"/>';
+    root.innerHTML='<svg class="vibe-trend-svg sf-chart-breathe" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sf-line-grad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#b534ff"/><stop offset=".52" stop-color="#ff8a00"/><stop offset="1" stop-color="#ffb300"/></linearGradient><linearGradient id="sf-area-grad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff8a00" stop-opacity=".44"/><stop offset=".55" stop-color="#b534ff" stop-opacity=".17"/><stop offset="1" stop-color="#b534ff" stop-opacity="0"/></linearGradient></defs>'+grid+'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+zeroY.toFixed(1)+'" y2="'+zeroY.toFixed(1)+'" stroke="#a855f7" stroke-width="1.4" stroke-dasharray="7 6" opacity=".6"/><path d="'+area+'" fill="url(#sf-area-grad)"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="11" stroke-linejoin="round" stroke-linecap="round" opacity=".34" vector-effect="non-scaling-stroke"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'+lastDot+peakDot+chip+'</svg>';
     const headline=root.previousElementSibling?.querySelector(".vibe-panel-tag");
     if(headline)headline.textContent=money(endVal)+" NET";
   }
@@ -155,7 +155,7 @@
     if($("vibeCountLosses"))$("vibeCountLosses").textContent=String(lost);
     if($("vibeCountPush"))$("vibeCountPush").textContent=String(push);
     if($("vibeCountTotal"))$("vibeCountTotal").textContent=String(total);
-    if($("vibeDonut"))$("vibeDonut").style.background=total?"conic-gradient(#ff2ea6 0 "+rate+"%,#00e5ff "+rate+"% 100%)":"conic-gradient(#3a2b5e 0 50%,#274b63 50% 100%)";
+    if($("vibeDonut"))$("vibeDonut").style.background=total?"conic-gradient(#c648ff 0 "+rate+"%,#ffc05f "+rate+"% 100%)":"conic-gradient(#54316c 0 50%,#8f624b 50% 100%)";
   }
   function updateWeeks(settled){
     const root=$("vibeWeekChart");if(!root)return;
@@ -192,7 +192,7 @@
     try {
       createHero(hero);moveMetrics(dashboard);createOverview(dashboard);
       document.body.classList.add("betlab-vibe");
-      document.body.dataset.design="neon-fusion-v1";
+      document.body.dataset.design="command-flame-v1";
       update();
       document.addEventListener("betlab-board-rendered",scheduleUpdate);
       window.addEventListener("storage",event=>{if(event.key===STORAGE_KEY)scheduleUpdate();});
