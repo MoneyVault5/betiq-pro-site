@@ -319,11 +319,11 @@
   /* ---------------- Matchup sheet (tap-a-game) ----------------
    * Endpoints verified live Nov 3, 2026 (see header note): ESPN game
    * summary + ESPN athlete gamelogs carry every figure below. The
-   * DraftKings block attempts DK's public v5 odds feed from the
-   * browser; DK answered automated checks with HTTP 403 and sends no
-   * cross-origin grant for this site, so in practice it renders the
-   * UNAVAILABLE note — the parser stays honest: team match must be
-   * confident or no DK block is shown. */
+   * DraftKings block is fed by the Bet Lab odds-relay (see the
+   * DraftKings section below for why: DK's own feed blocks cloud
+   * fetches, so DK lines come from the licensed Odds API aggregator
+   * through the relay) — the block stays honest: team match must be
+   * confident or it renders the UNAVAILABLE note. */
   var sheetCtx = null; var sheetSeq = 0;
   var SB_URL = { nfl: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl', nba: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba' };
   var WEB_PATH = { nfl: 'football/nfl', nba: 'basketball/nba' };
@@ -517,73 +517,95 @@
       est.innerHTML = '<p><span class="ais-badge">' + EST_LABEL + '</span></p><p class="ais-muted">' + EST_FORMULA + ' Players shown: each team\'s ESPN season leaders (NFL: passing / rushing / receiving leaders; NBA: points / assists / rebounds leaders).</p>' + secs.join('');
     });
   }
-  /* DraftKings block: DK's public v5 odds feed, attempted from the
-   * browser. Verified during the build (Nov 3, 2026): the endpoint
-   * answers non-DK origins with HTTP 403 / no CORS grant, so the
-   * fetch fails and the UNAVAILABLE note renders. The parser below
-   * follows DK's long-published v5 eventGroup shape and requires a
-   * confident two-team match before showing any number. */
-  var DK_GROUPS = { nfl: 88808, nba: 88663 };
-  function dkNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim(); }
-  function dkOutcome(o) {
-    if (!o) return null;
-    var s = String(o.label || o.outcomeType || '');
-    if (o.line != null && o.line !== '') s += ' ' + o.line;
-    var odds = o.oddsAmerican != null ? o.oddsAmerican : o.odds;
-    if (odds != null && odds !== '') s += ' (' + odds + ')';
-    if (o.betPercentage != null || o.handlePercentage != null) s += ' · bets ' + (o.betPercentage != null ? o.betPercentage + '%' : '—') + ' · handle ' + (o.handlePercentage != null ? o.handlePercentage + '%' : '—');
-    return s;
+  /* DraftKings block: DK lines arrive through the Bet Lab odds-relay
+   * (Supabase Edge Function), verified LIVE Nov 3, 2026 — POST
+   * {"league":"nfl"} returned HTTP 200 with 15 NFL events carrying
+   * real DraftKings h2h / spreads / totals, plus The Odds API quota
+   * headers x-requests-remaining / x-requests-used. Why a relay:
+   * DraftKings' own feed blocks cloud fetches outright (Akamai 403
+   * for every server-side attempt during the Nov 3 build, and no
+   * CORS grant for browser reads), so the relay fetches the licensed
+   * aggregator (The Odds API, which republishes DK lines)
+   * server-side; this page only calls the relay with the public
+   * publishable key, exactly like the Polymarket/Kalshi modules.
+   * Relay payload = The Odds API v4 shape: an array of events, each
+   * with home_team / away_team and a bookmakers[] entry keyed
+   * "draftkings" whose markets[] (h2h / spreads / totals) carry
+   * outcomes {name, price (American), point}. A sheet game renders
+   * numbers only on a confident match: BOTH of its teams must match
+   * one event's home/away pair, by full normalized name or by
+   * last-word nickname fallback — never a nearest guess. The
+   * percentages shown are implied probability computed from the odds
+   * via impliedFromOdds (the "lines and percents" view Marquis
+   * approved), NOT DraftKings betting splits — no licensed feed
+   * sells DK splits, and none are shown or invented here. */
+  var ODDS_RELAY_URL = 'https://shnnefxhunroluelghbv.supabase.co/functions/v1/odds-relay';
+  var ODDS_ANON_KEY = 'sb_publishable_RoFhq3z2j5rJQjUUrTEIkg_Gm4fkaG4';
+  function dkNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function dkNick(s) { var p = dkNorm(s).split(' '); return p[p.length - 1] || ''; }
+  function dkTeamEq(a, b) {
+    if (!a || !b) return false;
+    if (dkNorm(a) === dkNorm(b)) return true;
+    var na = dkNick(a), nb = dkNick(b);
+    return na.length > 2 && na === nb;
   }
-  function dkMatch(d, g) {
+  function dkSigned(n) { n = Number(n); return n > 0 ? '+' + n : '' + n; }
+  function dkPct(price) { return impliedFromOdds(Number(price)).toFixed(1) + '%'; }
+  function dkFetchRelay(lg, ms) {
+    if (typeof fetch !== 'function') return Promise.reject(new Error('fetch unavailable in this browser'));
+    var c = new AbortController(); var t = setTimeout(function () { c.abort(); }, ms || 12000);
+    return fetch(ODDS_RELAY_URL, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + ODDS_ANON_KEY, 'apikey': ODDS_ANON_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ league: lg }),
+      signal: c.signal
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      var rem = null;
+      try { rem = r.headers && typeof r.headers.get === 'function' ? r.headers.get('x-requests-remaining') : null; } catch (e) { rem = null; }
+      return r.json().then(function (data) { return { events: data, remaining: rem }; });
+    }).finally(function () { clearTimeout(t); });
+  }
+  function dkMatch(events, g) {
     try {
-      var eg = (d && d.eventGroup) || d || {};
-      var events = eg.events || [];
-      var nick = function (n) { var p = dkNorm(n).split(' '); return p[p.length - 1] || ''; };
-      var n0 = nick((g.teams[0] || {}).name), n1 = nick((g.teams[1] || {}).name);
-      if (!n0 || !n1) return null;
+      var t0 = (g.teams[0] || {}).name, t1 = (g.teams[1] || {}).name;
+      if (!t0 || !t1 || !Array.isArray(events)) return null;
       var ev = null;
       events.forEach(function (e) {
-        if (ev) return;
-        var hay = dkNorm((e.name || '') + ' ' + (e.teamName1 || '') + ' ' + (e.teamName2 || ''));
-        if (hay.includes(n0) && hay.includes(n1)) ev = e;
+        if (ev || !e) return;
+        var pair = (dkTeamEq(t0, e.home_team) && dkTeamEq(t1, e.away_team)) || (dkTeamEq(t0, e.away_team) && dkTeamEq(t1, e.home_team));
+        if (pair) ev = e;
       });
       if (!ev) return null;
-      var evId = String(ev.eventId != null ? ev.eventId : ev.id);
+      var bk = (ev.bookmakers || []).filter(function (b) { return b && b.key === 'draftkings'; })[0];
+      if (!bk) return null;
       var res = { spread: null, total: null, ml: null };
-      (eg.offerCategories || []).forEach(function (cat) {
-        (cat.offerSubcategoryDescriptors || []).forEach(function (sd) {
-          var sub = sd.offerSubcategory || {};
-          (sub.offers || []).forEach(function (row) {
-            (row || []).forEach(function (o) {
-              if (!o || String(o.eventId) !== evId) return;
-              var catName = ((cat.name || '') + ' ' + (sd.name || '')).toLowerCase();
-              var outs = (o.outcomes || []).map(dkOutcome).filter(Boolean);
-              if (!outs.length) return;
-              if (/spread/.test(catName) && !res.spread) res.spread = outs;
-              else if (/total|over-under|over\/under/.test(catName) && !res.total) res.total = outs;
-              else if (/moneyline|money line/.test(catName) && !res.ml) res.ml = outs;
-            });
-          });
-        });
+      (bk.markets || []).forEach(function (m) {
+        if (!m || !Array.isArray(m.outcomes) || !m.outcomes.length) return;
+        if (m.key === 'spreads' && !res.spread) res.spread = m.outcomes;
+        else if (m.key === 'totals' && !res.total) res.total = m.outcomes;
+        else if (m.key === 'h2h' && !res.ml) res.ml = m.outcomes;
       });
       if (!res.spread && !res.total && !res.ml) return null;
       return res;
     } catch (e) { return null; }
   }
   function dkUnavailableHTML() {
-    return '<h4>DraftKings line</h4><p class="ais-muted">DraftKings: <span class="ais-tag unavail">UNAVAILABLE</span> — DraftKings does not open its public odds feed to other websites (its servers reject cross-site browser reads; automated checks during the build returned HTTP 403), so no DK line or splits are shown here rather than guessed ones. Market data only — DraftKings is not one of your betting channels.</p>';
+    return '<h4>DraftKings line</h4><p class="ais-muted">DraftKings: <span class="ais-tag unavail">UNAVAILABLE</span> — the odds relay could not return DraftKings lines for this game, so no line is shown here rather than a guessed one. Market data only — DraftKings is not one of your betting channels.</p>';
   }
   function renderDK(g, lg, seq) {
-    fetchJSON('https://sportsbook.draftkings.com/sites/US-SB/api/v5/eventgroups/' + DK_GROUPS[lg] + '?format=json', 9000).then(function (d) {
+    dkFetchRelay(lg, 12000).then(function (out) {
       if (seq !== sheetSeq || !sheetCtx) return;
       var blk = $('aisDkBlock'); if (!blk) return;
-      var m = dkMatch(d, g);
+      var m = dkMatch(out.events, g);
       if (!m) { blk.innerHTML = dkUnavailableHTML(); return; }
       var rows = '';
-      if (m.spread) rows += '<p>Spread: ' + m.spread.map(esc).join(' · ') + '</p>';
-      if (m.total) rows += '<p>Total: ' + m.total.map(esc).join(' · ') + '</p>';
-      if (m.ml) rows += '<p>Moneyline: ' + m.ml.map(esc).join(' · ') + '</p>';
-      blk.innerHTML = '<h4>DraftKings line</h4>' + rows + '<p class="ais-muted">Source: DraftKings public odds · fetched ' + fmtT(now()) + '. Market data only — DraftKings is not one of your betting channels.</p>';
+      if (m.ml) rows += '<p>Moneyline: ' + m.ml.map(function (o) { return esc(o.name) + ' ' + dkSigned(o.price) + ' (' + dkPct(o.price) + ')'; }).join(' · ') + '</p>';
+      if (m.spread) rows += '<p>Spread: ' + m.spread.map(function (o) { return esc(o.name) + ' ' + dkSigned(o.point) + ' (' + dkSigned(o.price) + ' · ' + dkPct(o.price) + ')'; }).join(' · ') + '</p>';
+      if (m.total) rows += '<p>Total: ' + m.total.map(function (o) { return esc(o.name) + ' ' + o.point + ' (' + dkSigned(o.price) + ' · ' + dkPct(o.price) + ')'; }).join(' · ') + '</p>';
+      var src = 'DraftKings line · via The Odds API · fetched ' + fmtT(now());
+      if (out.remaining != null && out.remaining !== '') src += ' · free credits left: ' + esc(out.remaining);
+      blk.innerHTML = '<h4>DraftKings line</h4>' + rows + '<p class="ais-muted">' + src + '. Market data only — DraftKings is not one of your betting channels.</p>';
     }).catch(function () {
       if (seq !== sheetSeq || !sheetCtx) return;
       var blk = $('aisDkBlock'); if (blk) blk.innerHTML = dkUnavailableHTML();
