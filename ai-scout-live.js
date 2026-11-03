@@ -35,12 +35,26 @@
  * simple average-based projections, uncalibrated, not a paid model.
  * Started/final games show ACTUAL boxscore lines instead. Any player
  * whose gamelog cannot be fetched renders UNAVAILABLE — a line is
- * never invented. */
+ * never invented.
+ * DraftKings via the odds-relay (Nov 3, 2026): game lines AND player
+ * props reach this page only through the Bet Lab odds-relay (The Odds
+ * API) — see the DraftKings section comment for the full story. Props
+ * load ONLY when a matchup sheet opens (one relay call per game,
+ * click-to-load, per Marquis's credit-saving design); a persistent
+ * credits meter at the top of this page mirrors the relay's
+ * x-requests-remaining header into ai_scout_odds_quota_v1 (update-on-
+ * use only — the meter never fetches, because a refresh call would
+ * burn the very credits it reports). Player-name search in Pregame
+ * runs over a local index built from ESPN's FREE roster endpoints,
+ * cached in ai_scout_player_index_v1 (24 h TTL); searching makes ZERO
+ * relay calls — credits are spent only when a game's sheet opens. */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
 
   var TKEY = 'ai_scout_tracker_v1';
+  var QKEY = 'ai_scout_odds_quota_v1';
+  var PKEY = 'ai_scout_player_index_v1';
   var state = { games: { nfl: null, nba: null }, fetchedAt: {}, poly: [], kalshi: [], polyErr: '', kalshiErr: '', sample: false };
   var now = function () { return Date.now(); };
 
@@ -212,7 +226,13 @@
       '.ais-player p{margin:3px 0;font-size:13px}' +
       '.ais-kpi{font-size:15px}' +
       'table.ais-tbl{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}' +
-      'table.ais-tbl td,table.ais-tbl th{border-bottom:1px solid #2c4a63;padding:5px 6px;text-align:left}';
+      'table.ais-tbl td,table.ais-tbl th{border-bottom:1px solid #2c4a63;padding:5px 6px;text-align:left}' +
+      '.ais-meter{margin:0 0 12px}' +
+      '.ais-meterbar{height:6px;background:#1c2f45;border-radius:999px;overflow:hidden;margin-top:5px}' +
+      '.ais-meterfill{height:100%;background:#39FF88;border-radius:999px}' +
+      '.ais-propfilter{margin:8px 0}' +
+      '.ais-searchres{display:flex;flex-direction:column;gap:6px;margin-top:8px}' +
+      '.ais-searchres .ais-ghost{text-align:left}';
     document.head.appendChild(st);
   }
 
@@ -222,6 +242,7 @@
     page.className = 'content-page'; page.id = 'aiScoutPage'; page.hidden = true;
     page.innerHTML =
       '<h2 style="margin:6px 0">◈ AI Scout</h2>' +
+      '<div class="ais-meter" id="aisQuotaMeter"></div>' +
       '<p class="notice">AI Scout reads only public, keyless feeds (ESPN scoreboards · Polymarket and Kalshi public markets). DraftKings and Novig have no public feed, so they always show UNAVAILABLE — odds are never invented to fill a gap. <b>No calibrated model exists yet</b>: rankings use real market activity only, and edge/EV appear only against a model probability you type in yourself.</p>' +
       '<div class="ais-subnav" role="tablist" aria-label="AI Scout sections">' +
       '<button type="button" data-ais-view="pregame" class="on">Pregame</button>' +
@@ -232,6 +253,12 @@
       '</div>' +
 
       '<section class="ais-view" id="aisView-pregame"><div class="ais-card">' +
+      '<h3>Find a player — DraftKings props</h3>' +
+      '<p class="ais-muted">Type a player name to jump to his game\'s matchup sheet, where DraftKings lines and player props load. Searching is free — it uses a local index built from ESPN rosters and spends <b>zero</b> line credits; credits are used only when a game\'s sheet opens.</p>' +
+      '<div class="ais-row"><input class="ais-in" id="aisPlayerQ" placeholder="Player name (e.g. Burrow, Chase, Mahomes)" size="38" autocomplete="off">' +
+      '<span class="ais-muted" id="aisPlayerMeta"></span></div>' +
+      '<div class="ais-searchres" id="aisPlayerResults"></div>' +
+      '</div><div class="ais-card">' +
       '<h3>Pregame Scout — NFL / NBA</h3>' +
       '<p class="ais-muted">Games come from the public ESPN scoreboard. Matchup notes below are computed from those records only (records, venue, status). Injury and defense-depth detail requires a licensed feed and is shown as unavailable where it cannot be fetched — it is not guessed. <b>Tap any game</b> to open its matchup sheet: team comparison plus player estimates computed from each player\'s own game log (formula printed on the sheet).</p>' +
       '<div class="ais-row"><select class="ais-in" id="aisLeagueSel"><option value="nfl">NFL</option><option value="nba">NBA</option></select>' +
@@ -538,7 +565,30 @@
    * percentages shown are implied probability computed from the odds
    * via impliedFromOdds (the "lines and percents" view Marquis
    * approved), NOT DraftKings betting splits — no licensed feed
-   * sells DK splits, and none are shown or invented here. */
+   * sells DK splits, and none are shown or invented here.
+   * PLAYER PROPS (relay v2, live-verified Nov 3, 2026): POST
+   * {"league":..., "eventId": <the matched slate event's id>} returns
+   * that ONE game's per-event object; its draftkings markets are the
+   * server-pinned prop markets (NFL: player_pass_yds /
+   * player_rush_yds / player_reception_yds / player_anytime_td; NBA:
+   * player_points / player_rebounds / player_assists /
+   * player_threes) whose outcomes are {name: "Over"|"Under"|"Yes",
+   * description: "<Player>", point, price}. NFL props verified live
+   * (Bengals @ Falcons: Burrow pass O/U 276.5 -113/-111; Bijan
+   * anytime TD -255). NBA props: relay + endpoint verified, but The
+   * Odds API returned EMPTY bookmakers for both of tonight's games at
+   * verification time (props not posted yet upstream, zero credits
+   * charged) — the sub-block renders its honest unavailable line
+   * whenever the draftkings entry or a market is absent. Props load
+   * ONLY on sheet open (click-to-load — nothing prefetches them),
+   * one call per game, per Marquis's credit-saving design.
+   * CREDITS METER: every relay response's x-requests-remaining (and
+   * x-requests-used when present) is persisted to
+   * ai_scout_odds_quota_v1 and re-renders the meter pinned above this
+   * page's sub-nav. The header is the only source of truth: a higher
+   * later value (monthly reset, key swap) is simply adopted; the
+   * meter itself NEVER fetches (an odds call would burn the credits
+   * it reports) and never decrements locally. */
   var ODDS_RELAY_URL = 'https://shnnefxhunroluelghbv.supabase.co/functions/v1/odds-relay';
   var ODDS_ANON_KEY = 'sb_publishable_RoFhq3z2j5rJQjUUrTEIkg_Gm4fkaG4';
   function dkNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
@@ -551,20 +601,47 @@
   }
   function dkSigned(n) { n = Number(n); return n > 0 ? '+' + n : '' + n; }
   function dkPct(price) { return impliedFromOdds(Number(price)).toFixed(1) + '%'; }
-  function dkFetchRelay(lg, ms) {
+  function relayHdr(r, name) { try { return r.headers && typeof r.headers.get === 'function' ? r.headers.get(name) : null; } catch (e) { return null; } }
+  function dkFetchRelay(bodyObj, ms) {
     if (typeof fetch !== 'function') return Promise.reject(new Error('fetch unavailable in this browser'));
     var c = new AbortController(); var t = setTimeout(function () { c.abort(); }, ms || 12000);
     return fetch(ODDS_RELAY_URL, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + ODDS_ANON_KEY, 'apikey': ODDS_ANON_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ league: lg }),
+      body: JSON.stringify(bodyObj),
       signal: c.signal
     }).then(function (r) {
+      var quota = { remaining: relayHdr(r, 'x-requests-remaining'), used: relayHdr(r, 'x-requests-used') };
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      var rem = null;
-      try { rem = r.headers && typeof r.headers.get === 'function' ? r.headers.get('x-requests-remaining') : null; } catch (e) { rem = null; }
-      return r.json().then(function (data) { return { events: data, remaining: rem }; });
+      return r.json().then(function (data) {
+        noteQuota(quota.remaining, quota.used);
+        return { data: data, remaining: quota.remaining };
+      });
     }).finally(function () { clearTimeout(t); });
+  }
+  /* Credits meter: persists the relay's quota headers (the API is the
+   * source of truth — a higher later value is adopted as-is) and
+   * renders the meter at the top of the AI Scout page. Update-on-use
+   * only; this code path never triggers a fetch. */
+  function quotaLoad() { try { var q = JSON.parse(localStorage.getItem(QKEY) || 'null'); return q && typeof q.remaining === 'number' ? q : null; } catch (e) { return null; } }
+  function noteQuota(remaining, used) {
+    var rem = remaining == null || remaining === '' ? NaN : Number(remaining);
+    if (isNaN(rem)) return;
+    var usd = used == null || used === '' ? NaN : Number(used);
+    try { localStorage.setItem(QKEY, JSON.stringify({ remaining: rem, used: isNaN(usd) ? null : usd, seenAt: now() })); } catch (e) {}
+    renderQuotaMeter();
+  }
+  function renderQuotaMeter() {
+    var n = $('aisQuotaMeter'); if (!n) return;
+    var q = quotaLoad();
+    if (!q) {
+      n.innerHTML = '<p style="margin:0">DK line credits: — / 500 left this month</p><div class="ais-meterbar"><div class="ais-meterfill" style="width:0%"></div></div><p class="ais-muted" style="margin:4px 0 0">loads when you view a game\'s lines · resets monthly</p>';
+      return;
+    }
+    var pct = Math.max(0, Math.min(100, q.remaining / 500 * 100));
+    var asOf = '';
+    if (q.seenAt) { var dt = new Date(q.seenAt); if (!isNaN(dt.getTime())) asOf = ' · as of ' + dt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); }
+    n.innerHTML = '<p style="margin:0">DK line credits: <b>' + q.remaining + ' / 500</b> left this month</p><div class="ais-meterbar"><div class="ais-meterfill" style="width:' + pct.toFixed(1) + '%"></div></div><p class="ais-muted" style="margin:4px 0 0">updates when lines/props load' + asOf + ' · resets monthly</p>';
   }
   function dkMatch(events, g) {
     try {
@@ -579,7 +656,7 @@
       if (!ev) return null;
       var bk = (ev.bookmakers || []).filter(function (b) { return b && b.key === 'draftkings'; })[0];
       if (!bk) return null;
-      var res = { spread: null, total: null, ml: null };
+      var res = { id: ev.id || '', spread: null, total: null, ml: null };
       (bk.markets || []).forEach(function (m) {
         if (!m || !Array.isArray(m.outcomes) || !m.outcomes.length) return;
         if (m.key === 'spreads' && !res.spread) res.spread = m.outcomes;
@@ -593,11 +670,64 @@
   function dkUnavailableHTML() {
     return '<h4>DraftKings line</h4><p class="ais-muted">DraftKings: <span class="ais-tag unavail">UNAVAILABLE</span> — the odds relay could not return DraftKings lines for this game, so no line is shown here rather than a guessed one. Market data only — DraftKings is not one of your betting channels.</p>';
   }
+  var PROP_HEADS = { player_pass_yds: 'Passing Yards', player_rush_yds: 'Rushing Yards', player_reception_yds: 'Reception Yards', player_anytime_td: 'Anytime TD', player_points: 'Points', player_rebounds: 'Rebounds', player_assists: 'Assists', player_threes: 'Threes' };
+  function propsUnavailableHTML() {
+    return '<h4>DraftKings player props</h4><p class="ais-muted">Player props unavailable for this game — DraftKings has not posted them (or the relay could not return them), so no prop lines are shown rather than guessed ones.</p>';
+  }
+  function renderProps(evObj, seq) {
+    var sub = $('aisDkProps'); if (!sub) return;
+    var bk = ((evObj && evObj.bookmakers) || []).filter(function (b) { return b && b.key === 'draftkings'; })[0];
+    if (!bk || !Array.isArray(bk.markets) || !bk.markets.length) { sub.innerHTML = propsUnavailableHTML(); return; }
+    var html = '<h4>DraftKings player props</h4>'
+      + '<div class="ais-propfilter"><input class="ais-in" id="aisPropFilter" placeholder="Filter these props by player name — free, no credits" size="40" autocomplete="off"></div>';
+    var any = false;
+    bk.markets.forEach(function (m) {
+      if (!m || !Array.isArray(m.outcomes) || !m.outcomes.length) return;
+      var head = PROP_HEADS[m.key] || m.key;
+      if (m.key === 'player_anytime_td') {
+        var tds = m.outcomes.filter(function (o) { return o && o.description && /^yes$/i.test(o.name || ''); })
+          .sort(function (a, b) { return Number(a.price) - Number(b.price); }).slice(0, 10);
+        if (!tds.length) return;
+        any = true;
+        html += '<h5 style="margin:10px 0 4px">' + esc(head) + '</h5>' + tds.map(function (o) {
+          return '<p data-prop-player="' + esc(dkNorm(o.description)) + '">' + esc(o.description) + ' — Yes ' + dkSigned(o.price) + ' (' + dkPct(o.price) + ')</p>';
+        }).join('');
+        return;
+      }
+      var byPlayer = {};
+      m.outcomes.forEach(function (o) {
+        if (!o || !o.description) return;
+        var p = byPlayer[o.description] || (byPlayer[o.description] = { name: o.description, point: o.point, over: null, under: null });
+        if (/^over$/i.test(o.name || '')) { p.over = o; p.point = o.point; }
+        else if (/^under$/i.test(o.name || '')) { p.under = o; p.point = o.point; }
+      });
+      var players = Object.keys(byPlayer).map(function (k) { return byPlayer[k]; })
+        .filter(function (p) { return p.over || p.under; })
+        .sort(function (a, b) { return (Number(b.point) || 0) - (Number(a.point) || 0); }).slice(0, 10);
+      if (!players.length) return;
+      any = true;
+      html += '<h5 style="margin:10px 0 4px">' + esc(head) + '</h5>' + players.map(function (p) {
+        var parts = [];
+        if (p.over) parts.push('Over ' + dkSigned(p.over.price) + ' (' + dkPct(p.over.price) + ')');
+        if (p.under) parts.push('Under ' + dkSigned(p.under.price) + ' (' + dkPct(p.under.price) + ')');
+        return '<p data-prop-player="' + esc(dkNorm(p.name)) + '">' + esc(p.name) + ' — O/U ' + p.point + ': ' + parts.join(' · ') + '</p>';
+      }).join('');
+    });
+    if (!any) { sub.innerHTML = propsUnavailableHTML(); return; }
+    sub.innerHTML = html;
+    var f = $('aisPropFilter');
+    if (f) f.addEventListener('input', function () {
+      var q = dkNorm(f.value);
+      sub.querySelectorAll('[data-prop-player]').forEach(function (row) {
+        row.style.display = !q || row.getAttribute('data-prop-player').includes(q) ? '' : 'none';
+      });
+    });
+  }
   function renderDK(g, lg, seq) {
-    dkFetchRelay(lg, 12000).then(function (out) {
+    dkFetchRelay({ league: lg }, 12000).then(function (out) {
       if (seq !== sheetSeq || !sheetCtx) return;
       var blk = $('aisDkBlock'); if (!blk) return;
-      var m = dkMatch(out.events, g);
+      var m = dkMatch(out.data, g);
       if (!m) { blk.innerHTML = dkUnavailableHTML(); return; }
       var rows = '';
       if (m.ml) rows += '<p>Moneyline: ' + m.ml.map(function (o) { return esc(o.name) + ' ' + dkSigned(o.price) + ' (' + dkPct(o.price) + ')'; }).join(' · ') + '</p>';
@@ -605,11 +735,140 @@
       if (m.total) rows += '<p>Total: ' + m.total.map(function (o) { return esc(o.name) + ' ' + o.point + ' (' + dkSigned(o.price) + ' · ' + dkPct(o.price) + ')'; }).join(' · ') + '</p>';
       var src = 'DraftKings line · via The Odds API · fetched ' + fmtT(now());
       if (out.remaining != null && out.remaining !== '') src += ' · free credits left: ' + esc(out.remaining);
-      blk.innerHTML = '<h4>DraftKings line</h4>' + rows + '<p class="ais-muted">' + src + '. Market data only — DraftKings is not one of your betting channels.</p>';
+      blk.innerHTML = '<h4>DraftKings line</h4>' + rows + '<p class="ais-muted" id="aisDkSrc">' + src + '. Market data only — DraftKings is not one of your betting channels.</p>'
+        + (m.id ? '<div id="aisDkProps"><h4>DraftKings player props</h4><p class="ais-muted">Loading player props for this game…</p></div>' : '<div id="aisDkProps">' + propsUnavailableHTML() + '</div>');
+      if (m.id) {
+        dkFetchRelay({ league: lg, eventId: m.id }, 12000).then(function (pout) {
+          if (seq !== sheetSeq || !sheetCtx) return;
+          renderProps(pout.data, seq);
+          var srcEl = $('aisDkSrc');
+          if (srcEl && pout.remaining != null && pout.remaining !== '') {
+            var s2 = 'DraftKings line · via The Odds API · fetched ' + fmtT(now()) + ' · free credits left: ' + esc(pout.remaining);
+            srcEl.textContent = s2 + '. Market data only — DraftKings is not one of your betting channels.';
+          }
+        }).catch(function () {
+          if (seq !== sheetSeq || !sheetCtx) return;
+          var sub = $('aisDkProps'); if (sub) sub.innerHTML = propsUnavailableHTML();
+        });
+      }
     }).catch(function () {
       if (seq !== sheetSeq || !sheetCtx) return;
       var blk = $('aisDkBlock'); if (blk) blk.innerHTML = dkUnavailableHTML();
     });
+  }
+
+  /* ---------------- Player-name search (zero Odds API credits) ----
+   * Index: ESPN's FREE roster endpoints (site v2 /teams/{id}/roster,
+   * verified live Nov 3, 2026 — NFL returns athletes grouped by unit
+   * with items[]; NBA returns a flat athletes[]; both carry
+   * displayName + position). Built lazily on first search focus from
+   * the teams in the CURRENT scoreboards (both leagues), mapping
+   * player -> team -> that team's game in the current slate, and
+   * cached in ai_scout_player_index_v1 for 24 h. Search keystrokes
+   * and result renders make ZERO relay calls — the fetch spy in the
+   * test suite proves it; credits are spent only when the tapped
+   * game's sheet opens (its lines + props), exactly like tapping the
+   * game card directly. */
+  var PLAYER_TTL_MS = 24 * 60 * 60 * 1000;
+  var playerIdx = null; var playerIdxAt = 0; var playerIdxBuilding = null;
+  var ROSTER_URL = { nfl: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/', nba: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/teams/' };
+  function playerIdxLoad() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(PKEY) || 'null');
+      if (raw && Array.isArray(raw.players) && raw.at && now() - raw.at < PLAYER_TTL_MS) { playerIdx = raw.players; playerIdxAt = raw.at; return playerIdx; }
+    } catch (e) {}
+    return null;
+  }
+  function rosterPlayers(r) {
+    var out = [];
+    var pushAth = function (a) { if (a && a.displayName) out.push({ name: a.displayName, pos: (a.position && a.position.abbreviation) || '' }); };
+    ((r && r.athletes) || []).forEach(function (grp) {
+      if (grp && Array.isArray(grp.items)) grp.items.forEach(pushAth);
+      else pushAth(grp);
+    });
+    return out;
+  }
+  function buildPlayerIndex() {
+    if (playerIdx) return Promise.resolve(playerIdx);
+    if (playerIdxBuilding) return playerIdxBuilding;
+    playerIdxBuilding = Promise.all(['nfl', 'nba'].map(function (lg) {
+      var ready = state.games[lg] ? Promise.resolve(state.games[lg]) : loadGames(lg).catch(function () { return null; });
+      return ready.then(function (d) {
+        if (!d) return [];
+        var rows = gameRows(d);
+        var seen = {}; var jobs = [];
+        rows.forEach(function (g) {
+          (g.teams || []).forEach(function (t) {
+            if (!t.id || seen[t.id]) return;
+            seen[t.id] = 1;
+            jobs.push(fetchJSON(ROSTER_URL[lg] + encodeURIComponent(t.id) + '/roster').then(function (r) {
+              return rosterPlayers(r).map(function (p) {
+                return { name: p.name, pos: p.pos, team: t.name, teamId: t.id, league: lg, eventId: g.id, gameName: g.name };
+              });
+            }).catch(function () { return []; }));
+          });
+        });
+        return Promise.all(jobs).then(function (lists) { return lists.flat(); });
+      });
+    })).then(function (per) {
+      playerIdx = per.flat();
+      playerIdxAt = now();
+      try { localStorage.setItem(PKEY, JSON.stringify({ at: playerIdxAt, players: playerIdx })); } catch (e) {}
+      playerIdxBuilding = null;
+      return playerIdx;
+    }).catch(function () { playerIdxBuilding = null; return []; });
+    return playerIdxBuilding;
+  }
+  function findGameFor(entry) {
+    var d = state.games[entry.league];
+    if (d) {
+      var rows = gameRows(d);
+      var byEvent = rows.filter(function (g) { return g.id === entry.eventId; })[0];
+      if (byEvent) return byEvent;
+      var byTeam = rows.filter(function (g) { return (g.teams || []).some(function (t) { return t.id === entry.teamId; }); })[0];
+      if (byTeam) return byTeam;
+    }
+    return null;
+  }
+  function wirePlayerSearch() {
+    var inp = $('aisPlayerQ'); if (!inp) return;
+    var resBox = $('aisPlayerResults'), meta = $('aisPlayerMeta');
+    playerIdxLoad();
+    var ensure = function () {
+      if (playerIdx) { if (meta) meta.textContent = playerIdx.length + ' players indexed (ESPN rosters · free)'; return; }
+      if (meta) meta.textContent = 'Building the player index from ESPN rosters (free)…';
+      buildPlayerIndex().then(function (list) {
+        if (meta) meta.textContent = list.length ? list.length + ' players indexed (ESPN rosters · free)' : 'Player index unavailable — rosters could not be fetched.';
+        if ((inp.value || '').trim().length >= 3) render();
+      });
+    };
+    var render = function () {
+      if (!resBox) return;
+      var q = dkNorm(inp.value);
+      if (q.length < 3) { resBox.innerHTML = ''; return; }
+      if (!playerIdx) { ensure(); resBox.innerHTML = '<p class="ais-muted">Index is building — results will appear here.</p>'; return; }
+      var hits = playerIdx.filter(function (p) { return dkNorm(p.name).includes(q); }).slice(0, 8);
+      resBox.innerHTML = hits.length ? '' : '<p class="ais-muted">No player in the current slates matches that name. Nothing was fetched — try a different spelling.</p>';
+      hits.forEach(function (p) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'ais-ghost';
+        b.textContent = p.name + (p.pos ? ' · ' + p.pos : '') + ' — ' + p.team + ' (' + p.league.toUpperCase() + ') · ' + p.gameName + ' ›';
+        b.addEventListener('click', function () {
+          var openIt = function () {
+            var g = findGameFor(p);
+            if (g) { openMatchup(g, p.league, 'pregame'); return true; }
+            return false;
+          };
+          if (openIt()) return;
+          loadGames(p.league).then(function () {
+            if (!openIt() && meta) meta.textContent = 'That team has no game in the current slate — the sheet cannot open.';
+          }).catch(function () {});
+        });
+        resBox.appendChild(b);
+      });
+    };
+    inp.addEventListener('focus', ensure);
+    inp.addEventListener('input', render);
   }
   function renderSheet(g, lg, sum, seq) {
     var body = $('aisSheetBody'); if (!body) return;
@@ -752,6 +1011,8 @@
   try { injectStyles(); } catch (e) { console.warn('Bet Lab: AI Scout styles skipped', e); }
   try { buildPage(); } catch (e) { console.warn('Bet Lab: AI Scout page build skipped', e); }
   try { wireSubNav(); } catch (e) { console.warn('Bet Lab: AI Scout sub-nav skipped', e); }
+  try { renderQuotaMeter(); } catch (e) { console.warn('Bet Lab: AI Scout quota meter skipped', e); }
+  try { wirePlayerSearch(); } catch (e) { console.warn('Bet Lab: AI Scout player search skipped', e); }
   try { wirePregameLive(); } catch (e) { console.warn('Bet Lab: AI Scout pregame/live skipped', e); }
   try { wireMarkets(); } catch (e) { console.warn('Bet Lab: AI Scout markets skipped', e); }
   try { wireTracker(); renderTracker(); } catch (e) { console.warn('Bet Lab: AI Scout tracker skipped', e); }
