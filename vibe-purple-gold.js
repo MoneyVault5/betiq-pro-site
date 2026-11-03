@@ -136,7 +136,7 @@
     const peakIdx=values.indexOf(Math.max(...values));
     const peak=pts[peakIdx];
     const semColor=endVal>=0?"#39ff88":"#ff3b5c";
-    const chipText=money(endVal)+" NET";
+    const chipText="NET PROFIT "+money(endVal);
     const chipW=chipText.length*8.4+22, chipH=25;
     let chipX=Math.min(Math.max(peak[0]-chipW/2,px),w-px-chipW);
     let chipY=peak[1]-chipH-14; if(chipY<4)chipY=peak[1]+14;
