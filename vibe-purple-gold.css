@@ -377,3 +377,46 @@ body.betlab-vibe .app::after {
 @media(prefers-reduced-motion:reduce) {
  body.betlab-vibe .app::before,body.betlab-vibe .app::after {animation:none!important;transform:none!important;}
 }
+
+/* BET LAB screenshot correction: curved flame artwork, no polygon wedges.
+   Decorative only; all existing dashboard elements and their event handlers remain intact. */
+body.betlab-vibe .app {position:relative!important;isolation:isolate!important;}
+body.betlab-vibe .app::before {
+ content:""!important;display:block!important;position:fixed!important;inset:0!important;
+ top:0!important;right:0!important;bottom:0!important;left:0!important;
+ width:100%!important;height:100vh!important;height:100dvh!important;
+ margin:0!important;
+ background: url("./betlab-stadium-frame.svg?v=flame-fix-20261102") center center / 100% 100% no-repeat!important;
+ clip-path:none!important;transform:none;filter:none!important;mix-blend-mode:screen;
+ opacity:.84!important;z-index:0!important;pointer-events:none!important;
+ animation:vcc-frame-breathe 14s ease-in-out infinite alternate!important;
+}
+body.betlab-vibe .app::after {display:none!important;content:none!important;animation:none!important;}
+body.betlab-vibe .main {position:relative!important;z-index:1!important;}
+@keyframes vcc-frame-breathe {from{opacity:.62}to{opacity:.89}}
+/* Brighter orange area fill now comes from the real-data chart gradient. */
+body.betlab-vibe .vibe-profit #vibeProfitGraph {
+ background:
+ radial-gradient(ellipse 48% 75% at 63% 84%,rgba(255,121,20,.15),transparent 88%),
+ repeating-linear-gradient(0deg,transparent 0 40px,rgba(199,122,231,.045) 41px 42px,transparent 43px 82px)!important;
+}
+body.betlab-vibe .vibe-profit .vibe-panel-heading h2 {letter-spacing:.7px!important;}
+body.betlab-vibe .vcc-panel {background:linear-gradient(154deg,rgba(24,10,39,.97),rgba(9,5,16,.97) 85%)!important;}
+body.betlab-vibe .vcc-panel-title {font-size:clamp(17px,1.37vw,21px)!important;}
+body.betlab-vibe .vcc-slate-game,body.betlab-vibe .vcc-side-row,body.betlab-vibe .vcc-account-row {font-size:clamp(13px,1vw,15px)!important;}
+body.betlab-vibe .vcc-live-state .vcc-subtle,body.betlab-vibe .vcc-subtle,body.betlab-vibe .vcc-empty {font-size:13px!important;line-height:1.55!important;}
+body.betlab-vibe .vcc-account-row strong {font-size:18px!important;}
+body.betlab-vibe .vcc-wagers td {font-size:clamp(12px,.97vw,14px)!important;}
+body.betlab-vibe .vcc-wagers th {font-size:11.5px!important;}
+body.betlab-vibe .vcc-wager-name {font-size:clamp(12px,.98vw,14px)!important;}
+body.betlab-vibe .vcc-chip-label {font-size:clamp(10px,.9vw,13px)!important;}
+body.betlab-vibe .vcc-link {font-size:13px!important;}
+@media(max-width:700px) {
+ body.betlab-vibe .app::before {background-size:100% 100%!important;opacity:.48!important;animation-duration:16s!important;}
+ body.betlab-vibe .vcc-slate-game,body.betlab-vibe .vcc-side-row,body.betlab-vibe .vcc-account-row {font-size:13px!important;}
+ body.betlab-vibe .vcc-panel-title {font-size:17px!important;}
+ body.betlab-vibe .vcc-wagers td {font-size:12px!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ body.betlab-vibe .app::before {animation:none!important;opacity:.78!important;}
+}
