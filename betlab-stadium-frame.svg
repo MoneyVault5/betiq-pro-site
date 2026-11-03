@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="none">
+<defs>
+ <radialGradient id="p"><stop stop-color="#b142ff" stop-opacity=".65"/><stop offset="1" stop-color="#6025a0" stop-opacity="0"/></radialGradient>
+ <radialGradient id="o"><stop stop-color="#ff9c35" stop-opacity=".78"/><stop offset="1" stop-color="#db4d16" stop-opacity="0"/></radialGradient>
+ <linearGradient id="violet" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#6716d2" stop-opacity=".08"/><stop offset=".45" stop-color="#9d3aff" stop-opacity=".78"/><stop offset="1" stop-color="#f5a7ff" stop-opacity=".04"/></linearGradient>
+ <linearGradient id="fire" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#ff4b06" stop-opacity=".1"/><stop offset=".45" stop-color="#ff8c27" stop-opacity=".8"/><stop offset="1" stop-color="#ffdc6e" stop-opacity=".04"/></linearGradient>
+ <filter id="halo"><feGaussianBlur stdDeviation="26"/></filter>
+ <filter id="edge"><feGaussianBlur stdDeviation="5"/></filter>
+ <filter id="light"><feGaussianBlur stdDeviation="10"/></filter>
+ <pattern id="crowd" width="20" height="17" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="1.2" fill="#ba62ee" opacity=".15"/><circle cx="15" cy="12" r="1.1" fill="#ff9c40" opacity=".12"/></pattern>
+</defs>
+<!-- ambient night-stadium glow, leaving the center unobscured -->
+<ellipse cx="110" cy="125" rx="235" ry="200" fill="url(#p)"/><ellipse cx="1490" cy="135" rx="235" ry="200" fill="url(#o)"/>
+<ellipse cx="0" cy="650" rx="165" ry="390" fill="url(#p)"/><ellipse cx="1600" cy="655" rx="170" ry="380" fill="url(#o)"/>
+<path d="M0 145 Q800 110 1600 143 L1600 210 Q800 166 0 214Z" fill="url(#crowd)" opacity=".7"/>
+<!-- organic orange-purple flame tongues along the left -->
+<path d="M-26 917 C75 837 28 759 68 670 C91 738 127 778 81 846 C145 750 111 686 136 600 C176 749 158 860 110 918Z" fill="url(#fire)" opacity=".77"/>
+<path d="M-30 764 C77 678 21 592 75 457 C108 558 127 643 93 721Z" fill="url(#violet)" opacity=".83"/>
+<path d="M-28 506 C61 432 16 363 83 258 C66 359 131 405 88 465Z" fill="url(#violet)" opacity=".68"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M-25 915 C80 832 26 757 70 678 C89 744 133 772 84 853 C150 760 113 689 137 619" stroke="#ff8a24" stroke-width="15" stroke-opacity=".72" filter="url(#edge)"/>
+<path d="M-25 915 C80 832 26 757 70 678 C89 744 133 772 84 853 C150 760 113 689 137 619" stroke="#ffc764" stroke-width="3" stroke-opacity=".6"/>
+<path d="M-20 760 C67 671 10 596 70 486 C48 599 138 636 98 714" stroke="#b148ff" stroke-width="15" stroke-opacity=".75" filter="url(#edge)"/>
+<path d="M-20 760 C67 671 10 596 70 486 C48 599 138 636 98 714" stroke="#e9acff" stroke-width="3" stroke-opacity=".5"/>
+<path d="M-20 506 C68 431 25 362 85 271 C59 359 132 397 90 461" stroke="#a53dff" stroke-width="12" stroke-opacity=".7" filter="url(#edge)"/>
+</g>
+<!-- organic mirrored flames along the right -->
+<path d="M1630 915 C1519 822 1589 745 1540 662 C1514 733 1480 769 1520 852 C1447 747 1482 686 1460 592 C1404 751 1430 854 1495 923Z" fill="url(#violet)" opacity=".77"/>
+<path d="M1636 756 C1529 679 1594 587 1531 447 C1499 559 1471 632 1518 727Z" fill="url(#fire)" opacity=".85"/>
+<path d="M1630 508 C1546 426 1590 350 1521 255 C1546 365 1482 405 1513 468Z" fill="url(#violet)" opacity=".72"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M1632 904 C1518 818 1595 741 1543 649 C1528 737 1484 753 1515 841 C1452 752 1485 689 1465 629" stroke="#a53bff" stroke-width="16" stroke-opacity=".75" filter="url(#edge)"/>
+<path d="M1632 904 C1518 818 1595 741 1543 649 C1528 737 1484 753 1515 841 C1452 752 1485 689 1465 629" stroke="#e1a4ff" stroke-width="3" stroke-opacity=".56"/>
+<path d="M1628 748 C1549 664 1606 571 1541 457 C1561 578 1487 641 1523 705" stroke="#ff8629" stroke-width="15" stroke-opacity=".85" filter="url(#edge)"/>
+<path d="M1628 748 C1549 664 1606 571 1541 457 C1561 578 1487 641 1523 705" stroke="#ffd16a" stroke-width="3" stroke-opacity=".6"/>
+<path d="M1624 504 C1543 429 1583 352 1523 267 C1543 365 1487 405 1518 466" stroke="#bd45ff" stroke-width="12" stroke-opacity=".75" filter="url(#edge)"/>
+</g>
+<!-- corner stadium floodlights, diffuse glow, no zigzag geometric cuts -->
+<g>
+<path d="M0 0H240L234 29H20Z" fill="#160b26" stroke="#663281" stroke-opacity=".52"/>
+<path d="M1360 0H1600L1575 30H1367Z" fill="#190b20" stroke="#874161" stroke-opacity=".5"/>
+<g fill="#fff3d8" filter="url(#light)" opacity=".85"><ellipse cx="72" cy="18" rx="74" ry="10"/><ellipse cx="1525" cy="18" rx="75" ry="10"/></g>
+<g fill="#fff4e6"><circle cx="24" cy="18" r="4"/><circle cx="43" cy="18" r="4"/><circle cx="62" cy="18" r="4"/><circle cx="81" cy="18" r="4"/><circle cx="100" cy="18" r="4"/><circle cx="119" cy="18" r="4"/><circle cx="138" cy="18" r="4"/>
+<circle cx="1464" cy="18" r="4"/><circle cx="1483" cy="18" r="4"/><circle cx="1502" cy="18" r="4"/><circle cx="1521" cy="18" r="4"/><circle cx="1540" cy="18" r="4"/><circle cx="1559" cy="18" r="4"/><circle cx="1578" cy="18" r="4"/></g>
+</g></svg>
