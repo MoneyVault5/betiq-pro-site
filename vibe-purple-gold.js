@@ -25,6 +25,10 @@
     }
     art.append(skyline("left"),skyline("right"));
     const glow = document.createElement("div");glow.className="vibe-flame-sheen";art.appendChild(glow);
+    const flask = document.createElement("div");
+    flask.className = "vibe-flask";
+    flask.innerHTML = '<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><defs><linearGradient id="vibe-flask-rim" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c149ff"/><stop offset="1" stop-color="#ff8a00"/></linearGradient><linearGradient id="vibe-flask-liquid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffb300"/><stop offset="1" stop-color="#ff5e00"/></linearGradient></defs><path d="M20 5h8M24 5v9.2c0 1-.3 1.9-.9 2.7L10.6 38.1A3.4 3.4 0 0 0 13.5 43h21a3.4 3.4 0 0 0 2.9-4.9L24.9 16.9c-.6-.8-.9-1.7-.9-2.7V5Z" stroke="url(#vibe-flask-rim)" stroke-width="2.6" stroke-linejoin="round"/><path d="M15.4 33.5h17.2l3.1 5.5a1.7 1.7 0 0 1-1.5 2.5H13.8a1.7 1.7 0 0 1-1.5-2.5l3.1-5.5Z" fill="url(#vibe-flask-liquid)" opacity=".92"/><circle cx="20.5" cy="37.6" r="1.7" fill="#ffe9b0"/><circle cx="27.8" cy="35.4" r="1.2" fill="#ffe9b0" opacity=".85"/></svg>';
+    art.appendChild(flask);
     const ns = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(ns, "svg");
     svg.setAttribute("class", "vibe-flame-ribbons");
@@ -124,8 +128,22 @@
     const first=pts[0],last=pts[pts.length-1];const baseline=h-py;
     const area=path+" L "+last[0].toFixed(1)+" "+baseline+" L "+first[0].toFixed(1)+" "+baseline+" Z";
     const grid=[0,.25,.5,.75,1].map(p=>'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+(py+p*plotH).toFixed(1)+'" y2="'+(py+p*plotH).toFixed(1)+'" stroke="#743b845a" stroke-width="1"/>').join("");
-    const endVal=values.at(-1);const color=endVal>=0?"#cf67ff":"#ff728e";
-    root.innerHTML='<svg class="vibe-trend-svg" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="vibe-trend-gradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="'+color+'" stop-opacity=".45"/><stop offset="1" stop-color="#401050" stop-opacity=".035"/></linearGradient></defs>'+grid+'<path d="'+area+'" fill="url(#vibe-trend-gradient)"/><path d="'+path+'" fill="none" stroke="'+color+'" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="5" fill="#ffcd81" stroke="#fff6dc" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>';
+    const endVal=values.at(-1);
+    /* Stadium Flame hero chart: purple→orange glowing gradient line, soft
+       gradient area fill, dashed purple zero baseline, glowing peak dot with
+       a semantic callout chip (bright green positive / red negative). */
+    const zeroY=at(0,0)[1];
+    const peakIdx=values.indexOf(Math.max(...values));
+    const peak=pts[peakIdx];
+    const semColor=endVal>=0?"#39ff88":"#ff3b5c";
+    const chipText=money(endVal)+" NET";
+    const chipW=chipText.length*8.4+22, chipH=25;
+    let chipX=Math.min(Math.max(peak[0]-chipW/2,px),w-px-chipW);
+    let chipY=peak[1]-chipH-14; if(chipY<4)chipY=peak[1]+14;
+    const chip='<g><rect x="'+chipX.toFixed(1)+'" y="'+chipY.toFixed(1)+'" width="'+chipW.toFixed(1)+'" height="'+chipH+'" rx="7" fill="rgba(9,3,18,.9)" stroke="#b534ff" stroke-width="1.2"/><text x="'+(chipX+chipW/2).toFixed(1)+'" y="'+(chipY+17).toFixed(1)+'" text-anchor="middle" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="13.5" font-weight="800" fill="'+semColor+'">'+chipText+'</text></g>';
+    const peakDot='<circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="11" fill="#ff8a00" opacity=".32"/><circle cx="'+peak[0].toFixed(1)+'" cy="'+peak[1].toFixed(1)+'" r="5.2" fill="#ffd9a0" stroke="#fff3d6" stroke-width="1.6" vector-effect="non-scaling-stroke"/>';
+    const lastDot=peakIdx===pts.length-1?"":'<circle cx="'+last[0].toFixed(1)+'" cy="'+last[1].toFixed(1)+'" r="4" fill="#ffb300" stroke="#fff3d6" stroke-width="1.3" vector-effect="non-scaling-stroke"/>';
+    root.innerHTML='<svg class="vibe-trend-svg sf-chart-breathe" viewBox="0 0 800 220" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="sf-line-grad" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#b534ff"/><stop offset=".52" stop-color="#ff8a00"/><stop offset="1" stop-color="#ffb300"/></linearGradient><linearGradient id="sf-area-grad" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff8a00" stop-opacity=".34"/><stop offset=".55" stop-color="#b534ff" stop-opacity=".13"/><stop offset="1" stop-color="#b534ff" stop-opacity="0"/></linearGradient></defs>'+grid+'<line x1="'+px+'" x2="'+(w-px)+'" y1="'+zeroY.toFixed(1)+'" y2="'+zeroY.toFixed(1)+'" stroke="#a855f7" stroke-width="1.4" stroke-dasharray="7 6" opacity=".6"/><path d="'+area+'" fill="url(#sf-area-grad)"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="9" stroke-linejoin="round" stroke-linecap="round" opacity=".28" vector-effect="non-scaling-stroke"/><path d="'+path+'" fill="none" stroke="url(#sf-line-grad)" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'+lastDot+peakDot+chip+'</svg>';
     const headline=root.previousElementSibling?.querySelector(".vibe-panel-tag");
     if(headline)headline.textContent=money(endVal)+" NET";
   }
@@ -174,7 +192,7 @@
     try {
       createHero(hero);moveMetrics(dashboard);createOverview(dashboard);
       document.body.classList.add("betlab-vibe");
-      document.body.dataset.design="midnight-skyline-v1";
+      document.body.dataset.design="stadium-flame-v1";
       update();
       document.addEventListener("betlab-board-rendered",scheduleUpdate);
       window.addEventListener("storage",event=>{if(event.key===STORAGE_KEY)scheduleUpdate();});
