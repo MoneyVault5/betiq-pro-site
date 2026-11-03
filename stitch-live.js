@@ -477,6 +477,17 @@ var STA_FOOTER = "<footer class=\"fixed bottom-0 inset-x-0 z-50 glass-panel bord
   }
 
   /* ---------- update cycle ---------- */
+  function placeBoard() {
+    // Marquis (Nov 3, 2026): Today's Board box sits immediately before the
+    // Recent Wager Ledger (audit) box on the Home Screen. The board node is
+    // the app's own #todayBoard (renderBoard fills it by id, so the move is
+    // safe); re-asserted on every update pass so it cannot drift back.
+    const board = document.getElementById("todayBoard");
+    const ledger = document.querySelector('[data-purpose="recent-wager-ledger-panel"]');
+    if (!board || !ledger || !ledger.parentElement) return;
+    if (board.parentElement === ledger.parentElement && board.nextElementSibling === ledger) return;
+    ledger.parentElement.insertBefore(board, ledger);
+  }
   function update() {
     const bets = readBets();
     const s = stats(bets);
@@ -486,6 +497,7 @@ var STA_FOOTER = "<footer class=\"fixed bottom-0 inset-x-0 z-50 glass-panel bord
     renderLedger(bets);
     renderRadar(bets, s);
     renderFooter(s);
+    placeBoard();
   }
   function scheduleUpdate() {
     if (queued) return;
