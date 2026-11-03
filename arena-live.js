@@ -1,8 +1,8 @@
 /* Bet Lab LIVE — Arena integration (arena-live.js).
  * The Arena Dashboard shell Marquis supplied (Nov 3, 2026) wired to the
  * PRODUCTION store, following the stitch-live.js binder pattern it
- * supersedes: this script inserts the Arena chrome (top system bar with
- * nav pills, banner, KPI strip, chart + ledger + Hot Takes column, open
+ * supersedes: this script inserts the Arena chrome (top system bar,
+ * clickable banner navigation, KPI strip, chart + ledger + Hot Takes column, open
  * bets radar, real sportsbook tiles, footer) into the live app and binds
  * every figure in it to the same store the app itself uses
  * (betlab_clean_real_bets_v1) — computed live, following settlements.
@@ -15,7 +15,9 @@
  * Connected Sportsbooks tiles are Marquis's real channels (Polymarket,
  * Kalshi, Novig, DraftKings — a friend's, upload only).
  * Internal binding ids shared with other live modules are kept on
- * purpose: #staNav (ai-scout-live.js's nav test hooks) and the
+ * purpose: #arnBannerNav (the banner navigation overlay — hotspots over
+ * the banner artwork's baked labels plus overlay pills for the views the
+ * artwork lacks; ai-scout-live.js's nav test hooks) and the
  * staHot* Hot Takes ids (ai-scout-live.js renders into them). All other
  * shell ids are arn*. This script NEVER writes to storage. */
 
@@ -35,19 +37,9 @@ var ARN_HEADER = `
 <span><span class="text-slate-400">WAGERED:</span> <span id="arnBarWagered" class="font-bold text-amber-400">$0.00</span></span>
 </div>
 <button id="arnSyncBooks" type="button" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-bold px-4 py-1.5 rounded-lg transition-all shadow-lg shadow-amber-500/20 font-display tracking-wider">SYNC BOOKS</button>
+<button type="button" id="arnAddBet" class="px-4 py-1.5 rounded-lg border border-amber-500/60 text-amber-400 hover:bg-amber-500 hover:text-black font-bold transition-colors font-display tracking-wider">+ ADD BET</button>
 </div>
 </div>
-<nav id="staNav" class="max-w-[1400px] mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-1.5 text-xs font-semibold tracking-wider text-slate-300 overflow-x-auto" data-purpose="main-nav-pills">
-<button type="button" data-go="Dashboard" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-lg shadow-amber-500/20 transition-all whitespace-nowrap">DASHBOARD</button>
-<button type="button" data-go="Today’s Board" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">TODAY’S BOARD</button>
-<button type="button" data-go="AI Scout" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">AI Scout</button>
-<button type="button" data-go="Bet Tracker" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">BET TRACKER</button>
-<button type="button" id="arnAddBet" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-amber-500/60 text-amber-400 hover:bg-amber-500 hover:text-black font-bold transition-colors whitespace-nowrap">+ ADD BET</button>
-<button type="button" data-go="Sportsbooks" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">SPORTSBOOKS</button>
-<button type="button" data-go="Live Record" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">LIVE RECORD</button>
-<button type="button" data-go="Analytics" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">ANALYTICS</button>
-<button type="button" data-go="Slip Importer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">SLIP IMPORTER</button>
-</nav>
 </header>`;
 
 var ARN_BANNER = `
@@ -55,6 +47,27 @@ var ARN_BANNER = `
 <div class="w-full relative">
 <img alt="BET LAB SYSTEM™ Header Banner" class="w-full h-auto block" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_-A8O3FCHnqKelMpqzqnLquURfALaybqStCWxLKdIWmea2KlDQMdAavfyoSk_k2ytjL7NPFYEq6B7pG7T5ru61KXEDwQ46btVBq0sZ0NHQ6wVw-vuOO9zSF1MISNwTJ_9Wo5Uwi3NHpbxP3ovBme3vAq2Xy2J3LwbH8I5CDM8BHdGT1hUGx8MJkuprmJ-1VzekB7VcjvWxl_Lk2OLXQWIEdvHLjtDRloQQs5mhrpjqGxd_fF6rftLAQ=w1290-h645-p"/>
 <div class="absolute inset-x-0 bottom-0 h-28 pointer-events-none bg-gradient-to-t from-[#05020a]/80 via-transparent to-transparent"></div>
+<!-- Banner navigation (Marquis, Nov 3, 2026): the artwork's baked tab
+     labels ARE the nav. Hotspot coordinates are % of the banner box,
+     visually estimated from the served 1290x645 crop: the tab band runs
+     ~29%-52.5% vertically; label centres sit at x ~8.5/25.2/41.9/58.5/
+     75/91.5%. The artwork's six tabs are DASHBOARD | AI SCOUT | BET
+     TRACKER | ANALYTICS | SPORTSBOOKS | SCOUT (SCOUT = the app's legacy
+     Scout route). Views the artwork lacks (Today's Board, Live Record,
+     Slip Importer) ride as overlay pills in the open purple panel. -->
+<div id="arnBannerNav" class="absolute inset-0" data-purpose="banner-navigation">
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:1%;top:29%;width:15.5%;height:23.5%" data-go="Dashboard" aria-label="Dashboard" title="Dashboard"></button>
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:17.5%;top:29%;width:15.5%;height:23.5%" data-go="AI Scout" aria-label="AI Scout" title="AI Scout"></button>
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:34%;top:29%;width:15.5%;height:23.5%" data-go="Bet Tracker" aria-label="Bet Tracker" title="Bet Tracker"></button>
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:50.8%;top:29%;width:15.5%;height:23.5%" data-go="Analytics" aria-label="Analytics" title="Analytics"></button>
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:67.3%;top:29%;width:15.5%;height:23.5%" data-go="Sportsbooks" aria-label="Sportsbooks" title="Sportsbooks"></button>
+<button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:83.8%;top:29%;width:15.2%;height:23.5%" data-go="Scout" aria-label="Scout" title="Scout"></button>
+<div class="absolute inset-x-0 flex items-center justify-center gap-2 px-3" style="top:66.5%">
+<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Today’s Board" aria-label="Today’s Board">TODAY’S BOARD</button>
+<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Live Record" aria-label="Live Record">LIVE RECORD</button>
+<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Slip Importer" aria-label="Slip Importer">SLIP IMPORTER</button>
+</div>
+</div>
 </div>
 </section>`;
 
@@ -813,12 +826,18 @@ var ARN_FOOTER = `
     set("arnFUpdated", fmtTime(new Date()));
   }
 
-  /* ---------- top-bar pill sync (router owns navigation) ---------- */
-  const PILL_ON = "flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-lg shadow-amber-500/20 transition-all whitespace-nowrap";
-  const PILL_OFF = "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap";
+  /* ---------- banner-nav active sync (router owns navigation) ----------
+   * The baked-artwork hotspots get hover/focus glow only — an image tab
+   * can't honestly show an active state. The overlay pills (the views
+   * the artwork lacks) DO show it, via direct styles so their layout
+   * classes are never rewritten. */
   function syncPills(name) {
-    document.querySelectorAll("#staNav [data-go]").forEach((p) => {
-      p.className = p.dataset.go === name ? PILL_ON : PILL_OFF;
+    document.querySelectorAll("#arnBannerNav .arn-ovpill").forEach((p) => {
+      const on = p.dataset.go === name;
+      p.style.borderColor = on ? "rgba(251,191,36,0.9)" : "";
+      p.style.color = on ? "#fcd34d" : "";
+      p.style.boxShadow = on ? "0 0 16px rgba(251,191,36,0.45)" : "";
+      if (on) p.setAttribute("aria-current", "page"); else p.removeAttribute("aria-current");
     });
   }
 
