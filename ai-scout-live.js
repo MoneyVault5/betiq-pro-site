@@ -21,7 +21,21 @@
  * Storage isolation: the Performance Tracker uses ONLY the browser-
  * local key ai_scout_tracker_v1. This module never reads or writes
  * the production bet store (betlab_clean_real_bets_v1), never calls
- * cloud-sync, and never touches the tickets table. */
+ * cloud-sync, and never touches the tickets table.
+ * Matchup sheet (added Nov 3, 2026 at Marquis's request): Pregame and
+ * Live game cards are tappable and open a drill-in sheet. Data verified
+ * live against ESPN's public endpoints before building: game summary
+ * (site v2 /summary?event= — header records, season leaders with
+ * athlete ids, standings points-for/against, boxscore for started
+ * games) and athlete gamelogs (site.web.api.espn.com common/v3
+ * /athletes/{id}/gamelog — stat names aligned with per-game rows plus
+ * gameDate metadata). Estimates for not-yet-started games are computed
+ * ONLY from a player's own gamelog: 0.6 x season per-game average +
+ * 0.4 x last-5-games per-game average, and are labelled ESTIMATES —
+ * simple average-based projections, uncalibrated, not a paid model.
+ * Started/final games show ACTUAL boxscore lines instead. Any player
+ * whose gamelog cannot be fetched renders UNAVAILABLE — a line is
+ * never invented. */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
@@ -57,10 +71,14 @@
     return evs.map(function (e) {
       var comp = (e.competitions || [])[0] || {}; var cs = comp.competitors || [];
       var team = function (c) { return (c.team || {}).displayName || (c.team || {}).shortDisplayName || '?'; };
-      var score = function (c) { return c.score != null ? c.score : '–'; };
+      var score = function (c) { return c.score != null && c.score !== '' ? c.score : '–'; };
       var st = (e.status || {}).type || {}; var detail = st.detail || st.shortDetail || '';
       var live = !!st.completed === false && (detail && /Q|OT|Half|In Progress/i.test(detail));
-      return { name: cs.map(team).join(' vs '), a: cs[0] ? team(cs[0]) + ' ' + score(cs[0]) : '', b: cs[1] ? team(cs[1]) + ' ' + score(cs[1]) : '', detail: detail, live: live, venue: (comp.venue || {}).fullName || '', date: e.date || '' };
+      var teams = cs.map(function (c) {
+        var rec = (c.records || []).filter(function (r) { return r.type === 'total'; })[0];
+        return { id: (c.team || {}).id || '', name: team(c), record: rec ? (rec.summary || '') : '', score: c.score != null && c.score !== '' ? String(c.score) : '', homeAway: c.homeAway || '' };
+      });
+      return { id: e.id || '', name: cs.map(team).join(' vs '), a: cs[0] ? team(cs[0]) + ' ' + score(cs[0]) : '', b: cs[1] ? team(cs[1]) + ' ' + score(cs[1]) : '', detail: detail, live: live, venue: (comp.venue || {}).fullName || '', date: e.date || '', state: st.state || '', completed: !!st.completed, teams: teams };
     });
   }
   function loadPoly() {
@@ -144,6 +162,8 @@
   /* ---------------- sub-view navigation ---------------- */
   function showSub(v) {
     var page = $('aiScoutPage'); if (!page) return;
+    sheetCtx = null;
+    var sh = $('aisSheet'); if (sh) sh.hidden = true;
     page.querySelectorAll('[data-ais-view]').forEach(function (b) { b.classList.toggle('on', b.dataset.aisView === v); });
     ['pregame', 'live', 'markets', 'tracker', 'chat'].forEach(function (name) {
       var s = $('aisView-' + name); if (s) s.hidden = name !== v;
@@ -181,7 +201,18 @@
       '.ais-hotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}' +
       '#aisChatlog{background:#0d1622;border:1px solid #2c4a63;border-radius:10px;padding:10px;min-height:120px;font-size:14px}' +
       '#aisChatlog p{margin:6px 0}' +
-      '.ais-badge{display:inline-block;padding:2px 8px;border:1px solid #ff6b00;color:#ff8c42;border-radius:999px;font-size:11px;letter-spacing:.08em}';
+      '.ais-badge{display:inline-block;padding:2px 8px;border:1px solid #ff6b00;color:#ff8c42;border-radius:999px;font-size:11px;letter-spacing:.08em}' +
+      '.ais-game{cursor:pointer}' +
+      '.ais-game:hover{border-color:#39FF88}' +
+      '.ais-tap{color:#39FF88;font-size:13px;font-weight:600;margin-top:8px}' +
+      '.ais-sheetbar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}' +
+      '.ais-estgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:8px}' +
+      '.ais-player{background:#0d1622;border:1px solid #2c4a63;border-radius:10px;padding:10px}' +
+      '.ais-player h5{margin:0 0 4px;font-size:14px;color:#f2f0ff}' +
+      '.ais-player p{margin:3px 0;font-size:13px}' +
+      '.ais-kpi{font-size:15px}' +
+      'table.ais-tbl{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}' +
+      'table.ais-tbl td,table.ais-tbl th{border-bottom:1px solid #2c4a63;padding:5px 6px;text-align:left}';
     document.head.appendChild(st);
   }
 
@@ -202,7 +233,7 @@
 
       '<section class="ais-view" id="aisView-pregame"><div class="ais-card">' +
       '<h3>Pregame Scout — NFL / NBA</h3>' +
-      '<p class="ais-muted">Games come from the public ESPN scoreboard. Matchup notes below are computed from those records only (records, venue, status). Injury and defense-depth detail requires a licensed feed and is shown as unavailable where it cannot be fetched — it is not guessed.</p>' +
+      '<p class="ais-muted">Games come from the public ESPN scoreboard. Matchup notes below are computed from those records only (records, venue, status). Injury and defense-depth detail requires a licensed feed and is shown as unavailable where it cannot be fetched — it is not guessed. <b>Tap any game</b> to open its matchup sheet: team comparison plus player estimates computed from each player\'s own game log (formula printed on the sheet).</p>' +
       '<div class="ais-row"><select class="ais-in" id="aisLeagueSel"><option value="nfl">NFL</option><option value="nba">NBA</option></select>' +
       '<button class="ais-cta" type="button" id="aisLoadPregame">Load games</button><span class="ais-muted" id="aisPreMeta"></span></div>' +
       '<div id="aisPreList" style="margin-top:10px"></div>' +
@@ -210,7 +241,7 @@
 
       '<section class="ais-view" id="aisView-live" hidden><div class="ais-card">' +
       '<h3>Live Scout</h3>' +
-      '<p class="ais-muted">Live scores/clocks come from the public ESPN scoreboard at fetch time; every refresh is timestamped. In-game player-stat depth and win-probability estimates require a licensed feed and are marked unavailable when not fetched — no estimate is invented.</p>' +
+      '<p class="ais-muted">Live scores/clocks come from the public ESPN scoreboard at fetch time; every refresh is timestamped. In-game player-stat depth and win-probability estimates require a licensed feed and are marked unavailable when not fetched — no estimate is invented. <b>Tap any live game</b> to open its matchup sheet with the actual player stats from the game so far.</p>' +
       '<div class="ais-row"><button class="ais-cta" type="button" id="aisLoadLive">Refresh live games</button><span class="ais-muted" id="aisLiveMeta"></span></div>' +
       '<div id="aisLiveList" style="margin-top:10px"></div>' +
       '</div></section>' +
@@ -245,6 +276,10 @@
       '<div id="aisChatlog"><p class="ais-muted">Ask about a team, player, or market — e.g. “Chiefs”, “Lakers”, or “show me live games”.</p></div>' +
       '<div class="ais-row" style="margin-top:10px"><input class="ais-in" id="aisChatQ" placeholder="Ask AI Scout…" size="46" style="flex:1">' +
       '<button class="ais-cta" type="button" id="aisChatSend">Ask</button></div>' +
+      '</div></section>' +
+
+      '<section class="ais-view" id="aisSheet" hidden><div class="ais-card">' +
+      '<div id="aisSheetBody"><p class="ais-muted">Loading matchup…</p></div>' +
       '</div></section>';
     var ws = $('workspace');
     if (ws && ws.parentNode) { ws.parentNode.insertBefore(page, ws.nextSibling); }
@@ -260,7 +295,7 @@
         var rows = gameRows(d);
         setText('aisPreMeta', 'ESPN ' + lg.toUpperCase() + ' scoreboard · fetched ' + fmtT(state.fetchedAt[lg]) + ' · ' + rows.length + ' games');
         box.innerHTML = rows.length ? '' : '<p class="ais-muted">No games returned for this league right now.</p>';
-        rows.forEach(function (g) { box.appendChild(el('div', '<div class="ais-card"><h4>' + esc(g.name) + '</h4><p>' + esc(g.a) + ' — ' + esc(g.b) + '</p><p class="ais-muted">' + esc(g.detail) + (g.venue ? ' · ' + esc(g.venue) : '') + '</p><p class="ais-muted">Grounded note: records/venue/status only. Injury report and defensive-depth analysis: <span class="ais-tag unavail">UNAVAILABLE — licensed feed required, not guessed</span>.</p></div>')); });
+        rows.forEach(function (g) { box.appendChild(gameCard(g, lg, 'pregame')); });
       }).catch(function (e) { box.innerHTML = '<p class="ais-muted">ESPN scoreboard UNAVAILABLE (' + esc(e) + '). No games invented.</p>'; });
       refreshFeedStatus();
     });
@@ -275,10 +310,297 @@
         var live = all.filter(function (g) { return g.live; });
         setText('aisLiveMeta', 'Fetched ' + fmtT(now()) + ' · ' + live.length + ' live of ' + all.length + ' games (ESPN status text)');
         box.innerHTML = live.length ? '' : '<p class="ais-muted">No games in progress at fetch time. Player-level live stats and in-game win probability: <span class="ais-tag unavail">UNAVAILABLE — licensed feed required</span>.</p>';
-        live.forEach(function (g) { box.appendChild(el('div', '<div class="ais-card"><h4><span class="ais-tag live">LIVE</span> ' + esc(g.name) + ' (' + esc(g.lg.toUpperCase()) + ')</h4><p>' + esc(g.a) + ' — ' + esc(g.b) + '</p><p class="ais-muted">' + esc(g.detail) + ' · fetched ' + fmtT(now()) + '</p></div>')); });
+        live.forEach(function (g) { box.appendChild(gameCard(g, g.lg, 'live', true)); });
         refreshFeedStatus();
       });
     });
+  }
+
+  /* ---------------- Matchup sheet (tap-a-game) ----------------
+   * Endpoints verified live Nov 3, 2026 (see header note): ESPN game
+   * summary + ESPN athlete gamelogs carry every figure below. The
+   * DraftKings block attempts DK's public v5 odds feed from the
+   * browser; DK answered automated checks with HTTP 403 and sends no
+   * cross-origin grant for this site, so in practice it renders the
+   * UNAVAILABLE note — the parser stays honest: team match must be
+   * confident or no DK block is shown. */
+  var sheetCtx = null; var sheetSeq = 0;
+  var SB_URL = { nfl: 'https://site.api.espn.com/apis/site/v2/sports/football/nfl', nba: 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba' };
+  var WEB_PATH = { nfl: 'football/nfl', nba: 'basketball/nba' };
+  var EST_LABEL = 'ESTIMATES — simple average-based projections, uncalibrated, not a paid model.';
+  var EST_FORMULA = 'Formula: estimate = 0.6 × season per-game average + 0.4 × last-5-games per-game average, computed from each player\'s own ESPN game log.';
+
+  function gameCard(g, lg, fromView, isLiveList) {
+    var d = el('div', '<div class="ais-card ais-game" data-ais-game="' + esc(g.id || '') + '" role="button" tabindex="0" aria-label="Open matchup for ' + esc(g.name) + '">'
+      + (isLiveList ? '<h4><span class="ais-tag live">LIVE</span> ' + esc(g.name) + ' (' + esc(lg.toUpperCase()) + ')</h4>' : '<h4>' + esc(g.name) + '</h4>')
+      + '<p>' + esc(g.a) + ' — ' + esc(g.b) + '</p>'
+      + '<p class="ais-muted">' + esc(g.detail) + (g.venue ? ' · ' + esc(g.venue) : '') + (isLiveList ? ' · fetched ' + fmtT(now()) : '') + '</p>'
+      + (fromView === 'pregame' ? '<p class="ais-muted">Grounded note: records/venue/status only. Injury report and defensive-depth analysis: <span class="ais-tag unavail">UNAVAILABLE — licensed feed required, not guessed</span>.</p>' : '')
+      + '<p class="ais-tap">Tap for matchup ›</p></div>');
+    var card = d.querySelector('.ais-game');
+    if (card) {
+      var open = function () { if (g.id) openMatchup(g, lg, fromView); };
+      card.addEventListener('click', open);
+      card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    }
+    return d;
+  }
+  function sheetHeadHTML(g, lg) {
+    var when = '';
+    if (g.date) { var dt = new Date(g.date); if (!isNaN(dt.getTime())) when = ' · ' + dt.toLocaleString(); }
+    var recs = (g.teams || []).filter(function (t) { return t.record; }).map(function (t) { return esc(t.name) + ' ' + esc(t.record); }).join(' · ');
+    return '<div class="ais-sheetbar"><button class="ais-ghost" type="button" id="aisSheetBack">‹ Back to games</button><span class="ais-badge">' + esc(lg.toUpperCase()) + ' MATCHUP</span></div>'
+      + '<h3 style="margin:10px 0 4px">' + esc(g.name) + '</h3>'
+      + '<p>' + esc(g.a) + ' — ' + esc(g.b) + '</p>'
+      + '<p class="ais-muted">' + esc(g.detail) + (g.venue ? ' · ' + esc(g.venue) : '') + when + (recs ? '<br>' + recs : '') + '</p>';
+  }
+  function wireSheetBack(root) { var b = root.querySelector('#aisSheetBack'); if (b) b.addEventListener('click', closeSheet); }
+  function srcLine() { return '<p class="ais-muted" style="margin-top:12px">Sources: ESPN scoreboard, game summary and athlete game logs (public ESPN endpoints) · fetched ' + fmtT(now()) + '. Anything ESPN does not supply is shown as UNAVAILABLE — never filled in.</p>'; }
+  function closeSheet() {
+    sheetSeq++;
+    var from = sheetCtx ? sheetCtx.from : 'pregame';
+    sheetCtx = null;
+    var sh = $('aisSheet'); if (sh) sh.hidden = true;
+    showSub(from === 'live' ? 'live' : 'pregame');
+  }
+  function openMatchup(g, lg, fromView) {
+    if (!$('aiScoutPage')) return;
+    var seq = ++sheetSeq;
+    sheetCtx = { game: g, lg: lg, from: fromView || 'pregame' };
+    ['pregame', 'live', 'markets', 'tracker', 'chat'].forEach(function (n) { var s = $('aisView-' + n); if (s) s.hidden = true; });
+    var sheet = $('aisSheet'); if (!sheet) return;
+    sheet.hidden = false;
+    var body = $('aisSheetBody');
+    body.innerHTML = sheetHeadHTML(g, lg) + '<p class="ais-muted">Loading matchup data from ESPN…</p>';
+    wireSheetBack(body);
+    window.scrollTo({ top: 0 });
+    fetchJSON(SB_URL[lg] + '/summary?event=' + encodeURIComponent(g.id)).then(function (sum) {
+      if (seq !== sheetSeq) return;
+      renderSheet(g, lg, sum, seq);
+    }).catch(function (e) {
+      if (seq !== sheetSeq) return;
+      body.innerHTML = sheetHeadHTML(g, lg) + '<p class="ais-muted">Matchup data <span class="ais-tag unavail">UNAVAILABLE</span> — the ESPN game summary could not be fetched (' + esc(e) + '). Nothing has been filled in.</p>' + srcLine();
+      wireSheetBack(body);
+    });
+  }
+  function pfpaMap(sum) {
+    var raw = {};
+    try {
+      ((((sum || {}).standings || {}).groups) || []).forEach(function (gr) {
+        (((gr.standings || {}).entries) || []).forEach(function (en) {
+          var st = {}; (en.stats || []).forEach(function (s) { st[s.name] = parseFloat(s.displayValue); });
+          if (!isNaN(st.pointsFor) && !isNaN(st.pointsAgainst)) {
+            var gp = (!isNaN(st.wins) && !isNaN(st.losses)) ? st.wins + st.losses + (isNaN(st.ties) ? 0 : st.ties) : 0;
+            raw[en.team] = { pf: st.pointsFor, pa: st.pointsAgainst, gp: gp };
+          }
+        });
+      });
+    } catch (e) {}
+    return { get: function (full) { for (var k in raw) { if (full === k || full.indexOf(k + ' ') === 0 || full.split(' ').slice(-1)[0] === k) return raw[k]; } return null; } };
+  }
+  function teamCompareHTML(g, sum) {
+    if (!g.teams || !g.teams.length) return '';
+    var pf = pfpaMap(sum);
+    var rows = g.teams.map(function (t) {
+      var s = pf.get(t.name);
+      return '<tr><td><b>' + esc(t.name) + '</b></td><td>' + esc(t.record || '—') + '</td><td>' + (s && s.gp ? (s.pf / s.gp).toFixed(1) : '—') + '</td><td>' + (s && s.gp ? (s.pa / s.gp).toFixed(1) : '—') + '</td></tr>';
+    }).join('');
+    return '<h4>Team comparison</h4><table class="ais-tbl"><tr><th>Team</th><th>Record</th><th>Pts scored / game</th><th>Pts allowed / game</th></tr>' + rows + '</table>'
+      + '<p class="ais-muted">Points per game are computed from ESPN standings totals (points for / against ÷ games played) when the game summary supplies them; a dash means ESPN did not supply the figure — it is not estimated.</p>';
+  }
+  function statMap(keys, stats) { var m = {}; (keys || []).forEach(function (k, i) { m[k] = stats ? stats[i] : undefined; }); return m; }
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+  function actualsHTML(sum, lg) {
+    var teams = (((sum || {}).boxscore || {}).players) || [];
+    if (!teams.length) return '<h4>Player stats — ACTUAL</h4><p class="ais-muted">Box score <span class="ais-tag unavail">UNAVAILABLE</span> from ESPN for this game yet — no player lines are shown rather than invented.</p>';
+    var html = '<h4>Player stats — ACTUAL (this game, from the ESPN box score)</h4>';
+    teams.forEach(function (tp) {
+      var lines = [];
+      (tp.statistics || []).forEach(function (grp) {
+        var keys = grp.labels || grp.names || [];
+        var rowsA = (grp.athletes || []).map(function (a) { return { name: (a.athlete || {}).displayName || '', m: statMap(keys, a.stats) }; });
+        if (lg === 'nfl') {
+          var ydIdx = keys.indexOf('YDS');
+          rowsA.sort(function (x, y) { return (num(y.m.YDS) || 0) - (num(x.m.YDS) || 0); });
+          if (grp.name === 'passing') rowsA.slice(0, 1).forEach(function (r) { lines.push(esc(r.name) + ' — ' + esc(r.m['C/ATT'] || '–') + ' passing · ' + esc(r.m.YDS || '–') + ' pass yds · ' + esc(r.m.TD || '0') + ' TD'); });
+          else if (grp.name === 'rushing') rowsA.slice(0, 2).forEach(function (r) { lines.push(esc(r.name) + ' — ' + esc(r.m.CAR || '–') + ' car · ' + esc(r.m.YDS || '–') + ' rush yds · ' + esc(r.m.TD || '0') + ' TD'); });
+          else if (grp.name === 'receiving') rowsA.slice(0, 3).forEach(function (r) { lines.push(esc(r.name) + ' — ' + esc(r.m.REC || '–') + ' rec · ' + esc(r.m.YDS || '–') + ' rec yds · ' + esc(r.m.TD || '0') + ' TD · ' + esc(r.m.TGTS || '–') + ' targets'); });
+        } else {
+          rowsA.sort(function (x, y) { return (num(y.m.PTS) || 0) - (num(x.m.PTS) || 0); });
+          rowsA.slice(0, 3).forEach(function (r) { lines.push(esc(r.name) + ' — ' + esc(r.m.PTS || '–') + ' pts · ' + esc(r.m.REB || '–') + ' reb · ' + esc(r.m.AST || '–') + ' ast · ' + esc(r.m.MIN || '–') + ' min'); });
+          lines = lines.slice(0, 3);
+        }
+        void ydIdx;
+      });
+      html += '<p style="margin:10px 0 2px"><b>' + esc((tp.team || {}).displayName || '') + '</b></p>' + (lines.length ? lines.map(function (l) { return '<p>' + l + '</p>'; }).join('') : '<p class="ais-muted">No player lines in the box score yet.</p>');
+    });
+    return html;
+  }
+  function glData(gl) {
+    if (!gl || !gl.names || !gl.seasonTypes) return null;
+    var byId = {}; var meta = gl.events || {};
+    gl.seasonTypes.forEach(function (st) {
+      if (!/regular season/i.test(st.displayName || '')) return;
+      (st.categories || []).forEach(function (c) {
+        if (c.type && c.type !== 'event') return;
+        (c.events || []).forEach(function (ev) { if (ev.eventId && !byId[ev.eventId]) byId[ev.eventId] = ev.stats || []; });
+      });
+    });
+    var ids = Object.keys(byId);
+    if (!ids.length) return null;
+    var rows = ids.map(function (id) { return { id: id, date: (meta[id] && meta[id].gameDate) ? Date.parse(meta[id].gameDate) : 0, stats: byId[id] }; });
+    rows.sort(function (a, b) { return b.date - a.date; });
+    return { names: gl.names, rows: rows };
+  }
+  function avgOf(rows, idx, cap) {
+    var vals = [];
+    for (var i = 0; i < rows.length && vals.length < cap; i++) { var v = parseFloat(rows[i].stats[idx]); if (!isNaN(v)) vals.push(v); }
+    if (!vals.length) return null;
+    return { avg: vals.reduce(function (a, b) { return a + b; }, 0) / vals.length, n: vals.length };
+  }
+  function estimateFor(gl, statName) {
+    var data = glData(gl); if (!data) return null;
+    var idx = data.names.indexOf(statName); if (idx < 0) return null;
+    var season = avgOf(data.rows, idx, data.rows.length);
+    var last5 = avgOf(data.rows, idx, 5);
+    if (!season || !last5) return null;
+    return { est: 0.6 * season.avg + 0.4 * last5.avg, season: season.avg, last5: last5.avg, games: season.n };
+  }
+  function estSpecs(lg, kind) {
+    if (lg === 'nba') return [{ key: 'points', label: 'pts', dec: 1 }, { key: 'totalRebounds', label: 'reb', dec: 1 }, { key: 'assists', label: 'ast', dec: 1 }];
+    if (kind === 'qb') return [{ key: 'passingYards', label: 'pass yds', dec: 0 }];
+    if (kind === 'rb') return [{ key: 'rushingAttempts', label: 'rush att', dec: 1 }, { key: 'rushingYards', label: 'rush yds', dec: 0 }, { key: 'receptions', label: 'rec', dec: 1 }, { key: 'receivingYards', label: 'rec yds', dec: 0 }];
+    return [{ key: 'receptions', label: 'rec', dec: 1 }, { key: 'receivingYards', label: 'rec yds', dec: 0 }];
+  }
+  function fmtEst(v, dec) { return dec === 0 ? String(Math.round(v)) : v.toFixed(1); }
+  function leaderCands(sum, lg) {
+    var out = {};
+    (((sum || {}).leaders) || []).forEach(function (tp) {
+      var team = (tp.team || {}).displayName || '';
+      var list = [];
+      (tp.leaders || []).forEach(function (cat) {
+        var first = (cat.leaders || [])[0];
+        if (!first || !first.athlete || !first.athlete.id) return;
+        var nm = (cat.name || '') + ' ' + (cat.displayName || '');
+        var kind = null;
+        if (lg === 'nfl') { if (/passing/i.test(nm)) kind = 'qb'; else if (/rushing/i.test(nm)) kind = 'rb'; else if (/receiving/i.test(nm)) kind = 'wr'; }
+        else kind = 'nba';
+        if (kind && !list.some(function (p) { return p.id === String(first.athlete.id); })) list.push({ id: String(first.athlete.id), name: first.athlete.displayName || '', kind: kind });
+      });
+      if (team) out[team] = list;
+    });
+    return out;
+  }
+  function renderEstimates(g, lg, sum, seq) {
+    var cands = leaderCands(sum, lg);
+    var teams = (g.teams || []).map(function (t) { return t.name; });
+    var jobs = teams.map(function (tname) {
+      var list = cands[tname] || [];
+      if (!list.length) return Promise.resolve('<h4>' + esc(tname) + '</h4><div class="ais-estgrid"><div class="ais-player"><h5>' + esc(tname) + '</h5><p class="ais-muted">Season leaders <span class="ais-tag unavail">UNAVAILABLE</span> from ESPN for this team — no estimates shown.</p></div></div>');
+      return Promise.all(list.map(function (p) {
+        return fetchJSON('https://site.web.api.espn.com/apis/common/v3/sports/' + WEB_PATH[lg] + '/athletes/' + encodeURIComponent(p.id) + '/gamelog?region=us&lang=en').then(function (gl) {
+          var parts = []; var any = false;
+          estSpecs(lg, p.kind).forEach(function (sp) {
+            var e = estimateFor(gl, sp.key);
+            if (e) { any = true; parts.push(esc(sp.label) + ' <b class="ais-kpi">' + fmtEst(e.est, sp.dec) + '</b> <span class="ais-muted">(season ' + fmtEst(e.season, sp.dec) + '/g · last 5 ' + fmtEst(e.last5, sp.dec) + '/g · ' + e.games + ' games)</span>'); }
+          });
+          if (!any) return '<div class="ais-player"><h5>' + esc(p.name) + '</h5><p class="ais-muted">Game log <span class="ais-tag unavail">UNAVAILABLE</span> — no estimate shown for this player.</p></div>';
+          return '<div class="ais-player"><h5>' + esc(p.name) + '</h5><p>' + parts.join('<br>') + '</p></div>';
+        }).catch(function () {
+          return '<div class="ais-player"><h5>' + esc(p.name) + '</h5><p class="ais-muted">Game log <span class="ais-tag unavail">UNAVAILABLE</span> — no estimate shown for this player.</p></div>';
+        });
+      })).then(function (cards) { return '<h4>' + esc(tname) + '</h4><div class="ais-estgrid">' + cards.join('') + '</div>'; });
+    });
+    Promise.all(jobs).then(function (secs) {
+      if (seq !== sheetSeq || !sheetCtx) return;
+      var est = $('aisEstBlock'); if (!est) return;
+      est.innerHTML = '<p><span class="ais-badge">' + EST_LABEL + '</span></p><p class="ais-muted">' + EST_FORMULA + ' Players shown: each team\'s ESPN season leaders (NFL: passing / rushing / receiving leaders; NBA: points / assists / rebounds leaders).</p>' + secs.join('');
+    });
+  }
+  /* DraftKings block: DK's public v5 odds feed, attempted from the
+   * browser. Verified during the build (Nov 3, 2026): the endpoint
+   * answers non-DK origins with HTTP 403 / no CORS grant, so the
+   * fetch fails and the UNAVAILABLE note renders. The parser below
+   * follows DK's long-published v5 eventGroup shape and requires a
+   * confident two-team match before showing any number. */
+  var DK_GROUPS = { nfl: 88808, nba: 88663 };
+  function dkNorm(s) { return String(s || '').toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function dkOutcome(o) {
+    if (!o) return null;
+    var s = String(o.label || o.outcomeType || '');
+    if (o.line != null && o.line !== '') s += ' ' + o.line;
+    var odds = o.oddsAmerican != null ? o.oddsAmerican : o.odds;
+    if (odds != null && odds !== '') s += ' (' + odds + ')';
+    if (o.betPercentage != null || o.handlePercentage != null) s += ' · bets ' + (o.betPercentage != null ? o.betPercentage + '%' : '—') + ' · handle ' + (o.handlePercentage != null ? o.handlePercentage + '%' : '—');
+    return s;
+  }
+  function dkMatch(d, g) {
+    try {
+      var eg = (d && d.eventGroup) || d || {};
+      var events = eg.events || [];
+      var nick = function (n) { var p = dkNorm(n).split(' '); return p[p.length - 1] || ''; };
+      var n0 = nick((g.teams[0] || {}).name), n1 = nick((g.teams[1] || {}).name);
+      if (!n0 || !n1) return null;
+      var ev = null;
+      events.forEach(function (e) {
+        if (ev) return;
+        var hay = dkNorm((e.name || '') + ' ' + (e.teamName1 || '') + ' ' + (e.teamName2 || ''));
+        if (hay.includes(n0) && hay.includes(n1)) ev = e;
+      });
+      if (!ev) return null;
+      var evId = String(ev.eventId != null ? ev.eventId : ev.id);
+      var res = { spread: null, total: null, ml: null };
+      (eg.offerCategories || []).forEach(function (cat) {
+        (cat.offerSubcategoryDescriptors || []).forEach(function (sd) {
+          var sub = sd.offerSubcategory || {};
+          (sub.offers || []).forEach(function (row) {
+            (row || []).forEach(function (o) {
+              if (!o || String(o.eventId) !== evId) return;
+              var catName = ((cat.name || '') + ' ' + (sd.name || '')).toLowerCase();
+              var outs = (o.outcomes || []).map(dkOutcome).filter(Boolean);
+              if (!outs.length) return;
+              if (/spread/.test(catName) && !res.spread) res.spread = outs;
+              else if (/total|over-under|over\/under/.test(catName) && !res.total) res.total = outs;
+              else if (/moneyline|money line/.test(catName) && !res.ml) res.ml = outs;
+            });
+          });
+        });
+      });
+      if (!res.spread && !res.total && !res.ml) return null;
+      return res;
+    } catch (e) { return null; }
+  }
+  function dkUnavailableHTML() {
+    return '<h4>DraftKings line</h4><p class="ais-muted">DraftKings: <span class="ais-tag unavail">UNAVAILABLE</span> — DraftKings does not open its public odds feed to other websites (its servers reject cross-site browser reads; automated checks during the build returned HTTP 403), so no DK line or splits are shown here rather than guessed ones. Market data only — DraftKings is not one of your betting channels.</p>';
+  }
+  function renderDK(g, lg, seq) {
+    fetchJSON('https://sportsbook.draftkings.com/sites/US-SB/api/v5/eventgroups/' + DK_GROUPS[lg] + '?format=json', 9000).then(function (d) {
+      if (seq !== sheetSeq || !sheetCtx) return;
+      var blk = $('aisDkBlock'); if (!blk) return;
+      var m = dkMatch(d, g);
+      if (!m) { blk.innerHTML = dkUnavailableHTML(); return; }
+      var rows = '';
+      if (m.spread) rows += '<p>Spread: ' + m.spread.map(esc).join(' · ') + '</p>';
+      if (m.total) rows += '<p>Total: ' + m.total.map(esc).join(' · ') + '</p>';
+      if (m.ml) rows += '<p>Moneyline: ' + m.ml.map(esc).join(' · ') + '</p>';
+      blk.innerHTML = '<h4>DraftKings line</h4>' + rows + '<p class="ais-muted">Source: DraftKings public odds · fetched ' + fmtT(now()) + '. Market data only — DraftKings is not one of your betting channels.</p>';
+    }).catch(function () {
+      if (seq !== sheetSeq || !sheetCtx) return;
+      var blk = $('aisDkBlock'); if (blk) blk.innerHTML = dkUnavailableHTML();
+    });
+  }
+  function renderSheet(g, lg, sum, seq) {
+    var body = $('aisSheetBody'); if (!body) return;
+    var started = g.state === 'in' || g.state === 'post' || g.completed;
+    var html = sheetHeadHTML(g, lg) + teamCompareHTML(g, sum);
+    if (started) html += '<div id="aisActBlock">' + actualsHTML(sum, lg) + '</div>';
+    else html += '<div id="aisEstBlock"><p class="ais-muted">Loading player estimates from ESPN game logs…</p></div>';
+    if (!started || g.state === 'in') html += '<div id="aisDkBlock"><h4>DraftKings line</h4><p class="ais-muted">Loading DraftKings market data…</p></div>';
+    html += srcLine();
+    body.innerHTML = html;
+    wireSheetBack(body);
+    if (!started) renderEstimates(g, lg, sum, seq);
+    if (!started || g.state === 'in') renderDK(g, lg, seq);
   }
 
   /* ---------------- Markets view (ported) ---------------- */
@@ -415,5 +737,5 @@
   try { wireNav(); } catch (e) { console.warn('Bet Lab: AI Scout nav wiring skipped', e); }
   try { armHotWidget(); } catch (e) { console.warn('Bet Lab: AI Scout hot takes skipped', e); }
 
-  window.BetLabAiScout = { showPage: showMine, hidePage: hideMine, showSub: showSub, refreshHot: loadHot };
+  window.BetLabAiScout = { showPage: showMine, hidePage: hideMine, showSub: showSub, refreshHot: loadHot, openMatchup: openMatchup, closeSheet: closeSheet };
 })();

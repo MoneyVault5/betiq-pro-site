@@ -40,13 +40,13 @@ var ARN_HEADER = `
 <nav id="staNav" class="max-w-[1400px] mx-auto px-4 sm:px-6 py-2.5 flex items-center gap-1.5 text-xs font-semibold tracking-wider text-slate-300 overflow-x-auto" data-purpose="main-nav-pills">
 <button type="button" data-go="Dashboard" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-lg shadow-amber-500/20 transition-all whitespace-nowrap">DASHBOARD</button>
 <button type="button" data-go="Today’s Board" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">TODAY’S BOARD</button>
+<button type="button" data-go="AI Scout" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">AI Scout</button>
 <button type="button" data-go="Bet Tracker" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">BET TRACKER</button>
 <button type="button" id="arnAddBet" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-amber-500/60 text-amber-400 hover:bg-amber-500 hover:text-black font-bold transition-colors whitespace-nowrap">+ ADD BET</button>
 <button type="button" data-go="Sportsbooks" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">SPORTSBOOKS</button>
 <button type="button" data-go="Live Record" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">LIVE RECORD</button>
 <button type="button" data-go="Analytics" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">ANALYTICS</button>
 <button type="button" data-go="Slip Importer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">SLIP IMPORTER</button>
-<button type="button" data-go="AI Scout" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-slate-300 hover:text-white hover:bg-purple-900/40 transition-colors whitespace-nowrap">AI Scout</button>
 </nav>
 </header>`;
 

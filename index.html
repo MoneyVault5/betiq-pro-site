@@ -972,7 +972,7 @@ let latestStats=new Map(),latestGames=false;
 <script src="./sportsbooks.js" defer></script>
 <script src="./polymarket-us.js" defer></script>
 <script src="./kalshi-import.js" defer></script>
-<script src="./ai-scout-live.js?v=20261103c" defer></script>
+<script src="./ai-scout-live.js?v=20261103e" defer></script>
 </body></html><template id="betlab-orphan-quarantine-1">+Math.abs(running).toFixed(2);head.style.color=color}const context=node(id)?.getContext('2d');let gradient=glow;if(context){gradient=context.createLinearGradient(0,0,0,230);gradient.addColorStop(0,glow);gradient.addColorStop(1,'rgba(0,0,0,0)')}draw(id,'line',{labels:['Start',...subset.map((b,i)=>'Slip '+(i+1))],datasets:[{label:'Cumulative net P/L',data:values,borderColor:color,backgroundColor:gradient,fill:true,tension:.38,pointRadius:subset.length>20?0:3,pointHoverRadius:6,pointBackgroundColor:color,pointBorderColor:'#081728',pointBorderWidth:2,borderWidth:3}]},{interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Net P/L: {const k=b.book||'Other';books.set(k,(books.get(k)||0)+pl(b))}
  draw('analyticsBookCanvas','bar',{labels:[...books.keys()],datasets:[{label:'Net P/L',data:[...books.values()],backgroundColor:[...books.values()].map(v=>v>=0?palette.teal:palette.rose),borderRadius:5,maxBarThickness:25}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{...axis,ticks:{color:'#8ca9bf',callback:v=>'$'+v}},y:{...axis,grid:{display:false}}}});
  draw('analyticsOutcomeCanvas','doughnut',{labels:['Won','Lost','Pending','Void'],datasets:[{data:['Won','Lost','Open','Void'].map(st=>bets.filter(b=>b.status===st).length),backgroundColor:[palette.teal,palette.rose,palette.blue,palette.gold],borderColor:'#0c1b2d',borderWidth:3,hoverOffset:5}]},{cutout:'74%',plugins:{legend:{position:'bottom',labels:{color:'#adc7da',usePointStyle:true,boxWidth:8,padding:12}}}});
@@ -1968,5 +1968,5 @@ let latestStats=new Map(),latestGames=false;
   </style>
 <!-- END: Custom CSS Styling Blocks -->
 <link rel="stylesheet" href="./arena-live.css?v=20261103d">
-<script src="./arena-live.js?v=20261103d" defer></script>
+<script src="./arena-live.js?v=20261103e" defer></script>
 </body></html>
