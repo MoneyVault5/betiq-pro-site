@@ -17,7 +17,9 @@
  * Internal binding ids shared with other live modules are kept on
  * purpose: #arnBannerNav (the banner navigation overlay — hotspots over
  * the banner artwork's six baked labels, nothing else on the banner;
- * ai-scout-live.js's nav test hooks) and the
+ * ai-scout-live.js's nav test hooks), #arnMiniNav (the compact text
+ * navigation row inside the sticky top bar, shown on every non-Dashboard
+ * view because the banner itself lives inside #dashboard) and the
  * staHot* Hot Takes ids (ai-scout-live.js renders into them). All other
  * shell ids are arn*. This script NEVER writes to storage. */
 
@@ -40,6 +42,23 @@ var ARN_HEADER = `
 <button type="button" id="arnAddBet" class="px-4 py-1.5 rounded-lg border border-amber-500/60 text-amber-400 hover:bg-amber-500 hover:text-black font-bold transition-colors font-display tracking-wider">+ ADD BET</button>
 </div>
 </div>
+<!-- Mini navigation (Marquis, Nov 3, 2026): the banner artwork's six
+     tabs live INSIDE #dashboard, so on every other screen the banner —
+     and with it all navigation — is hidden (the legacy #nav/#mobileNav
+     are display:none in the Arena shell). This compact text row rides
+     inside the sticky top bar, OUTSIDE #dashboard, and is shown only
+     while Dashboard is NOT the active view: same six destinations, same
+     artwork order, same data-go routing as the banner hotspots. -->
+<nav id="arnMiniNav" hidden aria-label="Quick navigation" class="border-t border-purple-900/30 bg-black/30">
+<div class="arn-mini-scroll max-w-[1400px] mx-auto px-2 sm:px-6 flex items-center gap-1 overflow-x-auto py-1">
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Dashboard" aria-label="Dashboard" title="Dashboard">Dashboard</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="AI Scout" aria-label="AI Scout" title="AI Scout">AI Scout</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Bet Tracker" aria-label="Bet Tracker" title="Bet Tracker">Bet Tracker</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Analytics" aria-label="Analytics" title="Analytics">Analytics</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Sportsbooks" aria-label="Sportsbooks" title="Sportsbooks">Sportsbooks</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Scout" aria-label="Scout" title="Scout">Scout</button>
+</div>
+</nav>
 </header>`;
 
 var ARN_BANNER = `
@@ -832,6 +851,53 @@ var ARN_FOOTER = `
     });
   }
 
+  /* ---------- mini navigation sync ----------
+   * The banner lives inside #dashboard, so it vanishes on every other
+   * view. #arnMiniNav lives in the sticky top bar (outside #dashboard)
+   * and is shown exactly while Dashboard is NOT the active view — on
+   * Dashboard the banner already provides navigation, so no duplicate
+   * nav appears there. Route state is DERIVED from the DOM the router
+   * leaves behind (never from click bookkeeping), so programmatic
+   * window.go() calls (radar items, scout/sportsbooks wrappers) are
+   * tracked too: #dashboard.active is the router's own Dashboard flag
+   * (Today's Board included — it is a Dashboard section), the module
+   * pages expose themselves via their hidden flag, and everything
+   * else is a #workspace route named by #pageTitle. */
+  function currentRouteName() {
+    const sb = $("sportsbooksPage");
+    if (sb && !sb.hidden) return "Sportsbooks";
+    const ais = $("aiScoutPage");
+    if (ais && !ais.hidden) return "AI Scout";
+    const dash = $("dashboard");
+    if (dash && dash.classList.contains("active")) return "Dashboard";
+    const t = $("pageTitle");
+    const n = t ? (t.textContent || "").trim() : "";
+    return n || "Dashboard";
+  }
+  function syncMiniNav() {
+    const bar = $("arnMiniNav");
+    if (!bar) return;
+    const dash = $("dashboard");
+    bar.hidden = !!dash && dash.classList.contains("active");
+    const route = currentRouteName();
+    bar.querySelectorAll(".arn-mini-btn").forEach((b) => {
+      if (b.dataset.go === route) b.setAttribute("aria-current", "page");
+      else b.removeAttribute("aria-current");
+    });
+  }
+  function injectMiniNavStyles() {
+    if ($("arnMiniNavStyles")) return;
+    const st = document.createElement("style");
+    st.id = "arnMiniNavStyles";
+    st.textContent =
+      "#arnMiniNav[hidden]{display:none!important}" +
+      "#arnMiniNav .arn-mini-scroll{scrollbar-width:none}" +
+      "#arnMiniNav .arn-mini-scroll::-webkit-scrollbar{display:none}" +
+      "#arnMiniNav .arn-mini-btn.active{color:#fcd34d;background:rgba(251,191,36,0.12)}" +
+      "#arnMiniNav .arn-mini-btn:focus-visible{outline:2px solid rgba(251,191,36,0.8);outline-offset:-2px}";
+    document.head.appendChild(st);
+  }
+
   /* ---------- Live Record reachability ----------
    * Live Record is NOT one of the banner artwork's six tabs, and the
    * legacy #nav that also routes to it is display:none in the Arena
@@ -869,6 +935,7 @@ var ARN_FOOTER = `
     renderFooter(s);
     placeBoard();
     placeLiveRecordLink();
+    syncMiniNav();
   }
   function scheduleUpdate() {
     if (queued) return;
@@ -902,10 +969,22 @@ var ARN_FOOTER = `
       document.body.dataset.arenaLive = "live";
       wireLedger();
       wireArena();
+      injectMiniNavStyles();
       syncPills("Dashboard");
+      syncMiniNav();
       document.addEventListener("click", (e) => {
         const g = e.target && e.target.closest ? e.target.closest("[data-go]") : null;
-        if (g) syncPills(g.dataset.go);
+        if (g) { syncPills(g.dataset.go); syncMiniNav(); }
+      });
+      /* Programmatic navigation (radar items, module go() wrappers)
+       * changes no [data-go] state we can listen to — watch the view
+       * flags the router/modules actually flip instead. */
+      const viewObs = new MutationObserver(() => syncMiniNav());
+      const dashEl = $("dashboard");
+      if (dashEl) viewObs.observe(dashEl, { attributes: true, attributeFilter: ["class"] });
+      ["aiScoutPage", "sportsbooksPage", "workspace"].forEach((id) => {
+        const n = $(id);
+        if (n) viewObs.observe(n, { attributes: true, attributeFilter: ["hidden", "class"] });
       });
       update();
       document.addEventListener("betlab-board-rendered", scheduleUpdate);
