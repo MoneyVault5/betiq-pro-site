@@ -1,0 +1,47 @@
+/* Bet Lab LIVE — Stitch integration CSS ONLY (stitch-live.css).
+ * The dashboard's design comes from the Stitch replica's own Tailwind +
+ * custom styles (in index.html); this file only does app-integration
+ * work the replica never had to do: retire the legacy chrome the replica
+ * header/footer replace, hide the legacy dashboard dressing behind the
+ * replica dashboard, keep the page from sideways-scrolling, and keep the
+ * replica's router pills reachable below the xl breakpoint (the replica
+ * nav is desktop-only; the app still needs navigation on smaller
+ * screens). Semantic colors are the replica's: #39FF88 / #FF3B5C. */
+
+body.stl-on {
+  background-color: #07050d;
+  padding-bottom: 72px; /* room for the replica's fixed footer ribbon */
+  overflow-x: clip;
+}
+html:has(> body.stl-on) { overflow-x: clip; }
+
+/* legacy chrome replaced by the replica top bar / footer */
+body.stl-on .command-topbar,
+body.stl-on .hero,
+body.stl-on #nav,
+body.stl-on #mobileNav { display: none !important; }
+
+/* legacy dashboard dressing replaced by the replica dashboard.
+ * Live v4 (flame-fix-v4) dressing, verified against vibe-purple-gold.js:
+ * moveMetrics() relocates the .kpis / .record-breakdown cards into a
+ * .vibe-metrics section (and removes the originals), createOverview()
+ * adds .vibe-panels, and the command-center extension builds
+ * #vccCommandDashboard inside #dashboard. All of it is dashboard-only
+ * dressing; the board (.main-grid / #todayBoard) stays, and nothing
+ * outside #dashboard is touched, so the vibe pair keeps dressing the
+ * other views exactly as before. */
+body.stl-on #dashboard .kpis,
+body.stl-on #dashboard .record-breakdown,
+body.stl-on #dashboard .vibe-metrics,
+body.stl-on #dashboard .vibe-panels,
+body.stl-on #dashboard #vccCommandDashboard,
+body.stl-on #dashboard #recordTodayPanel,
+body.stl-on #dashboard .right-panels,
+body.stl-on #dashboard .status-grid { display: none !important; }
+
+/* replica pills: scrollable row instead of hidden below xl */
+#staNav { scrollbar-width: none; }
+#staNav::-webkit-scrollbar { display: none; }
+@media (max-width: 1279.98px) {
+  #staNav { display: flex !important; overflow-x: auto; }
+}
