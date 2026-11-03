@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700;800&display=swap');
+
+/* Bet Lab LIVE — Arena integration CSS ONLY (arena-live.css).
+ * The dashboard's design is the Arena shell Marquis supplied (purple /
+ * amber glow-cards on #05020a, Chakra Petch display type); this file only
+ * does app-integration work: define the Arena's own utility classes
+ * (.glow-card / .font-display, verbatim from the supplied Arena <style>),
+ * retire the legacy chrome the Arena top bar replaces, hide the legacy
+ * dashboard dressing behind the Arena dashboard, keep the page from
+ * sideways-scrolling, and keep the router pills reachable on small
+ * screens. Semantic colors stay the standing rule: positives #39FF88,
+ * negatives #FF3B5C (painted inline by arena-live.js). */
+
+body.arn-on {
+  background-color: #05020a;
+  color: #f1f3f7;
+  font-family: 'Inter', sans-serif;
+  overflow-x: clip;
+}
+html:has(> body.arn-on) { overflow-x: clip; }
+
+/* Arena design utilities (from the supplied Arena export's <style>) */
+body.arn-on .font-display { font-family: 'Chakra Petch', sans-serif; }
+body.arn-on .glow-card {
+  background: rgba(18, 11, 33, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 85, 247, 0.22);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+body.arn-on .glow-card:hover {
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 12px 36px rgba(245, 158, 11, 0.15);
+}
+
+/* legacy chrome replaced by the Arena top bar */
+body.arn-on .command-topbar,
+body.arn-on .hero,
+body.arn-on #nav,
+body.arn-on #mobileNav { display: none !important; }
+
+/* legacy dashboard dressing replaced by the Arena dashboard.
+ * Live v4 (flame-fix-v4) dressing, verified against vibe-purple-gold.js:
+ * moveMetrics() relocates the .kpis / .record-breakdown cards into a
+ * .vibe-metrics section (and removes the originals), createOverview()
+ * adds .vibe-panels, and the command-center extension builds
+ * #vccCommandDashboard inside #dashboard. All of it is dashboard-only
+ * dressing; the board (.main-grid / #todayBoard) stays, and nothing
+ * outside #dashboard is touched, so the vibe pair keeps dressing the
+ * other views exactly as before. */
+body.arn-on #dashboard .kpis,
+body.arn-on #dashboard .record-breakdown,
+body.arn-on #dashboard .vibe-metrics,
+body.arn-on #dashboard .vibe-panels,
+body.arn-on #dashboard #vccCommandDashboard,
+body.arn-on #dashboard #recordTodayPanel,
+body.arn-on #dashboard .right-panels,
+body.arn-on #dashboard .status-grid { display: none !important; }
+
+/* router pills: one scrollable row at every width (Arena top bar) */
+#staNav { scrollbar-width: none; }
+#staNav::-webkit-scrollbar { display: none; }
