@@ -16,8 +16,8 @@
  * Kalshi, Novig, DraftKings — a friend's, upload only).
  * Internal binding ids shared with other live modules are kept on
  * purpose: #arnBannerNav (the banner navigation overlay — hotspots over
- * the banner artwork's baked labels plus overlay pills for the views the
- * artwork lacks; ai-scout-live.js's nav test hooks) and the
+ * the banner artwork's six baked labels, nothing else on the banner;
+ * ai-scout-live.js's nav test hooks) and the
  * staHot* Hot Takes ids (ai-scout-live.js renders into them). All other
  * shell ids are arn*. This script NEVER writes to storage. */
 
@@ -53,8 +53,8 @@ var ARN_BANNER = `
      ~29%-52.5% vertically; label centres sit at x ~8.5/25.2/41.9/58.5/
      75/91.5%. The artwork's six tabs are DASHBOARD | AI SCOUT | BET
      TRACKER | ANALYTICS | SPORTSBOOKS | SCOUT (SCOUT = the app's legacy
-     Scout route). Views the artwork lacks (Today's Board, Live Record,
-     Slip Importer) ride as overlay pills in the open purple panel. -->
+     Scout route). NO overlay pills on the banner (Marquis's correction,
+     Nov 3, 2026): the header is exactly the artwork's six tabs. -->
 <div id="arnBannerNav" class="absolute inset-0" data-purpose="banner-navigation">
 <button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:1%;top:29%;width:15.5%;height:23.5%" data-go="Dashboard" aria-label="Dashboard" title="Dashboard"></button>
 <button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:17.5%;top:29%;width:15.5%;height:23.5%" data-go="AI Scout" aria-label="AI Scout" title="AI Scout"></button>
@@ -62,11 +62,6 @@ var ARN_BANNER = `
 <button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:50.8%;top:29%;width:15.5%;height:23.5%" data-go="Analytics" aria-label="Analytics" title="Analytics"></button>
 <button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:67.3%;top:29%;width:15.5%;height:23.5%" data-go="Sportsbooks" aria-label="Sportsbooks" title="Sportsbooks"></button>
 <button type="button" class="arn-hotspot absolute block cursor-pointer rounded-lg bg-transparent transition-all hover:bg-amber-400/10 hover:shadow-[0_0_18px_rgba(251,191,36,0.35)] focus:outline-none focus-visible:bg-amber-400/10 focus-visible:ring-2 focus-visible:ring-amber-400/80" style="left:83.8%;top:29%;width:15.2%;height:23.5%" data-go="Scout" aria-label="Scout" title="Scout"></button>
-<div class="absolute inset-x-0 flex items-center justify-center gap-2 px-3" style="top:66.5%">
-<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Today’s Board" aria-label="Today’s Board">TODAY’S BOARD</button>
-<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Live Record" aria-label="Live Record">LIVE RECORD</button>
-<button type="button" class="arn-ovpill inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#0b0814]/85 border border-purple-400/50 text-slate-200 text-[11px] sm:text-xs font-bold tracking-wider font-display cursor-pointer transition-all hover:border-amber-400/80 hover:text-amber-300 shadow-[0_0_14px_rgba(124,58,237,0.35)]" data-go="Slip Importer" aria-label="Slip Importer">SLIP IMPORTER</button>
-</div>
 </div>
 </div>
 </section>`;
@@ -826,19 +821,29 @@ var ARN_FOOTER = `
     set("arnFUpdated", fmtTime(new Date()));
   }
 
-  /* ---------- banner-nav active sync (router owns navigation) ----------
+  /* ---------- banner-nav sync (router owns navigation) ----------
    * The baked-artwork hotspots get hover/focus glow only — an image tab
-   * can't honestly show an active state. The overlay pills (the views
-   * the artwork lacks) DO show it, via direct styles so their layout
-   * classes are never rewritten. */
+   * can't honestly show a visual active state, so none is faked. The
+   * only sync is aria-current for assistive tech, which is invisible. */
   function syncPills(name) {
-    document.querySelectorAll("#arnBannerNav .arn-ovpill").forEach((p) => {
-      const on = p.dataset.go === name;
-      p.style.borderColor = on ? "rgba(251,191,36,0.9)" : "";
-      p.style.color = on ? "#fcd34d" : "";
-      p.style.boxShadow = on ? "0 0 16px rgba(251,191,36,0.45)" : "";
-      if (on) p.setAttribute("aria-current", "page"); else p.removeAttribute("aria-current");
+    document.querySelectorAll("#arnBannerNav .arn-hotspot").forEach((p) => {
+      if (p.dataset.go === name) p.setAttribute("aria-current", "page");
+      else p.removeAttribute("aria-current");
     });
+  }
+
+  /* ---------- Live Record reachability ----------
+   * Live Record is NOT one of the banner artwork's six tabs, and the
+   * legacy #nav that also routes to it is display:none in the Arena
+   * shell — so without help the view would be orphaned. One discreet
+   * Arena-styled text link at the top of the Bet Tracker view (not a
+   * pill, not on the banner), re-asserted on every update pass in the
+   * same spirit as placeBoard(). */
+  function placeLiveRecordLink() {
+    if ($("arnLiveRecordLink")) return;
+    const tracker = $("tracker");
+    if (!tracker) return;
+    tracker.insertAdjacentHTML("afterbegin", '<div class="flex justify-end pb-1"><button type="button" id="arnLiveRecordLink" data-go="Live Record" class="text-xs font-mono text-slate-400 hover:text-amber-300 underline decoration-purple-500/60 hover:decoration-amber-400 underline-offset-4 transition-colors cursor-pointer bg-transparent border-0 p-0">Live Record ›</button></div>');
   }
 
   /* ---------- update cycle ---------- */
@@ -863,6 +868,7 @@ var ARN_FOOTER = `
     renderRadar(bets, s);
     renderFooter(s);
     placeBoard();
+    placeLiveRecordLink();
   }
   function scheduleUpdate() {
     if (queued) return;
