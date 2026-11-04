@@ -36,6 +36,10 @@ function statusOf(b){return String((b&&b.status)||'Open')}
 function stampMs(b){const v=b&&b.resultUpdatedAt;const ms=v?Date.parse(v):NaN;return Number.isFinite(ms)?ms:null}
 function mergeTicket(l,r){
 const ls=statusOf(l),rs=statusOf(r);
+// An intentional cloud reset supersedes stale settled results on older devices.
+const reset=Date.parse(r&&r.cloudResetAt||'');
+const localEdit=stampMs(l);
+if(Number.isFinite(reset)&&(!localEdit||reset>localEdit))return r;
 if(ls===rs){
  const lt=stampMs(l),rt=stampMs(r);
  if(lt!==null&&rt!==null&&lt!==rt)return lt>rt?l:r;
