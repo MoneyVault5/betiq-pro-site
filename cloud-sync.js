@@ -36,7 +36,12 @@ function statusOf(b){return String((b&&b.status)||'Open')}
 function stampMs(b){const v=b&&b.resultUpdatedAt;const ms=v?Date.parse(v):NaN;return Number.isFinite(ms)?ms:null}
 function mergeTicket(l,r){
 const ls=statusOf(l),rs=statusOf(r);
-if(ls===rs)return l;
+if(ls===rs){
+ const lt=stampMs(l),rt=stampMs(r);
+ if(lt!==null&&rt!==null&&lt!==rt)return lt>rt?l:r;
+ if(rt!==null&&(lt===null||rt>lt))return r;
+ return l;
+ }
 const lSet=SETTLED.has(ls),rSet=SETTLED.has(rs);
 if(lSet!==rSet)return lSet?l:r;
 const lt=stampMs(l),rt=stampMs(r);
@@ -74,7 +79,7 @@ let duplicates=0;const merged=[];const toUpsert=[];
 for(const b of localBets){
 const id=String(b.id);
 if(remoteById.has(id)){const winner=mergeTicket(b,remoteById.get(id));merged.push(winner);if(JSON.stringify(winner)!==JSON.stringify(remoteById.get(id)))toUpsert.push(winner);continue}
-if(remoteBySig.has(signature(b))){duplicates++;merged.push(b);continue}
+if(remoteBySig.has(signature(b))){duplicates++;const remoteId=remoteBySig.get(signature(b));const cloud=remoteById.get(remoteId);merged.push(mergeTicket(b,cloud));continue}
 merged.push(b);toUpsert.push(b);
 }
 const fingerprints=new Set(merged.map(signature));
