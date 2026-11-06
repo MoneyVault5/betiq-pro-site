@@ -426,7 +426,7 @@ body:before{opacity:.14!important;pointer-events:none!important}
 <p class="notice">Your in-game bets are tracked separately here. Results update immediately when you mark a ticket Winner or Loser. Overall dashboard totals include these bets.</p>
 <div id="liveRecordStats" class="live-record-stats"></div>
 <div id="liveRecordTickets" style="display:grid;gap:10px"></div>
-</section><section id="historyPage" hidden style="padding:16px 0"><h3 style="color:#fcd34d;letter-spacing:.12em;margin:0 0 2px">BET HISTORY</h3><p id="histSub" style="color:#94a3b8;font-size:11px;font-family:ui-monospace,Menlo,monospace;margin:0 0 12px">All saved slips · newest first</p><div id="histEditor" hidden></div><div id="histList" class="hist-list" style="display:grid;gap:10px"></div><p id="histEmpty" class="hist-empty" hidden>No slips saved yet. Add bets in Bet Tracker — they will show up here.</p></section><section id="analyticsPage" hidden style="padding:16px 0">
+</section><section id="historyPage" hidden style="padding:16px 0"><h3 style="color:#fcd34d;letter-spacing:.12em;margin:0 0 2px">BET HISTORY</h3><p id="histSub" style="color:#94a3b8;font-size:11px;font-family:ui-monospace,Menlo,monospace;margin:0 0 12px">All saved slips · newest first</p><div id="histEditor" hidden></div><div id="histList" class="hist-list" style="display:grid;gap:10px"></div><p id="histEmpty" class="hist-empty" hidden>No slips saved yet. Add bets in Bet Tracker — they will show up here.</p></section><section id="ladderPage" hidden style="padding:16px 0"><div id="ladRoot"></div></section><section id="analyticsPage" hidden style="padding:16px 0">
 <h3 style="color:#72ffb1;margin:0 0 8px">▥ BETTING ANALYTICS</h3>
 <p class="notice">Calculated from your saved tickets and your manual Winner / Loser selections. Shared wagers use your portion of the stake and payout.</p>
 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0"><button type="button" id="analyticsRefresh" class="primary">↻ Refresh Analytics</button><span id="analyticsDataStatus" style="color:#b9d8ef;font-size:12px">Loading saved tickets…</span></div>
@@ -475,14 +475,16 @@ function go(name){
  document.getElementById('workspace').classList.toggle('active',!onBoard);
  document.getElementById('pageTitle').textContent=name;
  document.getElementById('tracker').hidden=!['Bet Tracker','Slip Importer'].includes(name);
- document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record','Analytics','History'].includes(name);
+ document.getElementById('other').hidden=['Bet Tracker','Slip Importer','Live Record','Analytics','History','Ladder Challenge'].includes(name);
  document.getElementById('analyticsPage').hidden=name!=='Analytics';
  if(name==='Analytics'){renderBets();requestAnimationFrame(()=>{renderAnalytics();requestAnimationFrame(()=>{for(const id of ['analyticsTrendCanvas','analyticsBookCanvas','analyticsOutcomeCanvas','analyticsLiveVsPregame']){const chart=node(id)?._chart;if(chart)chart.resize()}})});}
  document.getElementById('liveRecordPage').hidden=name!=='Live Record';
  if(name==='Live Record')renderLiveRecord();
  document.getElementById('historyPage').hidden=name!=='History';
  if(name==='History'&&window.BetLabHistory)window.BetLabHistory.render();
- document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':name==='History'?'Every slip you have saved, newest first. Tap a slip to view or edit it.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
+ document.getElementById('ladderPage').hidden=name!=='Ladder Challenge';
+ if(name==='Ladder Challenge'&&window.BetLabLadder)window.BetLabLadder.render();
+ document.getElementById('pageDesc').textContent=['Bet Tracker','Slip Importer'].includes(name)?'Upload a screenshot, paste a share link, or enter a bet manually. Saved tickets stay in this browser.':name==='History'?'Every slip you have saved, newest first. Tap a slip to view or edit it.':name==='Ladder Challenge'?'Build. Protect. Repeat. Roll one bet into the next, lock profit at milestones, and climb to your goal.':'This section is a preview. Manage and settle wagers in Bet Tracker.';
  if(name==='Today’s Board')document.getElementById('todayBoard').scrollIntoView({behavior:'smooth',block:'center'});
  else window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1972,6 +1974,8 @@ let latestStats=new Map(),latestGames=false;
 <!-- END: Custom CSS Styling Blocks -->
 <link rel="stylesheet" href="./arena-live.css?v=20261103d">
 <link rel="stylesheet" href="./history-live.css?v=20261105a">
-<script src="./arena-live.js?v=20261103h" defer></script>
+<link rel="stylesheet" href="./ladder-live.css?v=20261106a">
+<script src="./arena-live.js?v=20261106a" defer></script>
 <script src="./history-live.js?v=20261105a" defer></script>
+<script src="./ladder-live.js?v=20261106a" defer></script>
 </body></html>

@@ -57,6 +57,7 @@ var ARN_HEADER = `
 <button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Analytics" aria-label="Analytics" title="Analytics">Analytics</button>
 <button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Sportsbooks" aria-label="Sportsbooks" title="Sportsbooks">Sportsbooks</button>
 <button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-slate-300 hover:text-amber-300 hover:bg-amber-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Scout" aria-label="Scout" title="Scout">Scout</button>
+<button type="button" class="arn-mini-btn flex-shrink-0 px-2.5 py-1 rounded-md text-[11px] font-mono uppercase tracking-wider text-cyan-300 hover:text-cyan-200 hover:bg-cyan-400/10 transition-colors cursor-pointer bg-transparent border-0" data-go="Ladder Challenge" aria-label="Ladder Challenge" title="Ladder Challenge">Ladder Challenge</button>
 </div>
 </nav>
 </header>`;
