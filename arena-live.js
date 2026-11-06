@@ -88,6 +88,9 @@ var ARN_BANNER = `
 
 var ARN_MAIN = `
 <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-6 space-y-8" data-purpose="main-dashboard-body">
+<div class="flex justify-end" data-purpose="dashboard-refresh-row">
+<button type="button" id="arnRefresh" aria-label="Refresh: pull the latest cloud slips and re-import open positions" class="px-3.5 py-1.5 rounded-lg border border-purple-700/50 bg-[#0b0814]/85 text-slate-200 text-xs font-bold font-display uppercase tracking-wider shadow-[0_0_14px_rgba(168,85,247,0.18)] hover:border-amber-400/70 hover:text-amber-300 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait">⟳ Refresh</button>
+</div>
 <section class="grid grid-cols-1 md:grid-cols-4 gap-4" data-purpose="top-kpi-metrics-row">
 <div class="glow-card rounded-xl p-4 flex items-center justify-between" data-purpose="kpi-net-profit">
 <div>
@@ -944,7 +947,95 @@ var ARN_FOOTER = `
     requestAnimationFrame(() => { queued = false; update(); });
   }
 
+  /* ---------- Dashboard Refresh (Marquis, Nov 6, 2026) ----------
+   * One tap updates the slips already placed, in this order:
+   * (1) CLOUD SYNC through cloud-sync.js's OWN trigger: cloud-sync
+   * registered window 'online' -> schedule() -> sync() (the same cycle
+   * it runs on sign-in and on every persist). Dispatching that event
+   * runs the untouched pull-merge-push; this module never reimplements
+   * the merge and never clicks the pill (its button is sign-in/out).
+   * Completion is read off the pill's own label — "Cloud saved …" is
+   * success, "Cloud sync error …" is failure — so the button reports
+   * exactly what the sync reported, never a fabricated success.
+   * (2) OPEN-POSITION RE-IMPORT for Polymarket US / Kalshi via the
+   * same module entry points their Sportsbooks tiles call
+   * (importPositions() on the browser-stored Key ID), only when a Key
+   * ID is saved in this browser; skipped silently otherwise. Book
+   * balances ride along inside those calls (each module refreshes its
+   * tile balance at the end of import, exactly as on the tiles).
+   * (3) RE-RENDER through the app's normal path: renderBets() (which
+   * itself fires betlab-board-rendered) plus this shell's update().
+   * Signed out, the cloud step is skipped by cloud-sync itself; the
+   * button still re-renders local data and says "Sign-in needed". */
+  function cloudSignedIn() {
+    const btn = document.getElementById("betlab-cloud-login");
+    return !!btn && (btn.textContent || "").trim() === "Sign out";
+  }
+  function waitForCloudCycle(timeoutMs) {
+    return new Promise((resolve) => {
+      const text = document.getElementById("betlab-cloud-text");
+      if (!text) { resolve("unavailable"); return; }
+      let done = false;
+      const finish = (v) => {
+        if (done) return; done = true;
+        try { obs.disconnect(); } catch (e) {}
+        clearTimeout(timer);
+        resolve(v);
+      };
+      const check = () => {
+        const t = (text.textContent || "").trim();
+        if (t.indexOf("Cloud saved") === 0) finish("saved");
+        else if (t.indexOf("Cloud sync error") === 0) finish("error");
+      };
+      const obs = new MutationObserver(check);
+      obs.observe(text, { childList: true, characterData: true, subtree: true });
+      const timer = setTimeout(() => finish("timeout"), timeoutMs);
+    });
+  }
+  async function runBookImports() {
+    let failed = false;
+    const mods = [window.BetLabPolymarketUS, window.BetLabKalshiImport];
+    for (const m of mods) {
+      if (!m || typeof m.getKeyId !== "function" || typeof m.importPositions !== "function") continue;
+      let key = "";
+      try { key = m.getKeyId(); } catch (e) { key = ""; }
+      if (!key) continue; // no Key ID saved in this browser: skip silently
+      try {
+        const r = await m.importPositions();
+        if (r && r.error) failed = true;
+      } catch (e) { failed = true; }
+    }
+    return failed;
+  }
+  function wireRefresh() {
+    const btn = $("arnRefresh");
+    if (!btn) return;
+    const REST = "⟳ Refresh";
+    btn.addEventListener("click", async () => {
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = "⟳ Refreshing…";
+      let failed = false;
+      const signedIn = cloudSignedIn();
+      if (signedIn) {
+        const wait = waitForCloudCycle(25000); // observer armed BEFORE the trigger
+        try { window.dispatchEvent(new Event("online")); } catch (e) {}
+        const outcome = await wait;
+        if (outcome !== "saved") failed = true;
+      }
+      if (await runBookImports()) failed = true;
+      try { if (typeof window.renderBets === "function") window.renderBets(); } catch (e) {}
+      try { document.dispatchEvent(new Event("betlab-board-rendered")); } catch (e) {}
+      update();
+      if (failed) btn.textContent = "Refresh failed";
+      else if (!signedIn) btn.textContent = "Sign-in needed";
+      else btn.textContent = "✓ Updated " + fmtTime(new Date());
+      setTimeout(() => { btn.textContent = REST; btn.disabled = false; }, 3500);
+    });
+  }
+
   function wireArena() {
+    wireRefresh();
     const sync = $("arnSyncBooks");
     if (sync) sync.addEventListener("click", () => { syncPills("Sportsbooks"); if (typeof window.go === "function") window.go("Sportsbooks"); });
     const add = $("arnAddBet");
