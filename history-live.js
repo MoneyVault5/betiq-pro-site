@@ -224,7 +224,14 @@
       if (page && !page.hidden) render();
     });
   }
-  window.BetLabHistory = { render: render };
+  function openById(id) {
+    var link = document.querySelector('[data-go="History"]');
+    if (link) link.click();
+    render();
+    var b = store().find(function (x) { return String(x.id) === String(id); });
+    if (b) openEditor(b);
+  }
+  window.BetLabHistory = { render: render, openById: openById };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
   else init();
 })();

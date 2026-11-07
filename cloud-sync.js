@@ -26,45 +26,62 @@ function notice(t){label.textContent=t}
 function renderAuth(){setPwBtn.hidden=!user;if(user){signInBox.hidden=true;setPwBox.hidden=true}else{setPwBox.hidden=true}}
 function signature(b){return [String(b.book||'').toLowerCase(),String(b.selection||'').toLowerCase(),String(b.game||'').toLowerCase(),Number(b.stake)||0,Number(b.payout)||0].join('|')}
 /* Merge arbitration: a result once recorded is never un-recorded by a stale
-   copy. Settled (Won/Lost/Void) beats Open; if both sides are settled but
-   differ, the newer payload.resultUpdatedAt wins; with no stamps on either
-   side the cloud copy wins — unless the ticket was edited on this device
-   during this session (tracked in sessionDirty). */
+   copy, and an edit once made is never silently reverted by an older copy.
+   Every ticket carries two stamps: resultUpdatedAt (set when its result
+   changes) and editedAt (set when ANY field changes — stake, payout, odds,
+   selection, note...). A ticket's freshness score is the newer of the two.
+   Settled (Won/Lost/Void) beats Open; if both sides are settled but differ,
+   the newer score wins; a stamped edit/reopen made after the result was
+   recorded also wins, so fixing a slip on one device sticks everywhere.
+   With no stamps on either side the cloud copy wins — unless the ticket
+   was edited on this device during this session (tracked in sessionDirty). */
 const SETTLED=new Set(['Won','Lost','Void']);
 const sessionDirty=new Set();
 function statusOf(b){return String((b&&b.status)||'Open')}
 function stampMs(b){const v=b&&b.resultUpdatedAt;const ms=v?Date.parse(v):NaN;return Number.isFinite(ms)?ms:null}
+function editMs(b){const v=b&&b.editedAt;const ms=v?Date.parse(v):NaN;return Number.isFinite(ms)?ms:null}
+function scoreMs(b){const a=stampMs(b),c=editMs(b);if(a===null)return c;if(c===null)return a;return Math.max(a,c)}
 function mergeTicket(l,r){
 const ls=statusOf(l),rs=statusOf(r);
 // An intentional cloud reset supersedes stale settled results on older devices.
 const reset=Date.parse(r&&r.cloudResetAt||'');
-const localEdit=stampMs(l);
-if(Number.isFinite(reset)&&(!localEdit||reset>localEdit))return r;
+const localFresh=scoreMs(l);
+if(Number.isFinite(reset)&&(!localFresh||reset>localFresh))return r;
 if(ls===rs){
- const lt=stampMs(l),rt=stampMs(r);
+ const lt=scoreMs(l),rt=scoreMs(r);
  if(lt!==null&&rt!==null&&lt!==rt)return lt>rt?l:r;
  if(rt!==null&&(lt===null||rt>lt))return r;
  return l;
  }
 const lSet=SETTLED.has(ls),rSet=SETTLED.has(rs);
-if(lSet!==rSet)return lSet?l:r;
-const lt=stampMs(l),rt=stampMs(r);
+if(lSet!==rSet){
+ const openSide=lSet?r:l,settledSide=lSet?l:r;
+ const os=scoreMs(openSide),ss=scoreMs(settledSide);
+ // A stamped edit/reopen made AFTER the result was recorded wins;
+ // anything older (or unstamped) still loses to the recorded result.
+ if(os!==null&&ss!==null&&os>ss)return openSide;
+ return settledSide;
+ }
+const lt=scoreMs(l),rt=scoreMs(r);
 if(lt!==null&&rt!==null&&lt!==rt)return lt>rt?l:r;
 if(lt!==null&&rt===null)return l;
 if(rt!==null&&lt===null)return r;
 if(sessionDirty.has(String(l.id)))return l;
 return r;
 }
-let lastStatus=new Map();
-function snapshotStatus(list){lastStatus=new Map();for(const b of list||[]){if(b&&b.id)lastStatus.set(String(b.id),statusOf(b))}}
+let lastStatus=new Map(),lastHash=new Map();
+function payloadHash(b){const c={...b};delete c.editedAt;delete c.resultUpdatedAt;delete c.cloudResetAt;const s=JSON.stringify(c);let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h)}
+function snapshotStatus(list){lastStatus=new Map();lastHash=new Map();for(const b of list||[]){if(b&&b.id){lastStatus.set(String(b.id),statusOf(b));lastHash.set(String(b.id),payloadHash(b))}}}
 function stampStatusChanges(){
 const list=local();let changed=false;const now=new Date().toISOString();
 for(const b of list){
-if(!b||!b.id)continue;const id=String(b.id),st=statusOf(b),prev=lastStatus.get(id);
+if(!b||!b.id)continue;const id=String(b.id),st=statusOf(b),prev=lastStatus.get(id),prevHash=lastHash.get(id),hash=payloadHash(b);
+if(prevHash!==undefined&&prevHash!==hash){b.editedAt=now;sessionDirty.add(id);changed=true}
+else if(prevHash===undefined){b.editedAt=b.editedAt||now;sessionDirty.add(id);changed=true}
 if(prev!==undefined&&prev!==st){b.resultUpdatedAt=now;sessionDirty.add(id);changed=true}
 else if(prev===undefined&&SETTLED.has(st)&&!b.resultUpdatedAt){b.resultUpdatedAt=now;sessionDirty.add(id);changed=true}
 }
-if(changed){localStorage.setItem('betlab_clean_real_bets_v1',JSON.stringify(list));try{if(Array.isArray(bets)){const byId=new Map(list.map(x=>[String(x.id),x]));for(const g of bets){const s=g&&byId.get(String(g.id));if(s&&s.resultUpdatedAt)g.resultUpdatedAt=s.resultUpdatedAt}}}catch(e){}}
+if(changed){localStorage.setItem('betlab_clean_real_bets_v1',JSON.stringify(list));try{if(Array.isArray(bets)){const byId=new Map(list.map(x=>[String(x.id),x]));for(const g of bets){const s=g&&byId.get(String(g.id));if(s){if(s.resultUpdatedAt)g.resultUpdatedAt=s.resultUpdatedAt;if(s.editedAt)g.editedAt=s.editedAt}}}}catch(e){}}
 snapshotStatus(list);
 }
 snapshotStatus(local());
