@@ -97,6 +97,64 @@
   }
   function baseOf(l) { return l.seedCents != null ? Number(l.seedCents) : Number(l.startCents) || 0; }
 
+  /* Seeded ladders (TASK-0052): a ticket can carry a `ladderSeed`
+   * descriptor (recorded with the cloud ticket when a ladder play is
+   * entered outside the app). The first device that renders with that
+   * ticket in its store materializes the ladder locally from the
+   * descriptor — id, name, start/goal, mode — and links every store
+   * ticket carrying the same ladderId, in ladderRung order. The plays
+   * stay the SAME tickets, so aggregate stats count them once. A
+   * ladder that already exists locally is never overwritten; only
+   * missing seeded plays are appended to it. Deleting the ladder in
+   * the app clears ladderId/ladderRung/ladderSeed from its tickets,
+   * so a deleted seeded ladder does not resurrect. */
+  function materializeSeededLadders(ls) {
+    var changed = false;
+    var groups = {};
+    store().forEach(function (t) {
+      if (!t || !t.ladderId || !t.ladderSeed) return;
+      var id = String(t.ladderId);
+      (groups[id] = groups[id] || []).push(t);
+    });
+    Object.keys(groups).forEach(function (id) {
+      var tickets = groups[id].slice().sort(function (a, b) {
+        return (Number(a.ladderRung) || 0) - (Number(b.ladderRung) || 0) || String(a.placedAt || "").localeCompare(String(b.placedAt || ""));
+      });
+      var existing = null;
+      ls.forEach(function (l) { if (String(l.id) === id) existing = l; });
+      if (existing) {
+        existing.plays = Array.isArray(existing.plays) ? existing.plays : [];
+        tickets.forEach(function (t) {
+          if (existing.plays.map(String).indexOf(String(t.id)) < 0) { existing.plays.push(String(t.id)); changed = true; }
+        });
+        return;
+      }
+      var seed = tickets[0].ladderSeed || {};
+      var startCents = Number(seed.startCents) || 0;
+      var goalCents = Number(seed.goalCents) || 0;
+      if (!(startCents > 0) || !(goalCents > startCents)) return;
+      var miles = Array.isArray(seed.milestones) && seed.milestones.length ? seed.milestones.map(function (m) {
+        return { amountCents: Number(m.amountCents) || 0, ptype: m.ptype || "fixed", pvalue: Number(m.pvalue) || 0 };
+      }).filter(function (m) { return m.amountCents > 0; }) : [];
+      if (!miles.some(function (m) { return m.amountCents >= goalCents; })) miles.push({ amountCents: goalCents, ptype: "goal", pvalue: 0 });
+      miles.sort(function (a, b) { return a.amountCents - b.amountCents; });
+      ls.push({
+        id: id,
+        name: String(seed.name || "Road to " + moneyC(goalCents)),
+        mode: seed.mode === "protected" ? "protected" : "milestone",
+        skimPct: Number(seed.skimPct) || 0,
+        startCents: startCents, goalCents: goalCents,
+        milestones: miles, restart: seed.restart === "protected" ? "protected" : "fresh",
+        attempt: 1, status: "Active", seedCents: null,
+        plays: tickets.map(function (t) { return String(t.id); }),
+        attempts: [], archivedAttempt: 0,
+        createdAt: String(seed.createdAt || tickets[0].placedAt || new Date().toISOString())
+      });
+      changed = true;
+    });
+    return changed;
+  }
+
   /* ---------------- progression engine ----------------
    * Pure derivation from (ladder, its linked tickets). See header. */
   function compute(l) {
@@ -730,6 +788,7 @@
     if (!root) return;
     var ls = loadLadders();
     var changed = false;
+    if (materializeSeededLadders(ls)) changed = true;
     ls.forEach(function (l) { if (reconcile(l)) changed = true; });
     if (changed) saveLadders(ls);
     var l = selectedLadder(ls);
@@ -888,7 +947,7 @@
     if (!window.confirm("Delete the ladder “" + l.name + "”? Its tickets stay in your Tracker; only the ladder link is removed.")) return;
     var ls = loadLadders().filter(function (x) { return String(x.id) !== String(l.id); });
     saveLadders(ls);
-    store().forEach(function (t) { if (t.ladderId === l.id) { delete t.ladderId; delete t.ladderRung; } });
+    store().forEach(function (t) { if (t.ladderId === l.id) { delete t.ladderId; delete t.ladderRung; delete t.ladderSeed; } });
     persistStore();
     if (String(selectedId) === String(l.id)) selectedId = null;
     view = ls.length ? "active" : "create";
@@ -996,6 +1055,7 @@
     var panel = document.querySelector('[data-purpose="ai-scout-entry-panel"]');
     if (!panel || !panel.parentElement) return;
     var ls = loadLadders();
+    if (materializeSeededLadders(ls)) saveLadders(ls);
     var act = null, actC = null;
     ls.forEach(function (l) { var c = compute(l); if (!act && c.status === "Active") { act = l; actC = c; } });
     var status = act
@@ -1030,6 +1090,7 @@
   window.BetLabLadder = {
     render: doRender,
     load: loadLadders,
+    materializeSeeded: materializeSeededLadders,
     compute: compute,
     winsNeeded: winsNeeded,
     projectionRows: projectionRows,
