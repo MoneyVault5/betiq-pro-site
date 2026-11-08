@@ -102,7 +102,10 @@
    * entered outside the app). The first device that renders with that
    * ticket in its store materializes the ladder locally from the
    * descriptor — id, name, start/goal, mode — and links every store
-   * ticket carrying the same ladderId, in ladderRung order. The plays
+   * ticket carrying the same ladderId, in ladderRung order. Later rungs
+   * carry ladderId only (no seed of their own); the seed is read from
+   * the lowest-rung ticket that carries one (TASK-0053: grouping by
+   * ladderSeed alone dropped rung 2 on a fresh device). The plays
    * stay the SAME tickets, so aggregate stats count them once. A
    * ladder that already exists locally is never overwritten; only
    * missing seeded plays are appended to it. Deleting the ladder in
@@ -112,7 +115,7 @@
     var changed = false;
     var groups = {};
     store().forEach(function (t) {
-      if (!t || !t.ladderId || !t.ladderSeed) return;
+      if (!t || !t.ladderId) return;
       var id = String(t.ladderId);
       (groups[id] = groups[id] || []).push(t);
     });
@@ -129,7 +132,10 @@
         });
         return;
       }
-      var seed = tickets[0].ladderSeed || {};
+      var seedTicket = null;
+      tickets.forEach(function (t) { if (!seedTicket && t.ladderSeed) seedTicket = t; });
+      if (!seedTicket) return; /* ladderId with no seed descriptor: cannot materialize */
+      var seed = seedTicket.ladderSeed || {};
       var startCents = Number(seed.startCents) || 0;
       var goalCents = Number(seed.goalCents) || 0;
       if (!(startCents > 0) || !(goalCents > startCents)) return;
