@@ -1,0 +1,24 @@
+/* Bet Lab — Tracker Sync bar (Marquis, Nov 9, 2026).
+   Sits right above "Your Saved Bets" in Bet Tracker: a Sync button that
+   pulls the latest open positions from his accounts, plus his record and
+   open / closed counts as tappable boxes that filter the Saved Bets list
+   below (where each slip's Result dropdown marks Won / Lost).
+   Semantic colors: won #39FF88, lost #FF3B5C, open sky. */
+#trackerSyncBar{margin:22px 0 6px;padding:14px;border:1px solid rgba(168,85,247,.45);border-radius:14px;background:linear-gradient(155deg,rgba(12,27,45,.92),rgba(11,8,20,.92));box-shadow:0 0 18px rgba(168,85,247,.14)}
+#trackerSyncBar .tsb-top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#blSyncLatest{cursor:pointer;border:1px solid rgba(245,158,11,.7);background:linear-gradient(90deg,rgba(245,158,11,.22),rgba(245,158,11,.10));color:#fcd34d;font-weight:800;font-size:13px;letter-spacing:.04em;padding:11px 16px;border-radius:10px;min-height:44px}
+#blSyncLatest:hover{border-color:#f59e0b;color:#fde68a}
+#blSyncLatest:disabled{opacity:.6;cursor:wait}
+#blSyncStatus{color:#b9d8ef;font-size:12px;line-height:1.5;flex:1;min-width:180px}
+#trackerSyncBar .tsb-note{color:#64748b;font-size:11px;margin:8px 0 0;line-height:1.5}
+#trackerSyncBar .tsb-counts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tsb-chip{cursor:pointer;border:1px solid #334155;background:rgba(2,6,23,.72);color:#e2e8f0;border-radius:12px;padding:9px 13px;min-height:44px;display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.tsb-chip small{font-size:10px;font-weight:800;letter-spacing:.1em;color:#94a3b8;text-transform:uppercase}
+.tsb-chip strong{font-size:17px;line-height:1.15}
+.tsb-chip:hover{border-color:rgba(245,158,11,.65)}
+.tsb-chip.tsb-active{border-color:#f59e0b;box-shadow:0 0 12px rgba(245,158,11,.35)}
+.tsb-chip-open strong{color:#7dd3fc}
+.tsb-chip-won strong{color:#39FF88}
+.tsb-chip-lost strong{color:#FF3B5C}
+.tsb-chip-record strong{color:#f1f5f9}
+#tsbFilterNote{color:#fcd34d;font-size:12px;margin:10px 0 0;min-height:15px}
